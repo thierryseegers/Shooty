@@ -9,10 +9,13 @@ find_package(SFML 2.5
     REQUIRED
 )
 
-add_executable(Shooty 
+add_executable(Shooty
     game.cpp
     game.h
-    main.cpp)
+    main.cpp
+    textures.cpp
+    textures.h
+)
 
 target_include_directories(Shooty
     PRIVATE /usr/local/include

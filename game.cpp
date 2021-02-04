@@ -3,16 +3,17 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
+#include <filesystem>
 #include <stdexcept>
 
 game::game()
     : window{sf::VideoMode(640, 480), "Shooty"}
 {
-    if(!texture.loadFromFile("Book/01_Intro/Media/Textures/Eagle.png"))
-    {
-        throw std::runtime_error("Could not load texture");
-    }
-    player.setTexture(texture);
+    textures.load(textures::id::landscape, "Book/02_Resources/Media/Textures/Desert.png");
+    textures.load(textures::id::airplane, "Book/02_Resources/Media/Textures/Eagle.png");
+
+    landscape.setTexture(textures.get(textures::id::landscape));
+    player.setTexture(textures.get(textures::id::airplane));
     player.setPosition(100.f, 100.f);
 }
 
@@ -112,6 +113,7 @@ void game::update(sf::Time const& dt)
 void game::render()
 {
     window.clear();
+    window.draw(landscape);
     window.draw(player);
     window.display();
 }

@@ -1,3 +1,7 @@
+#pragma once
+
+#include "textures.h"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
@@ -20,7 +24,9 @@ private:
     void render();
 
     sf::RenderWindow window;
-    sf::Texture texture;
+    textures::holder textures;
+
+    sf::Sprite landscape;
     sf::Sprite player;
     int player_speed = 100;
 
