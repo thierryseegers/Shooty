@@ -20,7 +20,8 @@ private:
     void render();
 
     sf::RenderWindow window;
-    sf::CircleShape player;
+    sf::Texture texture;
+    sf::Sprite player;
     int player_speed = 100;
 
     bool moving_up, moving_down, moving_left, moving_right;

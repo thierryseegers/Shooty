@@ -3,12 +3,17 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
+#include <stdexcept>
+
 game::game()
     : window{sf::VideoMode(640, 480), "Shooty"}
 {
-    player.setRadius(40.f);
+    if(!texture.loadFromFile("Book/01_Intro/Media/Textures/Eagle.png"))
+    {
+        throw std::runtime_error("Could not load texture");
+    }
+    player.setTexture(texture);
     player.setPosition(100.f, 100.f);
-    player.setFillColor(sf::Color::Cyan);
 }
 
 void game::run()
