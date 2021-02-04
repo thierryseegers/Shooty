@@ -19,7 +19,8 @@ private:
         sf::Keyboard::Key const key,
         bool const is_pressed);
     
-    void update(sf::Time const& dt);
+    void update(
+        sf::Time const& dt);
     
     void render();
 

@@ -87,7 +87,8 @@ void game::handle_player_input(
     }
 }
 
-void game::update(sf::Time const& dt)
+void game::update(
+    sf::Time const& dt)
 {
     sf::Vector2f movement;
 

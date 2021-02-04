@@ -18,7 +18,9 @@ namespace resources
     class holder
     {
     public:
-        void load(Type const id, std::filesystem::path const& path)
+        void load(
+            Type const id,
+            std::filesystem::path const& path)
         {
             auto resource = std::make_unique<Resource>();
             if(!resource->loadFromFile(path.native()))
@@ -30,7 +32,9 @@ namespace resources
         }
         
         template<typename Parameter>
-        void load(Type const id, std::filesystem::path const& path, Parameter const& parameter)
+        void load(
+            Type const id,
+            std::filesystem::path const& path, Parameter const& parameter)
         {
             auto resource = std::make_unique<Resource>();
             if(!resource->loadFromFile(path.native(), parameter))
@@ -41,7 +45,8 @@ namespace resources
             resources[id] = std::move(resource);
         }
 
-        Resource& get(Type const id)
+        Resource& get(
+            Type const id)
         {
             auto const i = resources.find(id);
             assert(i != resources.end());
@@ -49,7 +54,8 @@ namespace resources
             return *i->second;
         }
 
-        Resource const& get(Type const id) const
+        Resource const& get(
+            Type const id) const
         {
             auto const i = resources.find(id);
             assert(i != resources.end());

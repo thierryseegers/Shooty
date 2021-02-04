@@ -10,10 +10,15 @@ find_package(SFML 2.5
 )
 
 add_executable(Shooty
+    aircraft.cpp
+    aircraft.h
+    entity.h
     game.cpp
     game.h
     main.cpp
     resources.h
+    scene.cpp
+    scene.h
 )
 
 target_include_directories(Shooty
