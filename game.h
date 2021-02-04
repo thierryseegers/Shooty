@@ -1,6 +1,6 @@
 #pragma once
 
-#include "textures.h"
+#include "resources.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -24,7 +24,7 @@ private:
     void render();
 
     sf::RenderWindow window;
-    textures::holder textures;
+    resources::holder<resources::texture, sf::Texture> textures;
 
     sf::Sprite landscape;
     sf::Sprite player;

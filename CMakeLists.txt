@@ -13,8 +13,7 @@ add_executable(Shooty
     game.cpp
     game.h
     main.cpp
-    textures.cpp
-    textures.h
+    resources.h
 )
 
 target_include_directories(Shooty

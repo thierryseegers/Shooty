@@ -1,5 +1,7 @@
 #include "game.h"
 
+#include "resources.h"
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
@@ -9,11 +11,11 @@
 game::game()
     : window{sf::VideoMode(640, 480), "Shooty"}
 {
-    textures.load(textures::id::landscape, "Book/02_Resources/Media/Textures/Desert.png");
-    textures.load(textures::id::airplane, "Book/02_Resources/Media/Textures/Eagle.png");
+    textures.load(resources::texture::landscape, "Book/02_Resources/Media/Textures/Desert.png");
+    textures.load(resources::texture::airplane, "Book/02_Resources/Media/Textures/Eagle.png");
 
-    landscape.setTexture(textures.get(textures::id::landscape));
-    player.setTexture(textures.get(textures::id::airplane));
+    landscape.setTexture(textures.get(resources::texture::landscape));
+    player.setTexture(textures.get(resources::texture::airplane));
     player.setPosition(100.f, 100.f);
 }
 
