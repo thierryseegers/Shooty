@@ -10,6 +10,8 @@ find_package(SFML 2.5
 )
 
 add_executable(Shooty 
+    game.cpp
+    game.h
     main.cpp)
 
 target_include_directories(Shooty
@@ -19,6 +21,9 @@ target_include_directories(Shooty
 target_link_libraries(Shooty
     sfml-graphics
 )
+
+set_property(TARGET Shooty
+    PROPERTY CXX_STANDARD 17)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
