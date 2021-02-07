@@ -19,14 +19,22 @@ private:
     void handle_player_input(
         sf::Keyboard::Key const key,
         bool const is_pressed);
-    
+
+    void update_statistics(
+        sf::Time const& dt);
+
     void update(
         sf::Time const& dt);
-    
+
     void render();
 
     sf::RenderWindow window;
     world world_;
 
     sf::Time const time_per_frame = sf::seconds(1.f / 60.f);
+
+    sf::Font statistics_font;
+    sf::Text statistics_text;
+    sf::Time statistics_update_time;
+    std::size_t statistics_num_frames;
 };
