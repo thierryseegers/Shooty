@@ -10,14 +10,8 @@
 
 game::game()
     : window{sf::VideoMode(640, 480), "Shooty"}
-{
-    textures.load(resources::texture::landscape, "Book/02_Resources/Media/Textures/Desert.png");
-    textures.load(resources::texture::eagle, "Book/02_Resources/Media/Textures/Eagle.png");
-
-    landscape.setTexture(textures.get(resources::texture::landscape));
-    player.setTexture(textures.get(resources::texture::eagle));
-    player.setPosition(100.f, 100.f);
-}
+    , world_{window}
+{}
 
 void game::run()
 {
@@ -63,60 +57,19 @@ void game::process_events()
 void game::handle_player_input(
     sf::Keyboard::Key const key,
     bool const is_pressed)
-{
-    switch(key)
-    {
-        case sf::Keyboard::W:
-        case sf::Keyboard::Up:
-            moving_up = is_pressed;
-            break;
-        case sf::Keyboard::A:
-        case sf::Keyboard::Left:
-            moving_left = is_pressed;
-            break;
-        case sf::Keyboard::S:
-        case sf::Keyboard::Down:
-            moving_down = is_pressed;
-            break;
-        case sf::Keyboard::D:
-        case sf::Keyboard::Right:
-            moving_right = is_pressed;
-            break;
-        default:
-            break;
-    }
-}
+{}
 
 void game::update(
     sf::Time const& dt)
 {
-    sf::Vector2f movement;
-
-    if(moving_up)
-    {
-        movement.y -= player_speed;
-    }
-    if(moving_down)
-    {
-        movement.y += player_speed;
-    }
-
-    if(moving_left)
-    {
-        movement.x -= player_speed;
-    }
-    if(moving_right)
-    {
-        movement.x += player_speed;
-    }
-
-    player.move(movement * dt.asSeconds());
+    world_.update(dt);
 }
 
 void game::render()
 {
     window.clear();
-    window.draw(landscape);
-    window.draw(player);
+    world_.draw();
+    
+    window.setView(window.getDefaultView());
     window.display();
 }

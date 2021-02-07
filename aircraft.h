@@ -5,7 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 
-class aircraft : entity
+class aircraft : public entity
 {
 public:
     enum class type

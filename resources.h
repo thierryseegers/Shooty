@@ -13,7 +13,7 @@ namespace resources
 enum class texture
 {
     eagle,
-    landscape,
+    desert,
     missile,
     raptor,
 };

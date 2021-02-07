@@ -1,9 +1,19 @@
 #include "game.h"
 
-int main(int, char**) {
+#include <iostream>
+#include <stdexcept>
 
-    game g;
-    g.run();
+int main(int, char**)
+{
+    try
+    {
+        game g;
+        g.run();
+    }
+    catch(std::exception const& e)
+    {
+        std::cerr << "[exception] " << e.what() << std::endl;
+    }
 
     return 0;
 }

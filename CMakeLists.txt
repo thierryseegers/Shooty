@@ -19,6 +19,8 @@ add_executable(Shooty
     resources.h
     scene.cpp
     scene.h
+    world.cpp
+    world.h
 )
 
 target_include_directories(Shooty

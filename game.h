@@ -1,6 +1,7 @@
 #pragma once
 
 #include "resources.h"
+#include "world.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -25,13 +26,7 @@ private:
     void render();
 
     sf::RenderWindow window;
-    resources::textures textures;
-
-    sf::Sprite landscape;
-    sf::Sprite player;
-    int player_speed = 100;
-
-    bool moving_up, moving_down, moving_left, moving_right;
+    world world_;
 
     sf::Time const time_per_frame = sf::seconds(1.f / 60.f);
 };
