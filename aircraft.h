@@ -1,11 +1,11 @@
 #pragma once
 
 #include "entity.h"
-#include "resources.h"
+#include "scene.h"
 
 #include <SFML/Graphics.hpp>
 
-class aircraft : public entity
+class aircraft : public entity, public scene::sprite
 {
 public:
     enum class type
@@ -16,13 +16,8 @@ public:
 
     explicit aircraft(
         type const type_,
-        resources::textures const& textures);
-
-    virtual void draw_self(
-        sf::RenderTarget& target,
-        sf::RenderStates states) const override;
+        sf::Texture const& texture);
 
 private:
     type type_;
-    sf::Sprite sprite;
 };

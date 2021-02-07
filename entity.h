@@ -4,7 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
-struct entity : public scene::node
+struct entity : public virtual scene::node
 {
     virtual void update_self(
         sf::Time const dt) override

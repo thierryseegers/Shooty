@@ -51,20 +51,20 @@ void world::build_scene()
     layers[layer::background]->attach(std::move(background_sprite));
 
     // Create leader aircraft and move to `layers`.
-    auto leader = std::make_unique<aircraft>(aircraft::type::eagle, textures);
+    auto leader = std::make_unique<aircraft>(aircraft::type::eagle, textures.get(resources::texture::eagle));
     player = leader.get();
-    player->setPosition(spawn_position);
+    player->scene::sprite::setPosition(spawn_position);
     player->velocity = {40.f, scroll_speed};
     layers[layer::air]->attach(std::move(leader));
 
     // Create left and right escorts and attach to `leader`.
-    auto left_escort = std::make_unique<aircraft>(aircraft::type::raptor, textures);
-    left_escort->setPosition(-80.f, 50.f);
-    player->attach(std::move(left_escort));
+    auto left_escort = std::make_unique<aircraft>(aircraft::type::raptor, textures.get(resources::texture::raptor));
+    left_escort->scene::sprite::setPosition(-80.f, 50.f);
+    player->scene::sprite::attach(std::move(left_escort));
 
-    auto right_escort = std::make_unique<aircraft>(aircraft::type::raptor, textures);
-    right_escort->setPosition(80.f, 50.f);
-    player->attach(std::move(right_escort));
+    auto right_escort = std::make_unique<aircraft>(aircraft::type::raptor, textures.get(resources::texture::raptor));
+    right_escort->scene::sprite::setPosition(80.f, 50.f);
+    player->scene::sprite::attach(std::move(right_escort));
 }
 
 void world::update(
@@ -74,7 +74,7 @@ void world::update(
     view.move(0.f, scroll_speed * dt.asSeconds());
 
     // "Bounce" the planes if they get too close to the edge.
-    auto const position = player->getPosition();
+    auto const position = player->scene::sprite::getPosition();
     if(position.x <= bounds.left + 150 ||
        position.x >= bounds.left + bounds.width - 150)
     {

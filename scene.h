@@ -42,7 +42,7 @@ private:
 template<size_t Count>
 using layers = std::array<scene::node*, Count>;
 
-class sprite : public node
+class sprite : public virtual node
 {
 public:
     explicit sprite(
@@ -51,12 +51,13 @@ public:
         sf::Texture const& texture,
         sf::IntRect const& rect);
 
+protected:
+    sf::Sprite sprite_;
+
 private:
     virtual void draw_self(
         sf::RenderTarget& target,
         sf::RenderStates states) const override;
-    
-    sf::Sprite sprite_;
 };
 
 }
