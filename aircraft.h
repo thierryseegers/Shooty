@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entity.h"
+#include "resources.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -14,7 +15,8 @@ public:
     };
 
     explicit aircraft(
-        type const type_);
+        type const type_,
+        resources::textures const& textures);
 
     virtual void draw_self(
         sf::RenderTarget& target,

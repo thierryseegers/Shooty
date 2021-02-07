@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 #include <filesystem>
 #include <map>
 #include <memory>
@@ -7,63 +9,68 @@
 
 namespace resources
 {
-    enum class texture
+
+enum class texture
+{
+    eagle,
+    landscape,
+    missile,
+    raptor,
+};
+
+template<typename Type, class Resource>
+class holder
+{
+public:
+    void load(
+        Type const id,
+        std::filesystem::path const& path)
     {
-        landscape,
-        airplane,
-        missile
-    };
+        auto resource = std::make_unique<Resource>();
+        if(!resource->loadFromFile(path.native()))
+        {
+            throw std::runtime_error("resources::holder::load failed to load " + path.string());
+        }
 
-    template<typename Type, class Resource>
-    class holder
+        resources[id] = std::move(resource);
+    }
+    
+    template<typename Parameter>
+    void load(
+        Type const id,
+        std::filesystem::path const& path, Parameter const& parameter)
     {
-    public:
-        void load(
-            Type const id,
-            std::filesystem::path const& path)
+        auto resource = std::make_unique<Resource>();
+        if(!resource->loadFromFile(path.native(), parameter))
         {
-            auto resource = std::make_unique<Resource>();
-            if(!resource->loadFromFile(path.native()))
-            {
-                throw std::runtime_error("resources::holder::load failed to load " + path.string());
-            }
-
-            resources[id] = std::move(resource);
-        }
-        
-        template<typename Parameter>
-        void load(
-            Type const id,
-            std::filesystem::path const& path, Parameter const& parameter)
-        {
-            auto resource = std::make_unique<Resource>();
-            if(!resource->loadFromFile(path.native(), parameter))
-            {
-                throw std::runtime_error("resources::holder::load failed to load " + path.string());
-            }
-
-            resources[id] = std::move(resource);
+            throw std::runtime_error("resources::holder::load failed to load " + path.string());
         }
 
-        Resource& get(
-            Type const id)
-        {
-            auto const i = resources.find(id);
-            assert(i != resources.end());
+        resources[id] = std::move(resource);
+    }
 
-            return *i->second;
-        }
+    Resource& get(
+        Type const id)
+    {
+        auto const i = resources.find(id);
+        assert(i != resources.end());
 
-        Resource const& get(
-            Type const id) const
-        {
-            auto const i = resources.find(id);
-            assert(i != resources.end());
+        return *i->second;
+    }
 
-            return *i->second;
-        }
+    Resource const& get(
+        Type const id) const
+    {
+        auto const i = resources.find(id);
+        assert(i != resources.end());
 
-    private:
-        std::map<Type, std::unique_ptr<Resource>> resources;
-    };
+        return *i->second;
+    }
+
+private:
+    std::map<Type, std::unique_ptr<Resource>> resources;
+};
+
+using textures = holder<texture, sf::Texture>;
+
 }

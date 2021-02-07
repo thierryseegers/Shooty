@@ -12,10 +12,10 @@ game::game()
     : window{sf::VideoMode(640, 480), "Shooty"}
 {
     textures.load(resources::texture::landscape, "Book/02_Resources/Media/Textures/Desert.png");
-    textures.load(resources::texture::airplane, "Book/02_Resources/Media/Textures/Eagle.png");
+    textures.load(resources::texture::eagle, "Book/02_Resources/Media/Textures/Eagle.png");
 
     landscape.setTexture(textures.get(resources::texture::landscape));
-    player.setTexture(textures.get(resources::texture::airplane));
+    player.setTexture(textures.get(resources::texture::eagle));
     player.setPosition(100.f, 100.f);
 }
 

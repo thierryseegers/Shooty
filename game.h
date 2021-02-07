@@ -25,7 +25,7 @@ private:
     void render();
 
     sf::RenderWindow window;
-    resources::holder<resources::texture, sf::Texture> textures;
+    resources::textures textures;
 
     sf::Sprite landscape;
     sf::Sprite player;
