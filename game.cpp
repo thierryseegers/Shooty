@@ -13,9 +13,9 @@ game::game()
     , world{window}
     , statistics_num_frames{0}
 {
-    // window.setKeyRepeatEnabled(false);
+    window.setKeyRepeatEnabled(false);
 
-    statistics_font.loadFromFile("Book/03_World/Media/Sansation.ttf");
+    statistics_font.loadFromFile("Book/04_Input/Media/Sansation.ttf");
     statistics_text.setFont(statistics_font);
     statistics_text.setPosition(5.f, 5.f);
     statistics_text.setCharacterSize(24);
@@ -53,9 +53,9 @@ void game::process_input()
         {
             window.close();
         }
-
-        player_1.handle_realtime_input(world.commands());
     }
+
+    player_1.handle_realtime_input(world.commands());
 }
 
 void game::update_statistics(

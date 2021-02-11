@@ -6,54 +6,115 @@
 #include <SFML/Window.hpp>
 
 #include <iostream>
+#include <map>
+
+player_t::player_t()
+{
+    bind_key(sf::Keyboard::Down, action::move_down);
+    bind_key(sf::Keyboard::Left, action::move_left);
+    bind_key(sf::Keyboard::Right, action::move_right);
+    bind_key(sf::Keyboard::Up, action::move_up);
+
+    bind_key(sf::Keyboard::P, action::print_position);
+
+    float const speed = 200.f;
+
+    action_bindings[action::move_down] = make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
+        {
+            aircraft.velocity += {0.f, speed};
+        });
+    action_bindings[action::move_left] = make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
+        {
+            aircraft.velocity += {-speed, 0.f};
+        });
+    action_bindings[action::move_right] = make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
+        {
+            aircraft.velocity += {speed, 0.f};
+        });
+    action_bindings[action::move_up] = make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
+        {
+            aircraft.velocity += {0.f, -speed};
+        });
+
+    action_bindings[action::print_position] = make_command<leader_t>([](aircraft_t& aircraft, sf::Time const&)
+        {
+            std::cout << aircraft.getPosition().x << ',' << aircraft.getPosition().y << "\n";
+        });
+}
+
+void player_t::bind_key(
+    sf::Keyboard::Key const key,
+    action const what)
+{
+    if(key == sf::Keyboard::Unknown)
+    {
+        for(auto const [key, a] : key_bindings)
+        {
+            if(a == what)
+            {
+                key_bindings.erase(key);
+            }
+        }
+    }
+    else
+    {
+        key_bindings[key] = what;
+    }
+}
+
+sf::Keyboard::Key player_t::bound_key(
+    action const what) const
+{
+    for(auto const [key, a] : key_bindings)
+    {
+        if(a == what)
+        {
+            return key;
+        }
+    }
+
+    return sf::Keyboard::Unknown;
+}
 
 void player_t::handle_event(
     sf::Event const& event,
-    commands_t& commands
-    )
+    commands_t& commands)
 {
-    if(event.type == sf::Event::KeyPressed &&
-       event.key.code == sf::Keyboard::P)
+    if(event.type == sf::Event::KeyPressed)
     {
-        commands.push(make_command<leader_t>([](aircraft_t& aircraft, sf::Time const&)
+        if(auto i = key_bindings.find(event.key.code); i != key_bindings.end() && !is_realtime_action(i->second))
         {
-            std::cout << aircraft.getPosition().x << ',' << aircraft.getPosition().y << "\n";
-        }));
+            commands.push(action_bindings[i->second]);
+        }
     }
 }
 
 void player_t::handle_realtime_input(
-    commands_t& commands
-    )
+    commands_t& commands)
 {
-    float const speed = 200.f;
+    for(auto const [key, what] : key_bindings)
+    {
+        if(sf::Keyboard::isKeyPressed(key) &&
+           is_realtime_action(what))
+        {
+            commands.push(action_bindings[what]);
+        }
+    }
+}
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+bool player_t::is_realtime_action(
+    action const a)
+{
+    switch(a)
     {
-        commands.push(make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
-        {
-            aircraft.velocity += {0.f, -speed};
-        }));
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-    {
-        commands.push(make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
-        {
-            aircraft.velocity += {0.f, speed};
-        }));
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-    {
-        commands.push(make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
-        {
-            aircraft.velocity += {-speed, 0.f};
-        }));
-    }
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-    {
-        commands.push(make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
-        {
-            aircraft.velocity += {speed, 0.f};
-        }));
+        case action::move_down:
+        case action::move_left:
+        case action::move_right:
+        case action::move_up:
+            return true;
+            break;
+        default:
+            return false;
+            break;
     }
 }

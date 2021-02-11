@@ -43,7 +43,7 @@ void world_t::build_scene()
         graph.attach(std::move(layer));
     }
 
-    // Create background sprite and move to `layers`.
+    // Create background sprite and move to background layer.
     sf::Texture& background_texture = textures.get(resources::texture::desert);
     background_texture.setRepeated(true);
     sf::IntRect background_rect{bounds};
@@ -52,13 +52,13 @@ void world_t::build_scene()
     background_sprite->setPosition(bounds.left, bounds.top);
     layers[layer::background]->attach(std::move(background_sprite));
 
-    // Create leader aircraft and move to `layers`.
+    // Create leader aircraft and move to air layer.
     auto leader = std::make_unique<leader_t>(aircraft_t::type::eagle, textures.get(resources::texture::eagle));
     player = leader.get();
     player->scene::sprite_t::setPosition(spawn_position);
     layers[layer::air]->attach(std::move(leader));
 
-    // Create left and right escorts and attach to `leader`.
+    // Create left and right escorts and attach to leader.
     auto left_escort = std::make_unique<aircraft_t>(aircraft_t::type::raptor, textures.get(resources::texture::raptor));
     left_escort->scene::sprite_t::setPosition(-80.f, 50.f);
     player->scene::sprite_t::attach(std::move(left_escort));
