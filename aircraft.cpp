@@ -2,12 +2,12 @@
 
 #include <SFML/Graphics.hpp>
 
-aircraft::aircraft(
-    aircraft::type const type_,
+aircraft_t::aircraft_t(
+    aircraft_t::type const type_,
     sf::Texture const& texture)
-    : scene::sprite(texture)
+    : scene::sprite_t(texture)
     , type_{type_}
 {
-    auto const bounds = sprite_.getLocalBounds();
-    sprite_.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+    auto const bounds = sprite.getLocalBounds();
+    sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 }

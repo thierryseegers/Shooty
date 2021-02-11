@@ -12,19 +12,19 @@
 namespace scene
 {
 
-void node::attach(
-    std::unique_ptr<node> child)
+void node_t::attach(
+    std::unique_ptr<node_t> child)
 {
     child->parent = this;
     children.push_back(std::move(child));
 }
 
-std::unique_ptr<node> node::detach(
-    node const& node_)
+std::unique_ptr<node_t> node_t::detach(
+    node_t const& node)
 {
     auto i = std::find_if(children.begin(), children.end(), [&](auto& p)
         {
-            return p.get() == &node_;
+            return p.get() == &node;
         });
     assert(i != children.end());
 
@@ -35,7 +35,7 @@ std::unique_ptr<node> node::detach(
     return p;
 }
 
-void node::draw(
+void node_t::draw(
     sf::RenderTarget& target,
     sf::RenderStates states) const
 {
@@ -49,16 +49,16 @@ void node::draw(
     }
 }
 
-void node::draw_self(
+void node_t::draw_self(
     sf::RenderTarget& target,
     sf::RenderStates states) const
 {}
 
-sf::Transform node::world_transform() const
+sf::Transform node_t::world_transform() const
 {
     auto transform = sf::Transform::Identity;
 
-    for(scene::node const* n = this; n; n = n->parent)
+    for(scene::node_t const* n = this; n; n = n->parent)
     {
         transform *= n->getTransform();
     }
@@ -66,12 +66,12 @@ sf::Transform node::world_transform() const
     return transform;
 }
 
-sf::Vector2f node::world_positiion() const
+sf::Vector2f node_t::world_positiion() const
 {
     return world_transform() * sf::Vector2f{};
 }
 
-void node::update(
+void node_t::update(
     sf::Time const dt)
 {
     update_self(dt);
@@ -82,26 +82,38 @@ void node::update(
     }
 }
 
-void node::update_self(
+void node_t::on_command(
+    command_t const& command,
+    sf::Time const dt)
+{
+    command(*this, dt);
+
+    for(auto& child : children)
+    {
+        child->on_command(command, dt);
+    }
+}
+
+void node_t::update_self(
     sf::Time const dt)
 {}
 
-sprite::sprite(
+sprite_t::sprite_t(
     sf::Texture const& texture)
-    : sprite_{texture}
+    : sprite{texture}
 {}
 
-sprite::sprite(
+sprite_t::sprite_t(
     sf::Texture const& texture,
     sf::IntRect const& rect)
-    : sprite_{texture, rect}
+    : sprite{texture, rect}
 {}
 
-void sprite::draw_self(
+void sprite_t::draw_self(
     sf::RenderTarget& target,
     sf::RenderStates states) const 
 {
-    target.draw(sprite_, states);
+    target.draw(sprite, states);
 }
 
 }

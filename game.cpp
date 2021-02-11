@@ -9,28 +9,31 @@
 #include <stdexcept>
 
 game::game()
-    : window{sf::VideoMode(640, 480), "Shooty"}
-    , world_{window}
+    : window{sf::VideoMode(640, 480), "Shooty", sf::Style::Close}
+    , world{window}
     , statistics_num_frames{0}
 {
+    // window.setKeyRepeatEnabled(false);
+
     statistics_font.loadFromFile("Book/03_World/Media/Sansation.ttf");
     statistics_text.setFont(statistics_font);
     statistics_text.setPosition(5.f, 5.f);
-    statistics_text.setCharacterSize(16);
+    statistics_text.setCharacterSize(24);
 }
 
 void game::run()
 {
     sf::Clock clock;
-    sf::Time elapsed_time = sf::Time::Zero;
+    sf::Time last_update = sf::Time::Zero;
 
      while(window.isOpen())
     {
-        elapsed_time += clock.restart();
-        while(elapsed_time > time_per_frame)
+        sf::Time const elapsed_time = clock.restart();
+        last_update += elapsed_time;
+        while(last_update > time_per_frame)
         {
-            elapsed_time -= time_per_frame;
-            process_events();
+            last_update -= time_per_frame;
+            process_input();
             update(time_per_frame);
         }
 
@@ -39,32 +42,21 @@ void game::run()
     }
 }
 
-void game::process_events()
+void game::process_input()
 {
     sf::Event event;
     while(window.pollEvent(event))
     {
-        switch(event.type)
+        player_1.handle_event(event, world.commands());
+
+        if(event.type == sf::Event::Closed)
         {
-            case sf::Event::Closed:
-                window.close();
-                break;
-            case sf::Event::KeyPressed:
-                handle_player_input(event.key.code, true);
-                break;
-            case sf::Event::KeyReleased:
-                handle_player_input(event.key.code, false);
-                break;
-            default:
-                break;
+            window.close();
         }
+
+        player_1.handle_realtime_input(world.commands());
     }
 }
-
-void game::handle_player_input(
-    sf::Keyboard::Key const key,
-    bool const is_pressed)
-{}
 
 void game::update_statistics(
     sf::Time const& dt)
@@ -86,13 +78,13 @@ void game::update_statistics(
 void game::update(
     sf::Time const& dt)
 {
-    world_.update(dt);
+    world.update(dt);
 }
 
 void game::render()
 {
     window.clear();
-    world_.draw();
+    world.draw();
     
     window.setView(window.getDefaultView());
     window.draw(statistics_text);

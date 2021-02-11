@@ -1,5 +1,6 @@
 #pragma once
 
+#include "player.h"
 #include "resources.h"
 #include "world.h"
 
@@ -14,11 +15,7 @@ public:
     void run();
 
 private:
-    void process_events();
-    
-    void handle_player_input(
-        sf::Keyboard::Key const key,
-        bool const is_pressed);
+    void process_input();
 
     void update_statistics(
         sf::Time const& dt);
@@ -29,7 +26,8 @@ private:
     void render();
 
     sf::RenderWindow window;
-    world world_;
+    world_t world;
+    player_t player_1;
 
     sf::Time const time_per_frame = sf::seconds(1.f / 60.f);
 

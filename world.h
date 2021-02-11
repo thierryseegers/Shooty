@@ -1,6 +1,7 @@
 #pragma once
 
 #include "aircraft.h"
+#include "command.h"
 #include "resources.h"
 #include "scene.h"
 
@@ -8,14 +9,16 @@
 
 #include <array>
 
-class world
+class world_t
 {
 public:
-    explicit world(
+    explicit world_t(
         sf::RenderWindow& window);
 
     void update(sf::Time const dt);
     void draw() const;
+
+    commands_t& commands();
 
 private:
     void load_textures();
@@ -33,12 +36,14 @@ private:
 
     resources::textures textures;
     
-    scene::node graph;
+    scene::node_t graph;
     scene::layers<layer::count> layers;
+
+    commands_t commands_;
 
     sf::FloatRect const bounds;
     sf::Vector2f const spawn_position;
     float scroll_speed;
     
-    aircraft* player;
+    aircraft_t* player;
 };

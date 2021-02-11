@@ -12,10 +12,13 @@ find_package(SFML 2.5
 add_executable(Shooty
     aircraft.cpp
     aircraft.h
+    command.h
     entity.h
     game.cpp
     game.h
     main.cpp
+    player.cpp
+    player.h
     resources.h
     scene.cpp
     scene.h

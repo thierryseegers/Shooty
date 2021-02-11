@@ -6,9 +6,11 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <array>
+#include <cmath>
 #include <memory>
 
-world::world(
+world_t::world_t(
     sf::RenderWindow& window)
     : window{window}
     , view{window.getDefaultView()}
@@ -23,19 +25,19 @@ world::world(
     view.setCenter(spawn_position);
 }
 
-void world::load_textures()
+void world_t::load_textures()
 {
-    textures.load(resources::texture::desert, "Book/03_World/Media/Textures/Desert.png");
-    textures.load(resources::texture::eagle, "Book/03_World/Media/Textures/Eagle.png");
-    textures.load(resources::texture::raptor, "Book/03_World/Media/Textures/Raptor.png");
+    textures.load(resources::texture::desert, "Book/04_Input/Media/Textures/Desert.png");
+    textures.load(resources::texture::eagle, "Book/04_Input/Media/Textures/Eagle.png");
+    textures.load(resources::texture::raptor, "Book/04_Input/Media/Textures/Raptor.png");
 }
 
-void world::build_scene()
+void world_t::build_scene()
 {
     // Create layers.
     for(std::size_t i = 0; i != layer::count; ++i)
     {
-        auto layer = std::make_unique<scene::node>();
+        auto layer = std::make_unique<scene::node_t>();
         layers[i] = layer.get();
 
         graph.attach(std::move(layer));
@@ -46,47 +48,71 @@ void world::build_scene()
     background_texture.setRepeated(true);
     sf::IntRect background_rect{bounds};
 
-    auto background_sprite = std::make_unique<scene::sprite>(background_texture, background_rect);
+    auto background_sprite = std::make_unique<scene::sprite_t>(background_texture, background_rect);
     background_sprite->setPosition(bounds.left, bounds.top);
     layers[layer::background]->attach(std::move(background_sprite));
 
     // Create leader aircraft and move to `layers`.
-    auto leader = std::make_unique<aircraft>(aircraft::type::eagle, textures.get(resources::texture::eagle));
+    auto leader = std::make_unique<leader_t>(aircraft_t::type::eagle, textures.get(resources::texture::eagle));
     player = leader.get();
-    player->scene::sprite::setPosition(spawn_position);
-    player->velocity = {40.f, scroll_speed};
+    player->scene::sprite_t::setPosition(spawn_position);
     layers[layer::air]->attach(std::move(leader));
 
     // Create left and right escorts and attach to `leader`.
-    auto left_escort = std::make_unique<aircraft>(aircraft::type::raptor, textures.get(resources::texture::raptor));
-    left_escort->scene::sprite::setPosition(-80.f, 50.f);
-    player->scene::sprite::attach(std::move(left_escort));
+    auto left_escort = std::make_unique<aircraft_t>(aircraft_t::type::raptor, textures.get(resources::texture::raptor));
+    left_escort->scene::sprite_t::setPosition(-80.f, 50.f);
+    player->scene::sprite_t::attach(std::move(left_escort));
 
-    auto right_escort = std::make_unique<aircraft>(aircraft::type::raptor, textures.get(resources::texture::raptor));
-    right_escort->scene::sprite::setPosition(80.f, 50.f);
-    player->scene::sprite::attach(std::move(right_escort));
+    auto right_escort = std::make_unique<aircraft_t>(aircraft_t::type::raptor, textures.get(resources::texture::raptor));
+    right_escort->scene::sprite_t::setPosition(80.f, 50.f);
+    player->scene::sprite_t::attach(std::move(right_escort));
 }
 
-void world::update(
+void world_t::update(
     sf::Time const dt)
 {
     // Scroll the view.
     view.move(0.f, scroll_speed * dt.asSeconds());
 
-    // "Bounce" the planes if they get too close to the edge.
-    auto const position = player->scene::sprite::getPosition();
-    if(position.x <= bounds.left + 150 ||
-       position.x >= bounds.left + bounds.width - 150)
+    // Reset player velocity.
+    player->velocity = {0.f, 0.f};
+
+    // Dispatch commands.
+    while(!commands_.empty())
     {
-        player->velocity.x = -player->velocity.x;
+        graph.on_command(commands_.front(), dt);
+        commands_.pop();
     }
+
+    // Adjust player velocity if it is flying diagonally.
+    auto const velocity = player->velocity;
+    if(velocity.x != 0.f && velocity.y != 0.f)
+    {
+        player->velocity /= std::sqrt(2.f);
+    }
+    player->velocity += {0.f, scroll_speed};
 
     // Update the entire graph.
     graph.update(dt);
+
+    // Prevent the player from going off-screen.
+    sf::FloatRect const bounds{view.getCenter() - view.getSize() / 2.f, view.getSize()};
+    float const border_distance = 40.f;
+
+    auto position = player->getPosition();
+    position.x = std::clamp(position.x, bounds.left + border_distance, bounds.left + bounds.width - border_distance);
+    position.y = std::clamp(position.y, bounds.top + border_distance, bounds.top + bounds.height - border_distance);
+
+    player->setPosition(position);
 }
 
-void world::draw() const
+void world_t::draw() const
 {
     window.setView(view);
     window.draw(graph);
+}
+
+commands_t& world_t::commands()
+{
+    return commands_;
 }

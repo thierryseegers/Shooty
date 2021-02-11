@@ -1,5 +1,7 @@
 #pragma once
 
+#include "command.h"
+
 #include <SFML/Graphics.hpp>
 
 #include <array>
@@ -9,13 +11,13 @@
 namespace scene
 {
 
-class node : public sf::Transformable, public sf::Drawable, private sf::NonCopyable
+class node_t : public sf::Transformable, public sf::Drawable, private sf::NonCopyable
 {
 public:
     void attach(
-        std::unique_ptr<node> child);
-    std::unique_ptr<node> detach(
-        node const& node_);
+        std::unique_ptr<node_t> child);
+    std::unique_ptr<node_t> detach(
+        node_t const& node);
 
     virtual void draw(
         sf::RenderTarget& target,
@@ -27,6 +29,10 @@ public:
     void update(
         sf::Time const dt);
 
+    void on_command(
+        command_t const& command,
+        sf::Time const dt);
+
 private:
     virtual void draw_self(
         sf::RenderTarget& target,
@@ -35,24 +41,24 @@ private:
     virtual void update_self(
         sf::Time const dt);
 
-    std::vector<std::unique_ptr<node>> children;
-    node *parent;
+    std::vector<std::unique_ptr<node_t>> children;
+    node_t *parent;
 };
 
 template<size_t Count>
-using layers = std::array<scene::node*, Count>;
+using layers = std::array<scene::node_t*, Count>;
 
-class sprite : public virtual node
+class sprite_t : public virtual node_t
 {
 public:
-    explicit sprite(
+    explicit sprite_t(
         sf::Texture const& texture);
-    sprite(
+    sprite_t(
         sf::Texture const& texture,
         sf::IntRect const& rect);
 
 protected:
-    sf::Sprite sprite_;
+    sf::Sprite sprite;
 
 private:
     virtual void draw_self(

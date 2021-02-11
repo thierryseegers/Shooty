@@ -5,7 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 
-class aircraft : public entity, public scene::sprite
+class aircraft_t : public entity, public scene::sprite_t
 {
 public:
     enum class type
@@ -14,10 +14,15 @@ public:
         raptor
     };
 
-    explicit aircraft(
+    explicit aircraft_t(
         type const type_,
         sf::Texture const& texture);
 
-private:
+protected:
     type type_;
+};
+
+struct leader_t : public aircraft_t
+{
+    using aircraft_t::aircraft_t;
 };
