@@ -24,6 +24,8 @@ add_executable(Shooty
     scene.h
     state.cpp
     state.h
+    utility.cpp
+    utility.h
     world.cpp
     world.h
 )

@@ -32,13 +32,13 @@ public:
     struct context_t
     {
         sf::RenderWindow& window;
-        resources::textures& textures;
         resources::fonts& fonts;
+        resources::textures& textures;
         player_t& player;
     } context;
 
     explicit states_t(
-        states_t::context_t& context);
+        states_t::context_t context);
 
     template<class State>
     void register_state(
@@ -86,8 +86,31 @@ public:
     virtual bool update(sf::Time const& dt) = 0;
     virtual bool handle_event(sf::Event const& event) = 0;
 
-private:
+protected:
     states_t& states;
 };
 
+namespace states
+{
 
+class title : public state_t
+{
+public:
+    title(
+        states_t& states);
+
+    virtual void draw() override;
+    virtual bool update(
+        sf::Time const& dt) override;
+    virtual bool handle_event(
+        sf::Event const& event) override;
+
+private:
+    sf::Sprite background;
+    sf::Text text;
+
+    bool show_text;
+    sf::Time blink_delay;
+};
+
+}

@@ -10,15 +10,24 @@
 
 game::game()
     : window{sf::VideoMode(640, 480), "Shooty", sf::Style::Close}
-    , world{window}
+    , states{{window, fonts, textures, player_1}}
     , statistics_num_frames{0}
 {
     window.setKeyRepeatEnabled(false);
 
-    statistics_font.loadFromFile("Book/05_States/Media/Sansation.ttf");
-    statistics_text.setFont(statistics_font);
+    fonts.load(resources::font::main, "Book/05_States/Media/Sansation.ttf");
+    textures.load(resources::texture::title_screen, "Book/05_States/Media/Textures/TitleScreen.png");
+
+    statistics_text.setFont(fonts.get(resources::font::main));
     statistics_text.setPosition(5.f, 5.f);
     statistics_text.setCharacterSize(24);
+
+    states.register_state<states::title>(state::id::title);
+	// states.register_state<states::menu>(state::id::::menu);
+	// states.register_state<states::game>(state::id::::game);
+	// states.register_state<states::pause>(state::id::::pause);
+
+    states.request_push(state::id::title);
 }
 
 void game::run()
@@ -35,6 +44,12 @@ void game::run()
             last_update -= time_per_frame;
             process_input();
             update(time_per_frame);
+
+            // Check inside this loop, because stack might be empty before update() call
+            if(states.empty())
+            {
+                window.close();
+            }
         }
 
         update_statistics(elapsed_time);
@@ -47,15 +62,13 @@ void game::process_input()
     sf::Event event;
     while(window.pollEvent(event))
     {
-        player_1.handle_event(event, world.commands());
+        states.handle_event(event);
 
         if(event.type == sf::Event::Closed)
         {
             window.close();
         }
     }
-
-    player_1.handle_realtime_input(world.commands());
 }
 
 void game::update_statistics(
@@ -78,13 +91,13 @@ void game::update_statistics(
 void game::update(
     sf::Time const& dt)
 {
-    world.update(dt);
+    states.update(dt);
 }
 
 void game::render()
 {
     window.clear();
-    world.draw();
+    states.draw();
     
     window.setView(window.getDefaultView());
     window.draw(statistics_text);

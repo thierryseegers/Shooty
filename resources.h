@@ -10,12 +10,18 @@
 namespace resources
 {
 
+enum class font
+{
+    main,
+};
+
 enum class texture
 {
     eagle,
     desert,
     missile,
     raptor,
+    title_screen
 };
 
 template<typename Type, class Resource>
@@ -71,7 +77,7 @@ private:
     std::map<Type, std::unique_ptr<Resource>> resources;
 };
 
-using fonts = holder<texture, sf::Font>;
+using fonts = holder<font, sf::Font>;
 using textures = holder<texture, sf::Texture>;
 
 }

@@ -1,4 +1,5 @@
 #include "state.h"
+#include "utility.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -10,11 +11,12 @@
 #include <stack>
 
 states_t::states_t(
-    states_t::context_t& context)
+    states_t::context_t context)
     : context{context}
 {}
 
-void states_t::update(sf::Time const& dt)
+void states_t::update(
+    sf::Time const& dt)
 {
     for (auto i = states.rbegin(); i != states.rend() && (*i)->update(dt); ++i)
     {}
@@ -30,7 +32,8 @@ void states_t::draw()
     }
 }
 
-void states_t::handle_event(sf::Event const& event)
+void states_t::handle_event(
+    sf::Event const& event)
 {
     for(auto i = states.rbegin(); i != states.rend() && (*i)->handle_event(event); ++i)
     {}
@@ -38,7 +41,8 @@ void states_t::handle_event(sf::Event const& event)
     apply_pending_requests();
 }
 
-void states_t::request_push(state::id const id)
+void states_t::request_push(
+    state::id const id)
 {
     pending_requests.push([=]()
     {
@@ -76,3 +80,58 @@ void states_t::apply_pending_requests()
     }
 }
 
+namespace states
+{
+
+title::title(
+    states_t& states)
+    : state_t(states)
+    , show_text(true)
+    , blink_delay(sf::Time::Zero)
+{
+    background.setTexture(states.context.textures.get(resources::texture::title_screen));
+
+    text.setFont(states.context.fonts.get(resources::font::main));
+    text.setString("Press any key to start");
+    center_origin(text);
+    text.setPosition(states.context.window.getView().getSize() / 2.f);
+}
+
+void title::draw()
+{
+    auto& window = states.context.window;
+    window.draw(background);
+
+    if(show_text)
+    {
+        window.draw(text);
+    }
+}
+
+bool title::update(
+    sf::Time const& dt)
+{
+    blink_delay += dt;
+
+    if(blink_delay >= sf::seconds(0.5f))
+    {
+        show_text = !show_text;
+        blink_delay = sf::Time::Zero;
+    }
+
+    return true;
+}
+
+bool title::handle_event(
+    sf::Event const& event)
+{
+    if(event.type == sf::Event::KeyPressed)
+    {
+        states.request_pop();
+        states.request_push(state::id::menu);
+    }
+
+    return true;
+}
+
+}

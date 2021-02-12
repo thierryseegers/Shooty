@@ -2,7 +2,7 @@
 
 #include "player.h"
 #include "resources.h"
-#include "world.h"
+#include "state.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -26,13 +26,15 @@ private:
     void render();
 
     sf::RenderWindow window;
-    world_t world;
+    resources::fonts fonts;
+    resources::textures textures;
     player_t player_1;
 
-    sf::Time const time_per_frame = sf::seconds(1.f / 60.f);
+    states_t states;
 
-    sf::Font statistics_font;
     sf::Text statistics_text;
     sf::Time statistics_update_time;
     std::size_t statistics_num_frames;
+
+    sf::Time const time_per_frame = sf::seconds(1.f / 60.f);
 };
