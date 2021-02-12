@@ -15,7 +15,7 @@ game::game()
 {
     window.setKeyRepeatEnabled(false);
 
-    statistics_font.loadFromFile("Book/04_Input/Media/Sansation.ttf");
+    statistics_font.loadFromFile("Book/05_States/Media/Sansation.ttf");
     statistics_text.setFont(statistics_font);
     statistics_text.setPosition(5.f, 5.f);
     statistics_text.setCharacterSize(24);

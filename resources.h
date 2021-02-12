@@ -71,6 +71,7 @@ private:
     std::map<Type, std::unique_ptr<Resource>> resources;
 };
 
+using fonts = holder<texture, sf::Font>;
 using textures = holder<texture, sf::Texture>;
 
 }
