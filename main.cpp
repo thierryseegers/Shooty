@@ -1,4 +1,4 @@
-#include "game.h"
+#include "application.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -7,8 +7,8 @@ int main(int, char**)
 {
     try
     {
-        game g;
-        g.run();
+        application a;
+        a.run();
     }
     catch(std::exception const& e)
     {

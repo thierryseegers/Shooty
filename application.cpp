@@ -1,4 +1,4 @@
-#include "game.h"
+#include "application.h"
 
 #include "resources.h"
 
@@ -8,7 +8,7 @@
 #include <filesystem>
 #include <stdexcept>
 
-game::game()
+application::application()
     : window{sf::VideoMode(640, 480), "Shooty", sf::Style::Close}
     , states{{window, fonts, textures, player_1}}
     , statistics_num_frames{0}
@@ -23,14 +23,14 @@ game::game()
     statistics_text.setCharacterSize(24);
 
     states.register_state<states::title>(state::id::title);
-	// states.register_state<states::menu>(state::id::::menu);
-	// states.register_state<states::game>(state::id::::game);
-	// states.register_state<states::pause>(state::id::::pause);
+	states.register_state<states::menu>(state::id::menu);
+	states.register_state<states::game>(state::id::game);
+	states.register_state<states::pause>(state::id::pause);
 
     states.request_push(state::id::title);
 }
 
-void game::run()
+void application::run()
 {
     sf::Clock clock;
     sf::Time last_update = sf::Time::Zero;
@@ -57,7 +57,7 @@ void game::run()
     }
 }
 
-void game::process_input()
+void application::process_input()
 {
     sf::Event event;
     while(window.pollEvent(event))
@@ -71,7 +71,7 @@ void game::process_input()
     }
 }
 
-void game::update_statistics(
+void application::update_statistics(
     sf::Time const& dt)
 {
     statistics_update_time += dt;
@@ -88,17 +88,17 @@ void game::update_statistics(
     }
 }
 
-void game::update(
+void application::update(
     sf::Time const& dt)
 {
     states.update(dt);
 }
 
-void game::render()
+void application::render()
 {
     window.clear();
     states.draw();
-    
+
     window.setView(window.getDefaultView());
     window.draw(statistics_text);
     window.display();

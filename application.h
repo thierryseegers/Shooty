@@ -7,10 +7,10 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-class game
+class application
 {
 public:
-    game();
+    application();
 
     void run();
 

@@ -2,6 +2,7 @@
 
 #include "player.h"
 #include "resources.h"
+#include "world.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -10,6 +11,7 @@
 #include <functional>
 #include <map>
 #include <stack>
+#include <vector>
 
 namespace state
 {
@@ -67,7 +69,7 @@ private:
     void apply_pending_requests();
     
     std::deque<std::unique_ptr<state_t>> states;
-    std::stack<std::function<void ()>> pending_requests;
+    std::deque<std::function<void ()>> pending_requests;
 
     std::map<state::id, std::function<std::unique_ptr<state_t> ()>> factory;
 };
@@ -111,6 +113,65 @@ private:
 
     bool show_text;
     sf::Time blink_delay;
+};
+
+class menu : public state_t
+{
+public:
+    menu(
+        states_t& states);
+
+    virtual void draw() override;
+    virtual bool update(
+        sf::Time const& dt) override;
+    virtual bool handle_event(
+        sf::Event const& event) override;
+
+private:
+    struct option
+    {
+        sf::Text text;
+        std::function<void ()> activate;
+    };
+
+    void update_options();
+
+    sf::Sprite background;
+    
+    std::vector<option> options;    // First option is the selected option.
+};
+
+class game : public state_t
+{
+public:
+    game(
+        states_t& states);
+
+    virtual void draw() override;
+    virtual bool update(
+        sf::Time const& dt) override;
+    virtual bool handle_event(
+        sf::Event const& event) override;
+
+private:
+    world_t world;
+};
+
+class pause : public state_t
+{
+public:
+    pause(
+        states_t& states);
+
+    virtual void draw() override;
+    virtual bool update(
+        sf::Time const& dt) override;
+    virtual bool handle_event(
+        sf::Event const& event) override;
+
+private:
+    sf::Text word;
+    sf::Text instructions;
 };
 
 }
