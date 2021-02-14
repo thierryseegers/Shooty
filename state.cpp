@@ -97,7 +97,7 @@ title::title(
 
     text.setFont(states.context.fonts.get(resources::font::main));
     text.setString("Press any key to start");
-    center_origin(text);
+    utility::center_origin(text);
     text.setPosition(states.context.window.getView().getSize() / 2.f);
 }
 
@@ -147,13 +147,13 @@ menu::menu(
     sf::Text play_text;
     play_text.setFont(states.context.fonts.get(resources::font::main));
     play_text.setString("Play");
-    center_origin(play_text);
+    utility::center_origin(play_text);
     play_text.setPosition(states.context.window.getView().getSize() / 2.f);
 
     sf::Text exit_text;
     exit_text.setFont(states.context.fonts.get(resources::font::main));
     exit_text.setString("Exit");
-    center_origin(exit_text);
+    utility::center_origin(exit_text);
     exit_text.setPosition(play_text.getPosition() + sf::Vector2f{0.f, 30.f});
 
     options.push_back(option{play_text, [&]()
@@ -200,10 +200,12 @@ bool menu::handle_event(
         options.begin()->activate();
         break;
     case sf::Keyboard::Up:
+        // Rotate down so the previous option becomes selected.
         std::rotate(options.rbegin(), options.rbegin() + 1, options.rend());
         update_options();
         break;
     case sf::Keyboard::Down:
+        // Rotate up so the next option becomes selected.
         std::rotate(options.begin(), options.begin() + 1, options.end());
         update_options();
         break;
@@ -276,12 +278,12 @@ pause::pause(
     word.setFont(states.context.fonts.get(resources::font::main));
     word.setString("Game Paused");	
     word.setCharacterSize(70);
-    center_origin(word);
+    utility::center_origin(word);
     word.setPosition(0.5f * view_size.x, 0.4f * view_size.y);
 
     instructions.setFont(states.context.fonts.get(resources::font::main));
     instructions.setString("(Press Backspace to return to the main menu)");	
-    center_origin(instructions);
+    utility::center_origin(instructions);
     instructions.setPosition(0.5f * view_size.x, 0.6f * view_size.y);
 }
 

@@ -16,6 +16,14 @@ add_executable(Shooty
     application.h
     command.h
     entity.h
+    gui/button.cpp
+    gui/button.h
+    gui/component.cpp
+    gui/component.h
+    gui/container.cpp
+    gui/container.h
+    gui/label.cpp
+    gui/label.h
     main.cpp
     player.cpp
     player.h
@@ -31,6 +39,7 @@ add_executable(Shooty
 )
 
 target_include_directories(Shooty
+    PRIVATE ${CMAKE_SOURCE_DIR}
     PRIVATE /usr/local/include
 )
 

@@ -12,16 +12,20 @@ namespace resources
 
 enum class font
 {
+    label,
     main,
 };
 
 enum class texture
 {
-    eagle,
     desert,
+    eagle,
     missile,
+    normal,
+    pressed,
     raptor,
-    title_screen
+    selected,
+    title_screen,
 };
 
 template<typename Type, class Resource>
