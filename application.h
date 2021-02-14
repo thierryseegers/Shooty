@@ -2,7 +2,7 @@
 
 #include "player.h"
 #include "resources.h"
-#include "state.h"
+#include "state/state.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -30,7 +30,7 @@ private:
     resources::textures textures;
     player_t player_1;
 
-    states_t states;
+    state::stack states;
 
     sf::Text statistics_text;
     sf::Time statistics_update_time;

@@ -30,8 +30,18 @@ add_executable(Shooty
     resources.h
     scene.cpp
     scene.h
-    state.cpp
-    state.h
+    state/game.cpp
+    state/game.h
+    state/menu.cpp
+    state/menu.h
+    state/pause.cpp
+    state/pause.h
+    state/stack.cpp
+    state/stack.h
+    state/state.cpp
+    state/state.h
+    state/title.cpp
+    state/title.h
     utility.cpp
     utility.h
     world.cpp

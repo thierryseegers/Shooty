@@ -18,13 +18,13 @@ enum class font
 
 enum class texture
 {
+    button_normal, 
+    button_pressed,
+    button_selected,
     desert,
     eagle,
     missile,
-    normal,
-    pressed,
     raptor,
-    selected,
     title_screen,
 };
 

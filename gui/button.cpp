@@ -9,9 +9,9 @@ namespace gui
 button::button(
     resources::fonts const& fonts,
     resources::textures const& textures)
-    : normal{textures.get(resources::texture::normal)}
-    , selected{textures.get(resources::texture::selected)}
-    , pressed{textures.get(resources::texture::pressed)}
+    : normal{textures.get(resources::texture::button_normal)}
+    , selected{textures.get(resources::texture::button_selected)}
+    , pressed{textures.get(resources::texture::button_pressed)}
     , text{sf::Text{"", fonts.get(resources::font::main), 16}}
     , toggle{false}
 {
@@ -56,7 +56,6 @@ void button::activate()
     {
         deactivate();
     }
-
 }
 
 void button::deactivate()
@@ -78,8 +77,8 @@ void button::draw(
     sf::RenderStates states) const
 {
     states.transform *= getTransform();
-    target.draw(sprite);
-    target.draw(text.text_);
+    target.draw(sprite, states);
+    target.draw(text.text_, states);
 }
 
 }

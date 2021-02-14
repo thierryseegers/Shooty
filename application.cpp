@@ -1,6 +1,11 @@
 #include "application.h"
 
 #include "resources.h"
+#include "state/game.h"
+#include "state/id.h"
+#include "state/menu.h"
+#include "state/pause.h"
+#include "state/title.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -15,17 +20,20 @@ application::application()
 {
     window.setKeyRepeatEnabled(false);
 
-    fonts.load(resources::font::main, "Book/05_States/Media/Sansation.ttf");
-    textures.load(resources::texture::title_screen, "Book/05_States/Media/Textures/TitleScreen.png");
+    fonts.load(resources::font::main, "Book/06_Menus/Media/Sansation.ttf");
+    textures.load(resources::texture::title_screen, "Book/06_Menus/Media/Textures/TitleScreen.png");
+	textures.load(resources::texture::button_normal, "Book/06_Menus/Media/Textures/ButtonNormal.png");
+	textures.load(resources::texture::button_selected, "Book/06_Menus/Media/Textures/ButtonSelected.png");
+	textures.load(resources::texture::button_pressed, "Book/06_Menus/Media/Textures/ButtonPressed.png");
 
     statistics_text.setFont(fonts.get(resources::font::main));
     statistics_text.setPosition(5.f, 5.f);
     statistics_text.setCharacterSize(24);
 
-    states.register_state<states::title>(state::id::title);
-	states.register_state<states::menu>(state::id::menu);
-	states.register_state<states::game>(state::id::game);
-	states.register_state<states::pause>(state::id::pause);
+    states.register_state<state::title>(state::id::title);
+	states.register_state<state::menu>(state::id::menu);
+	states.register_state<state::game>(state::id::game);
+	states.register_state<state::pause>(state::id::pause);
 
     states.request_push(state::id::title);
 }

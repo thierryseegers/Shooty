@@ -27,9 +27,9 @@ world_t::world_t(
 
 void world_t::load_textures()
 {
-    textures.load(resources::texture::desert, "Book/05_States/Media/Textures/Desert.png");
-    textures.load(resources::texture::eagle, "Book/05_States/Media/Textures/Eagle.png");
-    textures.load(resources::texture::raptor, "Book/05_States/Media/Textures/Raptor.png");
+    textures.load(resources::texture::desert, "Book/06_Menus/Media/Textures/Desert.png");
+    textures.load(resources::texture::eagle, "Book/06_Menus/Media/Textures/Eagle.png");
+    textures.load(resources::texture::raptor, "Book/06_Menus/Media/Textures/Raptor.png");
 }
 
 void world_t::build_scene()

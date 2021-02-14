@@ -1,0 +1,65 @@
+#include "state/menu.h"
+
+#include "gui/button.h"
+#include "resources.h"
+#include "state/stack.h"
+#include "utility.h"
+
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+
+#include <memory>
+
+namespace state
+{
+
+menu::menu(
+    stack& states)
+    : state{states}
+{
+    background.setTexture(states.context.textures.get(resources::texture::title_screen));
+
+    auto play = std::make_shared<gui::button>(states.context.fonts, states.context.textures);
+    play->setPosition(100, 250);
+    play->text = "Play";
+    play->click = [this]()
+    {
+        state::states.request_pop();
+        state::states.request_push(id::game);
+    };
+    container.pack(play);
+
+    auto exit = std::make_shared<gui::button>(states.context.fonts, states.context.textures);
+    exit->setPosition(100, 300);
+    exit->text = "Exit";
+    exit->click = [this]()
+    {
+        state::states.request_clear();
+    };
+    container.pack(exit);
+}
+
+void menu::draw()
+{
+    auto& window = states.context.window;
+
+    window.setView(window.getDefaultView());
+
+    window.draw(background);
+    window.draw(container);
+}
+
+bool menu::update(
+    sf::Time const&)
+{
+    return true;
+}
+
+bool menu::handle_event(
+    sf::Event const& event)
+{
+    container.handle_event(event);
+    return false;
+}
+
+}

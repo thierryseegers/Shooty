@@ -41,7 +41,7 @@ private:
 
 private:
     children_t children;
-    children_t::iterator selected = children.end();
+    int selected = -1;
 };
 
 }

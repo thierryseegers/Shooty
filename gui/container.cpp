@@ -16,11 +16,11 @@ void container::pack(
     std::shared_ptr<component> component)
 {
     children.push_back(component);
-    if(selected == children.end() &&
+    if(selected == -1 &&
        component->selectable())
     {
         component->select();
-        selected = children.rbegin().base();
+        selected = children.size() - 1;
     }
 }
 
@@ -32,12 +32,12 @@ bool container::selectable() const
 void container::handle_event(
     sf::Event const& event)
 {
-    if(selected != children.end() &&
-       (*selected)->active())
+    if(selected != -1 &&
+       children[selected]->active())
     {
-        (*selected)->handle_event(event);
+        children[selected]->handle_event(event);
     }
-    else if(event.type == sf::Event::KeyReleased)
+    else if(event.type == sf::Event::KeyPressed)
     {
         if(event.key.code == sf::Keyboard::W ||
            event.key.code == sf::Keyboard::Up)
@@ -47,12 +47,12 @@ void container::handle_event(
         else if(event.key.code == sf::Keyboard::S ||
                 event.key.code == sf::Keyboard::Down)
         {
-            select(direction::previous);
+            select(direction::next);
         }
         else if(event.key.code == sf::Keyboard::Return ||
                 event.key.code == sf::Keyboard::Space)
         {
-            (*selected)->activate();
+            children[selected]->activate();
         }
     }
 }
@@ -72,30 +72,34 @@ void container::draw(
 void container::select(
     direction const d)
 {
-    if(selected != children.end())
+    if(selected == -1)
     {
         return;
     }
 
-    (*selected)->deselect();
+    children[selected]->deselect();
 
-    auto s = utility::cyclical_iterator(children, selected);
+    auto s = utility::cyclical_iterator(children, children.begin() + selected);
     if(d == direction::next)
     {
-        selected = std::find_if(
-            std::next(s),
-            s,
-            std::mem_fn(&component::selectable)).base();
+        selected = std::distance(
+            children.begin(),
+            std::find_if(
+                std::next(s),
+                s,
+                std::mem_fn(&component::selectable)).base());
     }
     else
     {
-        selected = std::find_if(
-            std::make_reverse_iterator(std::prev(s)),
-            std::make_reverse_iterator(s),
-            std::mem_fn(&component::selectable)).base().base();
+        selected = std::distance(
+            children.begin(),
+            std::find_if(
+                std::make_reverse_iterator(std::prev(s)),
+                std::make_reverse_iterator(s),
+                std::mem_fn(&component::selectable)).base().base());
     }
 
-    (*selected)->select();
+    children[selected]->select();
 }
 
 }

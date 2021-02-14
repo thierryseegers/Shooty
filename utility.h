@@ -44,7 +44,7 @@ struct cyclical_iterator
     
     cyclical_iterator& operator++()
     {
-        if(i == container.end())
+        if(i == std::prev(container.end()))
         {
             i = container.begin();
         }
@@ -67,7 +67,7 @@ struct cyclical_iterator
     {
         if(i == container.begin())
         {
-            i = container.rbegin().base();
+            i = std::prev(container.end());
         }
         else
         {
