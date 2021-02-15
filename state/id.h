@@ -10,6 +10,7 @@ enum class id
     menu,
     none,
     pause,
+    settings,
     title,
 };
 

@@ -36,6 +36,8 @@ add_executable(Shooty
     state/menu.h
     state/pause.cpp
     state/pause.h
+    state/settings.cpp
+    state/settings.h
     state/stack.cpp
     state/stack.h
     state/state.cpp

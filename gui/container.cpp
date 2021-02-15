@@ -37,7 +37,7 @@ void container::handle_event(
     {
         children[selected]->handle_event(event);
     }
-    else if(event.type == sf::Event::KeyPressed)
+    else if(event.type == sf::Event::KeyReleased)
     {
         if(event.key.code == sf::Keyboard::W ||
            event.key.code == sf::Keyboard::Up)
@@ -49,7 +49,8 @@ void container::handle_event(
         {
             select(direction::next);
         }
-        else if(event.key.code == sf::Keyboard::Return ||
+        else if(selected != -1 &&
+                event.key.code == sf::Keyboard::Return ||
                 event.key.code == sf::Keyboard::Space)
         {
             children[selected]->activate();
@@ -93,10 +94,10 @@ void container::select(
     {
         selected = std::distance(
             children.begin(),
-            std::find_if(
-                std::make_reverse_iterator(std::prev(s)),
+            std::next(std::find_if(
                 std::make_reverse_iterator(s),
-                std::mem_fn(&component::selectable)).base().base());
+                std::make_reverse_iterator(std::next(s)),
+                std::mem_fn(&component::selectable))).base().base());
     }
 
     children[selected]->select();

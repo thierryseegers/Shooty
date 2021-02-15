@@ -15,8 +15,6 @@ player_t::player_t()
     bind_key(sf::Keyboard::Right, action::move_right);
     bind_key(sf::Keyboard::Up, action::move_up);
 
-    bind_key(sf::Keyboard::P, action::print_position);
-
     float const speed = 200.f;
 
     action_bindings[action::move_down] = make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
@@ -35,31 +33,26 @@ player_t::player_t()
         {
             aircraft.velocity += {0.f, -speed};
         });
-
-    action_bindings[action::print_position] = make_command<leader_t>([](aircraft_t& aircraft, sf::Time const&)
-        {
-            std::cout << aircraft.getPosition().x << ',' << aircraft.getPosition().y << "\n";
-        });
 }
 
 void player_t::bind_key(
     sf::Keyboard::Key const key,
     action const what)
 {
-    if(key == sf::Keyboard::Unknown)
+    // Remove all keys that already map to the action.
+    for(auto i = key_bindings.begin(); i != key_bindings.end();)
     {
-        for(auto const [key, a] : key_bindings)
+        if(what == i->second)
         {
-            if(a == what)
-            {
-                key_bindings.erase(key);
-            }
+            key_bindings.erase(i++);
+        }
+        else
+        {
+            ++i;
         }
     }
-    else
-    {
-        key_bindings[key] = what;
-    }
+
+    key_bindings[key] = what;
 }
 
 sf::Keyboard::Key player_t::bound_key(

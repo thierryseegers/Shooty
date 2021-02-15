@@ -5,6 +5,7 @@
 #include "state/id.h"
 #include "state/menu.h"
 #include "state/pause.h"
+#include "state/settings.h"
 #include "state/title.h"
 
 #include <SFML/Graphics.hpp>
@@ -21,6 +22,8 @@ application::application()
     window.setKeyRepeatEnabled(false);
 
     fonts.load(resources::font::main, "Book/06_Menus/Media/Sansation.ttf");
+    fonts.load(resources::font::label, "Book/06_Menus/Media/Sansation.ttf");
+    
     textures.load(resources::texture::title_screen, "Book/06_Menus/Media/Textures/TitleScreen.png");
 	textures.load(resources::texture::button_normal, "Book/06_Menus/Media/Textures/ButtonNormal.png");
 	textures.load(resources::texture::button_selected, "Book/06_Menus/Media/Textures/ButtonSelected.png");
@@ -34,6 +37,7 @@ application::application()
 	states.register_state<state::menu>(state::id::menu);
 	states.register_state<state::game>(state::id::game);
 	states.register_state<state::pause>(state::id::pause);
+    states.register_state<state::settings>(state::id::settings);
 
     states.request_push(state::id::title);
 }

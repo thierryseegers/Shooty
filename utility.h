@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <iterator>
+#include <string>
 
 namespace utility
 {
@@ -11,6 +12,7 @@ namespace utility
 void center_origin(sf::Sprite& sprite);
 void center_origin(sf::Text& text);
 
+std::string to_string(sf::Keyboard::Key const key);
 template<class Container>
 struct cyclical_iterator 
 {

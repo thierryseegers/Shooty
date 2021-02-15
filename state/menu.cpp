@@ -29,8 +29,17 @@ menu::menu(
     };
     container.pack(play);
 
+    auto settings = std::make_shared<gui::button>(states.context.fonts, states.context.textures);
+    settings->setPosition(100, 300);
+    settings->text = "Settings";
+    settings->click = [this]()
+    {
+        state::states.request_push(id::settings);
+    };
+    container.pack(settings);
+
     auto exit = std::make_shared<gui::button>(states.context.fonts, states.context.textures);
-    exit->setPosition(100, 300);
+    exit->setPosition(100, 350);
     exit->text = "Exit";
     exit->click = [this]()
     {

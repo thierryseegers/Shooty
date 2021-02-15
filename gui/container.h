@@ -39,7 +39,6 @@ private:
     void select(
         direction const d);
 
-private:
     children_t children;
     int selected = -1;
 };

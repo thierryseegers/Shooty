@@ -9,13 +9,13 @@
 class player_t
 {
 public:
-    enum class action
+    enum action
     {
         move_down,
         move_left,
         move_right,
         move_up,
-        print_position
+        count
     };
 
     player_t();

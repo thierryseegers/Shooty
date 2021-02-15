@@ -52,7 +52,7 @@ bool title::update(
 bool title::handle_event(
     sf::Event const& event)
 {
-    if(event.type == sf::Event::KeyPressed)
+    if(event.type == sf::Event::KeyReleased)
     {
         states.request_pop();
         states.request_push(id::menu);
