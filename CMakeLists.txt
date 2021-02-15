@@ -10,12 +10,12 @@ find_package(SFML 2.5
 )
 
 add_executable(Shooty
-    aircraft.cpp
-    aircraft.h
     application.cpp
     application.h
     command.h
-    entity.h
+    entity/aircraft.cpp
+    entity/aircraft.h
+    entity/entity.h
     gui/button.cpp
     gui/button.h
     gui/component.cpp
@@ -24,6 +24,8 @@ add_executable(Shooty
     gui/container.h
     gui/label.cpp
     gui/label.h
+    lifebar.cpp
+    lifebar.h
     main.cpp
     player.cpp
     player.h

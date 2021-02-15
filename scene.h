@@ -27,11 +27,11 @@ public:
     sf::Vector2f world_positiion() const;
 
     void update(
-        sf::Time const dt);
+        sf::Time const& dt);
 
     void on_command(
         command_t const& command,
-        sf::Time const dt);
+        sf::Time const& dt);
 
 private:
     virtual void draw_self(
@@ -39,7 +39,7 @@ private:
         sf::RenderStates states) const;
 
     virtual void update_self(
-        sf::Time const dt);
+        sf::Time const& dt);
 
     std::vector<std::unique_ptr<node_t>> children;
     node_t *parent;

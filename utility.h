@@ -9,10 +9,24 @@ namespace utility
 {
 
 // Change origin of object to be its center rather than its top-left corner.
-void center_origin(sf::Sprite& sprite);
-void center_origin(sf::Text& text);
+void center_origin(
+    sf::Transformable& t);
+void center_origin(
+    sf::Text& text);
+void center_origin(
+    sf::Shape& shape);
 
-std::string to_string(sf::Keyboard::Key const key);
+// Blends two color together by a given ratio [0., 1.].
+sf::Color blend(
+    sf::Color const& a,
+    sf::Color const& b,
+    float const ratio);
+
+// Converts a keyboard key to its std::string representation.
+std::string to_string(
+    sf::Keyboard::Key const key);
+
+// An iterator that cyles forward or barckward when it reachs the end or the beginning of its container.
 template<class Container>
 struct cyclical_iterator 
 {

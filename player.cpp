@@ -1,7 +1,7 @@
 #include "player.h"
 
 #include "command.h"
-#include "aircraft.h"
+#include "entity/aircraft.h"
 
 #include <SFML/Window.hpp>
 
@@ -17,19 +17,19 @@ player_t::player_t()
 
     float const speed = 200.f;
 
-    action_bindings[action::move_down] = make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
+    action_bindings[action::move_down] = make_command<entity::leader_t>([=](entity::aircraft_t& aircraft, sf::Time const&)
         {
             aircraft.velocity += {0.f, speed};
         });
-    action_bindings[action::move_left] = make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
+    action_bindings[action::move_left] = make_command<entity::leader_t>([=](entity::aircraft_t& aircraft, sf::Time const&)
         {
             aircraft.velocity += {-speed, 0.f};
         });
-    action_bindings[action::move_right] = make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
+    action_bindings[action::move_right] = make_command<entity::leader_t>([=](entity::aircraft_t& aircraft, sf::Time const&)
         {
             aircraft.velocity += {speed, 0.f};
         });
-    action_bindings[action::move_up] = make_command<leader_t>([=](aircraft_t& aircraft, sf::Time const&)
+    action_bindings[action::move_up] = make_command<entity::leader_t>([=](entity::aircraft_t& aircraft, sf::Time const&)
         {
             aircraft.velocity += {0.f, -speed};
         });

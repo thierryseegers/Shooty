@@ -72,7 +72,7 @@ sf::Vector2f node_t::world_positiion() const
 }
 
 void node_t::update(
-    sf::Time const dt)
+    sf::Time const& dt)
 {
     update_self(dt);
 
@@ -84,7 +84,7 @@ void node_t::update(
 
 void node_t::on_command(
     command_t const& command,
-    sf::Time const dt)
+    sf::Time const& dt)
 {
     command(*this, dt);
 
@@ -95,7 +95,7 @@ void node_t::on_command(
 }
 
 void node_t::update_self(
-    sf::Time const dt)
+    sf::Time const& dt)
 {}
 
 sprite_t::sprite_t(

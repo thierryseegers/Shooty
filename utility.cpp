@@ -2,25 +2,49 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <cassert>
 #include <cmath>
 #include <string>
 
 namespace utility
 {
 
-void center_origin(sf::Sprite& sprite)
+void center_origin(
+    sf::Sprite& sprite)
 {
     auto const bounds = sprite.getLocalBounds();
     sprite.setOrigin(std::floor(bounds.left + bounds.width / 2.f), std::floor(bounds.top + bounds.height / 2.f));
 }
 
-void center_origin(sf::Text& text)
+void center_origin(
+    sf::Text& text)
 {
     auto const bounds = text.getLocalBounds();
     text.setOrigin(std::floor(bounds.left + bounds.width / 2.f), std::floor(bounds.top + bounds.height / 2.f));
 }
 
-std::string to_string(sf::Keyboard::Key const key)
+void center_origin(
+    sf::Shape& shape)
+{
+    auto const bounds = shape.getLocalBounds();
+    shape.setOrigin(std::floor(bounds.left + bounds.width / 2.f), std::floor(bounds.top + bounds.height / 2.f));
+}
+
+sf::Color blend(
+    sf::Color const& a,
+    sf::Color const& b,
+    float const ratio)
+{
+    assert(ratio >= 0. && ratio <= 1.);
+
+    return {static_cast<sf::Uint8>(a.r + (b.r - a.r) * ratio),
+            static_cast<sf::Uint8>(a.g + (b.g - a.g) * ratio),
+            static_cast<sf::Uint8>(a.b + (b.b - a.b) * ratio),
+            static_cast<sf::Uint8>(a.a + (b.a - a.a) * ratio)};
+}
+
+std::string to_string(
+    sf::Keyboard::Key const key)
 {
     #define BOOK_KEYTOSTRING_CASE(KEY) case sf::Keyboard::KEY: return #KEY;
 

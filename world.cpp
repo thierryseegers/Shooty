@@ -1,6 +1,6 @@
 #include "world.h"
 
-#include "aircraft.h"
+#include "entity/aircraft.h"
 #include "resources.h"
 #include "scene.h"
 
@@ -53,19 +53,10 @@ void world_t::build_scene()
     layers[layer::background]->attach(std::move(background_sprite));
 
     // Create leader aircraft and move to air layer.
-    auto leader = std::make_unique<leader_t>(aircraft_t::type::eagle, textures.get(resources::texture::eagle));
+    auto leader = std::make_unique<entity::leader_t>(entity::aircraft_t::type::eagle, textures.get(resources::texture::eagle));
     player = leader.get();
     player->scene::sprite_t::setPosition(spawn_position);
     layers[layer::air]->attach(std::move(leader));
-
-    // Create left and right escorts and attach to leader.
-    auto left_escort = std::make_unique<aircraft_t>(aircraft_t::type::raptor, textures.get(resources::texture::raptor));
-    left_escort->scene::sprite_t::setPosition(-80.f, 50.f);
-    player->scene::sprite_t::attach(std::move(left_escort));
-
-    auto right_escort = std::make_unique<aircraft_t>(aircraft_t::type::raptor, textures.get(resources::texture::raptor));
-    right_escort->scene::sprite_t::setPosition(80.f, 50.f);
-    player->scene::sprite_t::attach(std::move(right_escort));
 }
 
 void world_t::update(

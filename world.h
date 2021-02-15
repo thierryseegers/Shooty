@@ -1,7 +1,7 @@
 #pragma once
 
-#include "aircraft.h"
 #include "command.h"
+#include "entity/aircraft.h"
 #include "resources.h"
 #include "scene.h"
 
@@ -45,5 +45,5 @@ private:
     sf::Vector2f const spawn_position;
     float scroll_speed;
     
-    aircraft_t* player;
+    entity::aircraft_t* player;
 };
