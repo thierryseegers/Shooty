@@ -7,6 +7,7 @@
 #include "state/pause.h"
 #include "state/settings.h"
 #include "state/title.h"
+#include "tomlpp.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -21,13 +22,13 @@ application::application()
 {
     window.setKeyRepeatEnabled(false);
 
-    fonts.load(resources::font::main, "Book/06_Menus/Media/Sansation.ttf");
-    fonts.load(resources::font::label, "Book/06_Menus/Media/Sansation.ttf");
+    fonts.load(resources::font::main, "Media/Sansation.ttf");
+    fonts.load(resources::font::label, "Media/Sansation.ttf");
     
-    textures.load(resources::texture::title_screen, "Book/06_Menus/Media/Textures/TitleScreen.png");
-	textures.load(resources::texture::button_normal, "Book/06_Menus/Media/Textures/ButtonNormal.png");
-	textures.load(resources::texture::button_selected, "Book/06_Menus/Media/Textures/ButtonSelected.png");
-	textures.load(resources::texture::button_pressed, "Book/06_Menus/Media/Textures/ButtonPressed.png");
+    textures.load(resources::texture::title_screen, "Media/Textures/TitleScreen.png");
+	textures.load(resources::texture::button_normal, "Media/Textures/ButtonNormal.png");
+	textures.load(resources::texture::button_selected, "Media/Textures/ButtonSelected.png");
+	textures.load(resources::texture::button_pressed, "Media/Textures/ButtonPressed.png");
 
     statistics_text.setFont(fonts.get(resources::font::main));
     statistics_text.setPosition(5.f, 5.f);

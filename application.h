@@ -7,6 +7,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
+#include <filesystem>
+
 class application
 {
 public:

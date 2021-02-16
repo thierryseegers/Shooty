@@ -1,4 +1,5 @@
 #include "application.h"
+#include "configuration.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -7,6 +8,8 @@ int main(int, char**)
 {
     try
     {
+        configuration::initialize("./config.toml");
+
         application a;
         a.run();
     }

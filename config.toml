@@ -1,0 +1,4 @@
+[leader]
+starting_health = 100
+speed = 20
+texture = "Media/Textures/Eagle.png"

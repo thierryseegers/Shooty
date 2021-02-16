@@ -1,5 +1,6 @@
 #include "world.h"
 
+#include "configuration.h"
 #include "entity/aircraft.h"
 #include "resources.h"
 #include "scene.h"
@@ -27,9 +28,9 @@ world_t::world_t(
 
 void world_t::load_textures()
 {
-    textures.load(resources::texture::desert, "Book/06_Menus/Media/Textures/Desert.png");
-    textures.load(resources::texture::eagle, "Book/06_Menus/Media/Textures/Eagle.png");
-    textures.load(resources::texture::raptor, "Book/06_Menus/Media/Textures/Raptor.png");
+    textures.load(resources::texture::desert, "Media/Textures/Desert.png");
+    textures.load(resources::texture::eagle, *configuration::instance()["leader"]["texture"].value<std::string>());
+    textures.load(resources::texture::raptor, "Media/Textures/Raptor.png");
 }
 
 void world_t::build_scene()

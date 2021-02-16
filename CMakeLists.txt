@@ -1,11 +1,39 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(Shooty VERSION 1.0.0)
 
-include(CTest)
-enable_testing()
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+   message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+   file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+                  "${CMAKE_BINARY_DIR}/conan.cmake"
+        TLS_VERIFY ON)
+endif()
 
-find_package(SFML 2.5
-    COMPONENTS graphics audio
+include(
+    ${CMAKE_BINARY_DIR}/conan.cmake
+)
+
+list(
+    APPEND
+    CMAKE_MODULE_PATH
+    ${CMAKE_BINARY_DIR}
+)
+
+conan_cmake_run(REQUIRES
+                    tomlplusplus/2.3.0
+                    sfml/2.5.1@bincrafters/stable
+                BUILD
+                    missing
+                GENERATORS
+                    cmake_find_package
+                BASIC_SETUP
+)
+
+find_package(sfml 2.5.1
+    COMPONENTS audio graphics network system window
+    REQUIRED
+)
+
+find_package(tomlplusplus 2.3.0
     REQUIRED
 )
 
@@ -13,6 +41,8 @@ add_executable(Shooty
     application.cpp
     application.h
     command.h
+    configuration.cpp
+    configuration.h
     entity/aircraft.cpp
     entity/aircraft.h
     entity/entity.h
@@ -54,16 +84,25 @@ add_executable(Shooty
 
 target_include_directories(Shooty
     PRIVATE ${CMAKE_SOURCE_DIR}
-    PRIVATE /usr/local/include
+    PRIVATE sfml::sfml
+    PRIVATE tomlplusplus::tomlplusplus
 )
 
 target_link_libraries(Shooty
-    sfml-graphics
+    sfml::sfml
 )
 
-set_property(TARGET Shooty
-    PROPERTY CXX_STANDARD 17)
+set_property(
+    TARGET Shooty
+    PROPERTY CXX_STANDARD 17
+)
 
-set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-include(CPack)
+add_custom_target(copy-runtime-files ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Book/07_Gameplay/Media ${CMAKE_BINARY_DIR}/Media
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/config.toml ${CMAKE_BINARY_DIR}/config.toml
+)
+
+add_dependencies(
+    Shooty
+    copy-runtime-files
+)

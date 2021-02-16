@@ -4,6 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <algorithm>
 namespace entity
 {
 
@@ -11,8 +12,9 @@ class entity : public virtual scene::node_t
 {
 public:
     explicit entity(
-        int const life)
-        : life{life}
+        int const starting_life)
+        : starting_life{starting_life}
+        , life{starting_life}
     {}
 
     void heal(
@@ -20,7 +22,7 @@ public:
     {
         if(alive())
         {
-            life += amount;
+            life = std::max(life + amount, starting_life);
         }
     }
 
@@ -55,6 +57,8 @@ public:
     }
 
     sf::Vector2f velocity;
+
+    int const starting_life;
 
 private:
     int life;

@@ -1,5 +1,6 @@
 #include "entity/aircraft.h"
 
+#include "configuration.h"
 #include "lifebar.h"
 
 #include <SFML/Graphics.hpp>
@@ -12,7 +13,7 @@ namespace entity
 aircraft_t::aircraft_t(
     aircraft_t::type const type_,
     sf::Texture const& texture)
-    : entity{100}
+    : entity{*configuration::instance()["leader"]["starting_health"].value<int>()}
     , scene::sprite_t(texture)
     , type_{type_}
 {
@@ -29,7 +30,7 @@ void aircraft_t::update_self(
 {
     entity::update_self(dt);
 
-    bar->adjust(100);
+    bar->adjust((health() * 100) / starting_life);
     bar->setPosition(0.f, 50.f);
     bar->setRotation(-getRotation());
 }
