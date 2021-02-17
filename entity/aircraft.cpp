@@ -11,11 +11,10 @@ namespace entity
 {
 
 aircraft_t::aircraft_t(
-    aircraft_t::type const type_,
+    int const starting_life,
     sf::Texture const& texture)
-    : entity{*configuration::instance()["leader"]["starting_health"].value<int>()}
+    : entity{starting_life}
     , scene::sprite_t(texture)
-    , type_{type_}
 {
     auto const bounds = sprite.getLocalBounds();
     sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);

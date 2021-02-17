@@ -1,11 +1,10 @@
 #include "player.h"
 
 #include "command.h"
-#include "entity/aircraft.h"
+#include "entity/leader.h"
 
 #include <SFML/Window.hpp>
 
-#include <iostream>
 #include <map>
 
 player_t::player_t()

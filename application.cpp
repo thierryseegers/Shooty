@@ -16,11 +16,12 @@
 #include <stdexcept>
 
 application::application()
-    : window{sf::VideoMode(640, 480), "Shooty", sf::Style::Close}
+    : window{sf::VideoMode(1024, 768), "Shooty", sf::Style::Close}
     , states{{window, fonts, textures, player_1}}
     , statistics_num_frames{0}
 {
     window.setKeyRepeatEnabled(false);
+    window.setFramerateLimit(60);
 
     fonts.load(resources::font::main, "Media/Sansation.ttf");
     fonts.load(resources::font::label, "Media/Sansation.ttf");

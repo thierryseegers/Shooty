@@ -2,3 +2,15 @@
 starting_health = 100
 speed = 20
 texture = "Media/Textures/Eagle.png"
+
+[raptor]
+starting_health = 20
+speed = 80
+texture = "Media/Textures/Raptor.png"
+flight_pattern = [[45.0, 80.0], [-45.0, 160.0], [45.0, 80.0]]
+
+[avenger]
+starting_health = 40
+speed = 50
+texture = "Media/Textures/Avenger.png"
+flight_pattern = [[45.0, 50.0], [0.0, 50.0], [-45.0, 100.0], [0.0, 50.0], [45.0, 50.0]]

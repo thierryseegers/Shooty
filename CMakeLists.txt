@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(Shooty VERSION 1.0.0)
 
+# Get Conan.
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
@@ -12,6 +13,8 @@ include(
     ${CMAKE_BINARY_DIR}/conan.cmake
 )
 
+# conan_cmake_run will create the find_package generators in ${CMAKE_BINARY_DIR}.
+#  Make sure they will be found.
 list(
     APPEND
     CMAKE_MODULE_PATH
@@ -45,7 +48,11 @@ add_executable(Shooty
     configuration.h
     entity/aircraft.cpp
     entity/aircraft.h
+    entity/enemy.cpp
+    entity/enemy.h
     entity/entity.h
+    entity/leader.cpp
+    entity/leader.h
     gui/button.cpp
     gui/button.h
     gui/component.cpp
@@ -89,7 +96,7 @@ target_include_directories(Shooty
 )
 
 target_link_libraries(Shooty
-    sfml::sfml
+    PRIVATE sfml::sfml
 )
 
 set_property(
@@ -97,6 +104,7 @@ set_property(
     PROPERTY CXX_STANDARD 17
 )
 
+# Copy media files from the book's chapters.
 add_custom_target(copy-runtime-files ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Book/07_Gameplay/Media ${CMAKE_BINARY_DIR}/Media
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/config.toml ${CMAKE_BINARY_DIR}/config.toml

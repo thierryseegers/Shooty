@@ -80,7 +80,7 @@ void container::select(
 
     children[selected]->deselect();
 
-    auto s = utility::cyclical_iterator(children, children.begin() + selected);
+    auto s = utility::cyclic_iterator(children, children.begin() + selected);
     if(d == direction::next)
     {
         selected = std::distance(

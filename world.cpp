@@ -1,7 +1,8 @@
 #include "world.h"
 
 #include "configuration.h"
-#include "entity/aircraft.h"
+#include "entity/enemy.h"
+#include "entity/leader.h"
 #include "resources.h"
 #include "scene.h"
 
@@ -16,21 +17,22 @@ world_t::world_t(
     : window{window}
     , view{window.getDefaultView()}
     , bounds{0.f, 0.f, view.getSize().x, 2000.f}
-    , spawn_position{view.getSize().x / 2.f, bounds.height - view.getSize().y / 2.f}
+    , player_spawn_point{view.getSize().x / 2.f, bounds.height - view.getSize().y / 2.f}
     , scroll_speed{-50.f}
     , player{nullptr}
 {
     load_textures();
     build_scene();
 
-    view.setCenter(spawn_position);
+    view.setCenter(player_spawn_point);
 }
 
 void world_t::load_textures()
 {
     textures.load(resources::texture::desert, "Media/Textures/Desert.png");
+    textures.load(resources::texture::avenger, *configuration::instance()["avenger"]["texture"].value<std::string>());
     textures.load(resources::texture::eagle, *configuration::instance()["leader"]["texture"].value<std::string>());
-    textures.load(resources::texture::raptor, "Media/Textures/Raptor.png");
+    textures.load(resources::texture::raptor, *configuration::instance()["raptor"]["texture"].value<std::string>());
 }
 
 void world_t::build_scene()
@@ -54,10 +56,65 @@ void world_t::build_scene()
     layers[layer::background]->attach(std::move(background_sprite));
 
     // Create leader aircraft and move to air layer.
-    auto leader = std::make_unique<entity::leader_t>(entity::aircraft_t::type::eagle, textures.get(resources::texture::eagle));
+    auto leader = std::make_unique<entity::leader_t>(textures);
     player = leader.get();
-    player->scene::sprite_t::setPosition(spawn_position);
+    player->scene::sprite_t::setPosition(player_spawn_point);
     layers[layer::air]->attach(std::move(leader));
+
+    auto add_enemy = [=](aircraft const a, sf::Vector2f const ds) mutable
+        {
+            enemy_spawn_points.insert({a, player_spawn_point + ds});
+        };
+    add_enemy(aircraft::raptor,     {+0.,   -500.});
+    add_enemy(aircraft::raptor,     {+0.,   -1000.});
+    add_enemy(aircraft::raptor,     {+100., -1100.});
+    add_enemy(aircraft::raptor,     {-100., -1100.});
+    add_enemy(aircraft::avenger,    {-70.,  -1400.});
+    add_enemy(aircraft::avenger,    {-70.,  -1600.});
+    add_enemy(aircraft::avenger,    {+70.,  -1400.});
+    add_enemy(aircraft::avenger,    {+70.,  -1600.});
+}
+
+void world_t::spawn_enemies()
+{
+    while(!enemy_spawn_points.empty() &&
+          enemy_spawn_points.rbegin()->where.y > battlefield_bounds().top)
+    {
+        auto const enemy_spawn_point = enemy_spawn_points.extract(*enemy_spawn_points.rbegin()).value();
+
+        std::unique_ptr<entity::enemy> e;
+        switch(enemy_spawn_point.type)
+        {
+        case aircraft::avenger:
+            e = std::make_unique<entity::avenger>(textures);
+            break;
+        case aircraft::raptor:
+            e = std::make_unique<entity::raptor>(textures);
+            break;
+        default:
+            break;
+        }
+
+        e->setPosition(enemy_spawn_point.where);
+        e->setRotation(180.f);
+
+        layers[air]->attach(std::move(e));
+    }
+}
+
+sf::FloatRect world_t::view_bounds() const
+{
+	return sf::FloatRect(view.getCenter() - view.getSize() / 2.f, view.getSize());
+}
+
+sf::FloatRect world_t::battlefield_bounds() const
+{
+	// Return view bounds + some area at top, where enemies spawn.
+	sf::FloatRect bounds = view_bounds();
+	bounds.top -= 100.f;
+	bounds.height += 100.f;
+
+	return bounds;
 }
 
 void world_t::update(
@@ -83,6 +140,9 @@ void world_t::update(
         player->velocity /= std::sqrt(2.f);
     }
     player->velocity += {0.f, scroll_speed};
+
+    // Remove all destroyed entities, create new ones.
+	spawn_enemies();
 
     // Update the entire graph.
     graph.update(dt);

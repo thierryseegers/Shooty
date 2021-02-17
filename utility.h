@@ -2,8 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <cmath>
 #include <iterator>
 #include <string>
+#include <type_traits>
 
 namespace utility
 {
@@ -26,26 +28,51 @@ sf::Color blend(
 std::string to_string(
     sf::Keyboard::Key const key);
 
-// An iterator that cyles forward or barckward when it reachs the end or the beginning of its container.
-template<class Container>
-struct cyclical_iterator 
+template<typename T>
+T to_degree(
+    T const radian)
 {
-    using iterator_category = std::bidirectional_iterator_tag;
-    using difference_type   = typename Container::iterator::difference_type;
-    using value_type        = typename Container::iterator::value_type;
-    using pointer           = typename Container::iterator::pointer;
-    using reference         = typename Container::iterator::reference;
+	return 180. / M_PI * radian;
+}
 
-    cyclical_iterator(
+template<typename T>
+T to_radian(
+    T const degree)
+{
+	return M_PI / 180. * degree;
+}
+
+// An iterator that cyles forward or barckward when it reaches the end or the beginning of its container.
+template<class Container,
+         class Iterator = std::conditional_t<std::is_const_v<Container>,
+                                             typename Container::const_iterator,
+                                             typename Container::iterator>>
+struct cyclic_iterator 
+{
+    using iterator_category = typename Iterator::iterator_category;
+    using difference_type   = typename Iterator::difference_type;
+    using value_type        = typename Iterator::value_type;
+    using pointer           = typename Iterator::pointer;
+    using reference         = typename Iterator::reference;
+
+    cyclic_iterator(
         Container& container,
-        typename Container::iterator i)
+        Iterator i)
         : container{container}
         , i{i}
     {}
 
-    typename Container::iterator base()
+    Iterator base()
     {
         return i;
+    }
+
+    cyclic_iterator& operator=(
+        Iterator const other)
+    {
+        i = other;
+
+        return *this;
     }
 
     reference operator*() const
@@ -53,12 +80,12 @@ struct cyclical_iterator
         return *i;
     }
 
-    pointer operator->()
+    pointer operator->() const
     {
-        return i;
+        return std::addressof(operator*());
     }
     
-    cyclical_iterator& operator++()
+    cyclic_iterator& operator++()
     {
         if(i == std::prev(container.end()))
         {
@@ -72,14 +99,14 @@ struct cyclical_iterator
         return *this;
     }
 
-    cyclical_iterator operator++(int)
+    cyclic_iterator operator++(int)
     {
-        cyclical_iterator tmp = *this;
+        cyclic_iterator tmp = *this;
         ++(*this);
         return tmp;
     }
 
-    cyclical_iterator& operator--()
+    cyclic_iterator& operator--()
     {
         if(i == container.begin())
         {
@@ -93,30 +120,50 @@ struct cyclical_iterator
         return *this;
     }
 
-    cyclical_iterator operator--(int)
+    cyclic_iterator operator--(int)
     {
-        cyclical_iterator tmp = *this;
+        cyclic_iterator tmp = *this;
         --(*this);
         return tmp;
     }
 
+    cyclic_iterator& operator+=(
+        difference_type n)
+    {
+        for(;n != 0; --n)
+        {
+            operator++();
+        }
+        return *this;
+    }
+
+    cyclic_iterator& operator-=(
+        difference_type n)
+    {
+        for(;n != 0; --n)
+        {
+            operator--();
+        }
+        return *this;
+    }
+
     friend bool operator==(
-        const cyclical_iterator& a,
-        const cyclical_iterator& b)
+        const cyclic_iterator& a,
+        const cyclic_iterator& b)
     { 
         return &a.container == &b.container && a.i == b.i;
     }
 
     friend bool operator!=(
-        const cyclical_iterator& a,
-        const cyclical_iterator& b)
+        const cyclic_iterator& a,
+        const cyclic_iterator& b)
     {
         return &a.container != &b.container || a.i != b.i;
     }
 
 private:
     Container& container;
-    typename Container::iterator i;
+    Iterator i;
 };
 
 }

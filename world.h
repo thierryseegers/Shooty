@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <array>
+#include <set>
 
 class world_t
 {
@@ -23,12 +24,22 @@ public:
 private:
     void load_textures();
     void build_scene();
+    void spawn_enemies();
+
+    sf::FloatRect view_bounds() const;
+    sf::FloatRect battlefield_bounds() const;
 
     enum layer
     {
         background,
         air,
         count
+    };
+
+    enum class aircraft
+    {
+        avenger,
+        raptor
     };
 
     sf::RenderWindow& window;
@@ -42,8 +53,21 @@ private:
     commands_t commands_;
 
     sf::FloatRect const bounds;
-    sf::Vector2f const spawn_position;
+    sf::Vector2f const player_spawn_point;
     float scroll_speed;
     
     entity::aircraft_t* player;
+
+    struct spawn_point
+    {
+        aircraft const type;
+        sf::Vector2f const where;
+
+        bool operator<(spawn_point const& other) const
+        {
+            return where.y < other.where.y;
+        }
+    };
+
+    std::multiset<spawn_point> enemy_spawn_points;
 };
