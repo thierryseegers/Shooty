@@ -17,9 +17,9 @@ menu::menu(
     stack& states)
     : state{states}
 {
-    background.setTexture(states.context.textures.get(resources::texture::title_screen));
+    background.setTexture(utility::single::instance<resources::textures>().get(resources::texture::title_screen));
 
-    auto play = std::make_shared<gui::button>(states.context.fonts, states.context.textures);
+    auto play = std::make_shared<gui::button>();
     play->setPosition(100, 250);
     play->text = "Play";
     play->click = [this]()
@@ -29,7 +29,7 @@ menu::menu(
     };
     container.pack(play);
 
-    auto settings = std::make_shared<gui::button>(states.context.fonts, states.context.textures);
+    auto settings = std::make_shared<gui::button>();
     settings->setPosition(100, 300);
     settings->text = "Settings";
     settings->click = [this]()
@@ -38,7 +38,7 @@ menu::menu(
     };
     container.pack(settings);
 
-    auto exit = std::make_shared<gui::button>(states.context.fonts, states.context.textures);
+    auto exit = std::make_shared<gui::button>();
     exit->setPosition(100, 350);
     exit->text = "Exit";
     exit->click = [this]()

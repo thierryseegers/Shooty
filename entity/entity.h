@@ -17,6 +17,8 @@ public:
         , life{starting_life}
     {}
 
+    virtual ~entity() = default;
+
     void heal(
         int const amount)
     {
@@ -51,7 +53,8 @@ public:
     }
 
     virtual void update_self(
-        sf::Time const& dt) override
+        sf::Time const& dt,
+        commands_t& commands) override
     {
         move(velocity * dt.asSeconds());
     }

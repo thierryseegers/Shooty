@@ -9,8 +9,6 @@ namespace configuration
 
 using values = toml::table;
 
-values const& instance();
-
 void initialize(
     std::filesystem::path const& config_file);
 

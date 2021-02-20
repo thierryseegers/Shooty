@@ -28,8 +28,6 @@ private:
     void render();
 
     sf::RenderWindow window;
-    resources::fonts fonts;
-    resources::textures textures;
     player_t player_1;
 
     state::stack states;

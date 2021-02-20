@@ -2,6 +2,7 @@
 
 #include "gui/component.h"
 #include "resources.h"
+#include "utility.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -14,9 +15,8 @@ class label : public component
 {
 public:
     label(
-        std::string const& contents,
-        resources::fonts const& fonts)
-        : text{sf::Text{contents, fonts.get(resources::font::label), 16}}
+        std::string const& contents)
+        : text{sf::Text{contents, utility::single::instance<resources::fonts>().get(resources::font::label), 16}}
     {}
 
     [[nodiscard]] virtual bool selectable() const override

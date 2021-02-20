@@ -1,5 +1,7 @@
 #include "scene.h"
 
+#include "utility.h"
+
 #include <SFML/Graphics.hpp>
 
 #include <algorithm>
@@ -43,7 +45,7 @@ void node_t::draw(
 
     draw_self(target, states);
 
-    for(auto& child : children)
+    for(auto& child : utility::reverse(children))
     {
         child->draw(target, states);
     }
@@ -66,19 +68,20 @@ sf::Transform node_t::world_transform() const
     return transform;
 }
 
-sf::Vector2f node_t::world_positiion() const
+sf::Vector2f node_t::world_position() const
 {
     return world_transform() * sf::Vector2f{};
 }
 
 void node_t::update(
-    sf::Time const& dt)
+    sf::Time const& dt,
+    commands_t& commands)
 {
-    update_self(dt);
+    update_self(dt, commands);
 
     for(auto& child : children)
     {
-        child->update(dt);
+        child->update(dt, commands);
     }
 }
 
@@ -95,8 +98,16 @@ void node_t::on_command(
 }
 
 void node_t::update_self(
-    sf::Time const& dt)
+    sf::Time const& dt,
+    commands_t& commands)
 {}
+
+float distance(
+    node_t const& lhs,
+    node_t const& rhs)
+{
+	return utility::length(lhs.world_position() - rhs.world_position());
+}
 
 sprite_t::sprite_t(
     sf::Texture const& texture)

@@ -6,13 +6,11 @@
 
 namespace gui
 {
-button::button(
-    resources::fonts const& fonts,
-    resources::textures const& textures)
-    : normal{textures.get(resources::texture::button_normal)}
-    , selected{textures.get(resources::texture::button_selected)}
-    , pressed{textures.get(resources::texture::button_pressed)}
-    , text{sf::Text{"", fonts.get(resources::font::main), 16}}
+button::button()
+    : normal{utility::single::instance<resources::textures>().get(resources::texture::button_normal)}
+    , selected{utility::single::instance<resources::textures>().get(resources::texture::button_selected)}
+    , pressed{utility::single::instance<resources::textures>().get(resources::texture::button_pressed)}
+    , text{sf::Text{"", utility::single::instance<resources::fonts>().get(resources::font::main), 16}}
     , toggle{false}
 {
     sprite.setTexture(normal);

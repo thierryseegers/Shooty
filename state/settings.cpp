@@ -7,6 +7,7 @@
 #include "resources.h"
 #include "state/stack.h"
 #include "state/state.h"
+#include "utility.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -22,7 +23,7 @@ settings::settings(
     stack& states)
     : state{states}
 {
-    background.setTexture(states.context.textures.get(resources::texture::title_screen));
+    background.setTexture(utility::single::instance<resources::textures>().get(resources::texture::title_screen));
 
     // Build key binding buttons and labels.
     add_button_label(player_t::action::move_left,  150.f, "Move Left");
@@ -33,7 +34,7 @@ settings::settings(
     update_labels();
 
     // Add back button to go back to main menu.
-    auto back = std::make_shared<gui::button>(states.context.fonts, states.context.textures);
+    auto back = std::make_shared<gui::button>();
     back->setPosition(80.f, 375.f);
     back->text = "Back";
     back->click = [this]()
@@ -99,12 +100,12 @@ void settings::add_button_label(
     float const y,
     std::string const& text)
 {
-    buttons[action] = std::make_shared<gui::button>(states.context.fonts, states.context.textures);
+    buttons[action] = std::make_shared<gui::button>();
     buttons[action]->setPosition(80.f, y);
     buttons[action]->text = text;
     buttons[action]->toggle = true;
 
-    labels[action] = std::make_shared<gui::label>("", states.context.fonts);
+    labels[action] = std::make_shared<gui::label>("");
     labels[action]->setPosition(300.f, y + 15.f);
 
     container.pack(buttons[action]);

@@ -23,8 +23,6 @@ public:
     struct context_t
     {
         sf::RenderWindow& window;
-        resources::fonts& fonts;
-        resources::textures& textures;
         player_t& player;
     } context;
 

@@ -1,8 +1,11 @@
 #include "entity/enemy.h"
 
 #include "configuration.h"
+#include "entity/bullet.h"
 #include "entity/flight.h"
+#include "entity/missile.h"
 #include "resources.h"
+#include "scene.h"
 #include "utility.h"
 
 #include <SFML/Graphics.hpp>
@@ -28,18 +31,22 @@ std::vector<flight::direction> to_pattern(toml::array const& values)
 enemy::enemy(
     int const starting_life,
     int const speed,
+    float const attack_rate,
     sf::Texture const& texture,
     std::vector<flight::direction> const& pattern)
     : aircraft_t{starting_life, texture}
     , speed{speed}
+    , attack_rate{attack_rate}
     , pattern{pattern}
     , current{this->pattern, this->pattern.begin()}
     , travelled{0}
 {}
 
 void enemy::update_self(
-        sf::Time const& dt)
+        sf::Time const& dt,
+        commands_t& commands)
 {
+    // Update travel.
     if(travelled > current->distance)
     {
         ++current;
@@ -51,23 +58,50 @@ void enemy::update_self(
 
     travelled += speed * dt.asSeconds();
 
-    aircraft_t::update_self(dt);
+    // Update attack.
+    if(attack_countdown <= sf::Time::Zero)
+    {
+        commands.push(make_command<scene::air>([=](scene::air& air, sf::Time const&)
+        {
+            attack(air);
+        }));
+
+        attack_countdown += sf::seconds(1.f / attack_rate);
+    }
+    else
+    {
+        attack_countdown -= dt;
+    }
+
+    aircraft_t::update_self(dt, commands);
 }
 
-avenger::avenger(
-    resources::textures const& textures)
-    : enemy{*configuration::instance()["avenger"]["starting_health"].value<int>(),
-            *configuration::instance()["avenger"]["speed"].value<int>(),
-            textures.get(resources::texture::avenger),
-            to_pattern(*configuration::instance()["avenger"]["flight_pattern"].as_array())}
+avenger::avenger()
+    : enemy{*utility::single::instance<configuration::values>()["avenger"]["starting_health"].value<int>(),
+            *utility::single::instance<configuration::values>()["avenger"]["speed"].value<int>(),
+            *utility::single::instance<configuration::values>()["avenger"]["attack_rate"].value<float>(),
+            utility::single::instance<resources::textures>().get(resources::texture::avenger),
+            to_pattern(*utility::single::instance<configuration::values>()["avenger"]["flight_pattern"].as_array())}
 {}
 
-raptor::raptor(
-    resources::textures const& textures)
-    : enemy{*configuration::instance()["raptor"]["starting_health"].value<int>(),
-            *configuration::instance()["raptor"]["speed"].value<int>(),
-            textures.get(resources::texture::raptor),
-            to_pattern(*configuration::instance()["raptor"]["flight_pattern"].as_array())}
+void avenger::attack(
+    scene::air& air) const
+{
+    add_projectile<bullet>(air, {0.f, 0.5f}, projectile::downward);
+}
+
+raptor::raptor()
+    : enemy{*utility::single::instance<configuration::values>()["raptor"]["starting_health"].value<int>(),
+            *utility::single::instance<configuration::values>()["raptor"]["speed"].value<int>(),
+            *utility::single::instance<configuration::values>()["raptor"]["attack_rate"].value<float>(),
+            utility::single::instance<resources::textures>().get(resources::texture::raptor),
+            to_pattern(*utility::single::instance<configuration::values>()["raptor"]["flight_pattern"].as_array())}
 {}
+
+void raptor::attack(
+    scene::air& air) const
+{
+    add_projectile<missile>(air, {0.f, 0.5f}, projectile::downward);
+}
 
 }

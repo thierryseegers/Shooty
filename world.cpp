@@ -1,16 +1,21 @@
 #include "world.h"
 
+#include "command.h"
 #include "configuration.h"
 #include "entity/enemy.h"
 #include "entity/leader.h"
+#include "entity/missile.h"
 #include "resources.h"
 #include "scene.h"
+#include "utility.h"
 
 #include <SFML/Graphics.hpp>
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <memory>
+#include <vector>
 
 world_t::world_t(
     sf::RenderWindow& window)
@@ -29,25 +34,28 @@ world_t::world_t(
 
 void world_t::load_textures()
 {
+    auto& textures = utility::single::mutable_instance<resources::textures>();
     textures.load(resources::texture::desert, "Media/Textures/Desert.png");
-    textures.load(resources::texture::avenger, *configuration::instance()["avenger"]["texture"].value<std::string>());
-    textures.load(resources::texture::eagle, *configuration::instance()["leader"]["texture"].value<std::string>());
-    textures.load(resources::texture::raptor, *configuration::instance()["raptor"]["texture"].value<std::string>());
+    textures.load(resources::texture::bullet, "Media/Textures/Bullet.png");
+    textures.load(resources::texture::missile, "Media/Textures/Missile.png");
+    textures.load(resources::texture::avenger, *utility::single::instance<configuration::values>()["avenger"]["texture"].value<std::string>());
+    textures.load(resources::texture::eagle, *utility::single::instance<configuration::values>()["leader"]["texture"].value<std::string>());
+    textures.load(resources::texture::raptor, *utility::single::instance<configuration::values>()["raptor"]["texture"].value<std::string>());
 }
 
 void world_t::build_scene()
 {
     // Create layers.
-    for(std::size_t i = 0; i != layer::count; ++i)
-    {
-        auto layer = std::make_unique<scene::node_t>();
-        layers[i] = layer.get();
-
-        graph.attach(std::move(layer));
-    }
+    auto air = std::make_unique<scene::air>();
+    layers[layer::air] = air.get();
+    graph.attach(std::move(air));
+    
+    auto background = std::make_unique<scene::background>();
+    layers[layer::background] = background.get();
+    graph.attach(std::move(background));
 
     // Create background sprite and move to background layer.
-    sf::Texture& background_texture = textures.get(resources::texture::desert);
+    sf::Texture& background_texture = utility::single::mutable_instance<resources::textures>().get(resources::texture::desert);
     background_texture.setRepeated(true);
     sf::IntRect background_rect{bounds};
 
@@ -56,50 +64,72 @@ void world_t::build_scene()
     layers[layer::background]->attach(std::move(background_sprite));
 
     // Create leader aircraft and move to air layer.
-    auto leader = std::make_unique<entity::leader_t>(textures);
+    auto leader = std::make_unique<entity::leader_t>();
     player = leader.get();
     player->scene::sprite_t::setPosition(player_spawn_point);
     layers[layer::air]->attach(std::move(leader));
 
-    auto add_enemy = [=](aircraft const a, sf::Vector2f const ds) mutable
+    auto add_enemy = [=](auto const& f, sf::Vector2f const& ds) mutable
         {
-            enemy_spawn_points.insert({a, player_spawn_point + ds});
+            enemy_spawns.insert({f, player_spawn_point + ds});
         };
-    add_enemy(aircraft::raptor,     {+0.,   -500.});
-    add_enemy(aircraft::raptor,     {+0.,   -1000.});
-    add_enemy(aircraft::raptor,     {+100., -1100.});
-    add_enemy(aircraft::raptor,     {-100., -1100.});
-    add_enemy(aircraft::avenger,    {-70.,  -1400.});
-    add_enemy(aircraft::avenger,    {-70.,  -1600.});
-    add_enemy(aircraft::avenger,    {+70.,  -1400.});
-    add_enemy(aircraft::avenger,    {+70.,  -1600.});
+    auto const make_raptor = []
+        {
+            return std::make_unique<entity::raptor>();
+        };
+    auto const make_avenger = []
+        {
+            return std::make_unique<entity::avenger>();
+        };
+
+    add_enemy(make_raptor,  {+0.,   -500.});
+    add_enemy(make_raptor,  {+0.,   -1000.});
+    add_enemy(make_raptor,  {+100., -1100.});
+    add_enemy(make_raptor,  {-100., -1100.});
+    add_enemy(make_avenger, {-70.,  -1400.});
+    add_enemy(make_avenger, {-70.,  -1600.});
+    add_enemy(make_avenger, {+70.,  -1400.});
+    add_enemy(make_avenger, {+70.,  -1600.});
 }
 
 void world_t::spawn_enemies()
 {
-    while(!enemy_spawn_points.empty() &&
-          enemy_spawn_points.rbegin()->where.y > battlefield_bounds().top)
+    while(!enemy_spawns.empty() &&
+          enemy_spawns.rbegin()->where.y > battlefield_bounds().top)
     {
-        auto const enemy_spawn_point = enemy_spawn_points.extract(*enemy_spawn_points.rbegin()).value();
+        auto const enemy_spawn = enemy_spawns.extract(*enemy_spawns.rbegin()).value();
 
-        std::unique_ptr<entity::enemy> e;
-        switch(enemy_spawn_point.type)
-        {
-        case aircraft::avenger:
-            e = std::make_unique<entity::avenger>(textures);
-            break;
-        case aircraft::raptor:
-            e = std::make_unique<entity::raptor>(textures);
-            break;
-        default:
-            break;
-        }
-
-        e->setPosition(enemy_spawn_point.where);
+        auto e = enemy_spawn.what();
+        e->setPosition(enemy_spawn.where);
         e->setRotation(180.f);
 
         layers[air]->attach(std::move(e));
     }
+}
+
+void world_t::guide_missiles()
+{
+	// Setup command that stores all enemies in mActiveEnemies
+    commands_.push(make_command<entity::enemy>([=](entity::enemy& e, sf::Time const&)
+        {
+            // if(!destroyed)
+            enemies.push_back(&e);
+        }));
+
+    commands_.push(make_command<entity::guided_missile>([=](entity::guided_missile& gm, sf::Time const&)
+        {
+            if(!enemies.empty())
+            {
+                auto e =std::min_element(enemies.begin(), enemies.end(), [&](entity::enemy* e1, entity::enemy* e2)
+                    {
+                        return scene::distance(gm, *e1) < scene::distance(gm, *e2);
+                    });
+
+                gm.guide((*e)->world_position());
+            }
+        }));
+
+    enemies.clear();
 }
 
 sf::FloatRect world_t::view_bounds() const
@@ -141,11 +171,14 @@ void world_t::update(
     }
     player->velocity += {0.f, scroll_speed};
 
+    // Guide guided missiles.
+    guide_missiles();
+
     // Remove all destroyed entities, create new ones.
 	spawn_enemies();
 
     // Update the entire graph.
-    graph.update(dt);
+    graph.update(dt, commands_);
 
     // Prevent the player from going off-screen.
     sf::FloatRect const bounds{view.getCenter() - view.getSize() / 2.f, view.getSize()};

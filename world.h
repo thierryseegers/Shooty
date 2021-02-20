@@ -1,7 +1,8 @@
 #pragma once
 
 #include "command.h"
-#include "entity/aircraft.h"
+#include "entity/enemy.h"
+#include "entity/leader.h"
 #include "resources.h"
 #include "scene.h"
 
@@ -25,6 +26,7 @@ private:
     void load_textures();
     void build_scene();
     void spawn_enemies();
+    void guide_missiles();
 
     sf::FloatRect view_bounds() const;
     sf::FloatRect battlefield_bounds() const;
@@ -36,17 +38,9 @@ private:
         count
     };
 
-    enum class aircraft
-    {
-        avenger,
-        raptor
-    };
-
     sf::RenderWindow& window;
     sf::View view;
 
-    resources::textures textures;
-    
     scene::node_t graph;
     scene::layers<layer::count> layers;
 
@@ -56,18 +50,19 @@ private:
     sf::Vector2f const player_spawn_point;
     float scroll_speed;
     
-    entity::aircraft_t* player;
+    entity::leader_t* player;
+    std::vector<entity::enemy*> enemies;
 
-    struct spawn_point
+    struct spawn
     {
-        aircraft const type;
+        std::function<std::unique_ptr<entity::aircraft_t> ()> const what;
         sf::Vector2f const where;
 
-        bool operator<(spawn_point const& other) const
+        bool operator<(spawn const& other) const
         {
             return where.y < other.where.y;
         }
     };
 
-    std::multiset<spawn_point> enemy_spawn_points;
+    std::multiset<spawn> enemy_spawns;
 };

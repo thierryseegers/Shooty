@@ -158,4 +158,18 @@ std::string to_string(
     return "";
 }
 
+float length(
+    sf::Vector2f const& vector)
+{
+    return std::sqrt(vector.x * vector.x + vector.y * vector.y);
+}
+
+sf::Vector2f unit(
+    sf::Vector2f const& vector)
+{
+    assert(vector != sf::Vector2f(0.f, 0.f));
+
+    return vector / length(vector);
+}
+
 }

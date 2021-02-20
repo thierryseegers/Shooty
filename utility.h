@@ -12,7 +12,7 @@ namespace utility
 
 // Change origin of object to be its center rather than its top-left corner.
 void center_origin(
-    sf::Transformable& t);
+    sf::Sprite& sprite);
 void center_origin(
     sf::Text& text);
 void center_origin(
@@ -41,6 +41,12 @@ T to_radian(
 {
 	return M_PI / 180. * degree;
 }
+
+float length(
+    sf::Vector2f const& vector);
+
+sf::Vector2f unit(
+    sf::Vector2f const& vector);
 
 // An iterator that cyles forward or barckward when it reaches the end or the beginning of its container.
 template<class Container,
@@ -165,5 +171,50 @@ private:
     Container& container;
     Iterator i;
 };
+
+template<typename T>
+struct reversed
+{
+    T& iterable;
+};
+
+template<typename T>
+auto begin(
+    reversed<T> r)
+{
+    return std::rbegin(r.iterable);
+}
+
+template<typename T>
+auto end(
+    reversed<T> r)
+{
+    return std::rend(r.iterable);
+}
+
+template<typename T>
+reversed<T> reverse(
+    T&& iterable)
+{
+    return {iterable};
+}
+
+namespace single
+{
+
+template<typename T>
+T& mutable_instance()
+{
+    static T t;
+    return t;
+}
+
+template<typename T>
+T const& instance()
+{
+    return mutable_instance<T>();
+}
+
+}
 
 }

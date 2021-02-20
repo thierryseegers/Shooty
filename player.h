@@ -15,6 +15,8 @@ public:
         move_left,
         move_right,
         move_up,
+        fire,
+        launch_missile,
         count
     };
 

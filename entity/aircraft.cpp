@@ -2,8 +2,11 @@
 
 #include "configuration.h"
 #include "lifebar.h"
+#include "scene.h"
+#include "utility.h"
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 
 #include <memory>
 
@@ -16,18 +19,19 @@ aircraft_t::aircraft_t(
     : entity{starting_life}
     , scene::sprite_t(texture)
 {
-    auto const bounds = sprite.getLocalBounds();
-    sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+    utility::center_origin(sprite);
 
-    auto b = std::make_unique<lifebar>(bounds.width);
+    // Make a lifebar for ourself.
+    auto b = std::make_unique<lifebar>(sprite.getLocalBounds().width);
     bar = b.get();
     attach(std::move(b));
 }
 
 void aircraft_t::update_self(
-    sf::Time const& dt)
+    sf::Time const& dt,
+        commands_t& commands)
 {
-    entity::update_self(dt);
+    entity::update_self(dt, commands);
 
     bar->adjust((health() * 100) / starting_life);
     bar->setPosition(0.f, 50.f);

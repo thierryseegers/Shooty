@@ -19,6 +19,7 @@ enum class font
 enum class texture
 {
     avenger,
+    bullet,
     button_normal, 
     button_pressed,
     button_selected,

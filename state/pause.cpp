@@ -16,13 +16,13 @@ pause::pause(
 {
     auto const view_size = states.context.window.getView().getSize();
 
-    word.setFont(states.context.fonts.get(resources::font::main));
+    word.setFont(utility::single::instance<resources::fonts>().get(resources::font::main));
     word.setString("Game Paused");	
     word.setCharacterSize(70);
     utility::center_origin(word);
     word.setPosition(0.5f * view_size.x, 0.4f * view_size.y);
 
-    instructions.setFont(states.context.fonts.get(resources::font::main));
+    instructions.setFont(utility::single::instance<resources::fonts>().get(resources::font::main));
     instructions.setString("(Press Backspace to return to the main menu)");	
     utility::center_origin(instructions);
     instructions.setPosition(0.5f * view_size.x, 0.6f * view_size.y);

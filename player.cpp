@@ -1,6 +1,7 @@
 #include "player.h"
 
 #include "command.h"
+#include "entity/aircraft.h"
 #include "entity/leader.h"
 
 #include <SFML/Window.hpp>
@@ -13,6 +14,8 @@ player_t::player_t()
     bind_key(sf::Keyboard::Left, action::move_left);
     bind_key(sf::Keyboard::Right, action::move_right);
     bind_key(sf::Keyboard::Up, action::move_up);
+    bind_key(sf::Keyboard::Space, action::fire);
+    bind_key(sf::Keyboard::M, action::launch_missile);
 
     float const speed = 200.f;
 
@@ -31,6 +34,15 @@ player_t::player_t()
     action_bindings[action::move_up] = make_command<entity::leader_t>([=](entity::aircraft_t& aircraft, sf::Time const&)
         {
             aircraft.velocity += {0.f, -speed};
+        });
+
+    action_bindings[action::fire] = make_command<entity::leader_t>([=](entity::leader_t& leader, sf::Time const&)
+        {
+            leader.fire();
+        });
+    action_bindings[action::launch_missile] = make_command<entity::leader_t>([=](entity::leader_t& leader, sf::Time const&)
+        {
+            leader.launch_missile();
         });
 }
 
@@ -103,6 +115,7 @@ bool player_t::is_realtime_action(
         case action::move_left:
         case action::move_right:
         case action::move_up:
+        case action::fire:
             return true;
             break;
         default:

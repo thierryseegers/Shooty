@@ -8,6 +8,7 @@
 #include "state/settings.h"
 #include "state/title.h"
 #include "tomlpp.h"
+#include "utility.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -17,15 +18,17 @@
 
 application::application()
     : window{sf::VideoMode(1024, 768), "Shooty", sf::Style::Close}
-    , states{{window, fonts, textures, player_1}}
+    , states{{window, player_1}}
     , statistics_num_frames{0}
 {
     window.setKeyRepeatEnabled(false);
     window.setFramerateLimit(60);
 
+    auto& fonts = utility::single::mutable_instance<resources::fonts>();
     fonts.load(resources::font::main, "Media/Sansation.ttf");
     fonts.load(resources::font::label, "Media/Sansation.ttf");
     
+    auto& textures = utility::single::mutable_instance<resources::textures>();
     textures.load(resources::texture::title_screen, "Media/Textures/TitleScreen.png");
 	textures.load(resources::texture::button_normal, "Media/Textures/ButtonNormal.png");
 	textures.load(resources::texture::button_selected, "Media/Textures/ButtonSelected.png");

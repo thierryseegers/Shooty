@@ -2,7 +2,6 @@
 
 #include "component.h"
 
-#include "resources.h"
 #include "utility.h"
 
 #include <SFML/Graphics.hpp>
@@ -16,9 +15,7 @@ namespace gui
 class button : public component
 {
 public:
-    button(
-        resources::fonts const& fonts,
-        resources::textures const& textures);
+    button();
 
     virtual bool selectable() const override;
     virtual void select() override;

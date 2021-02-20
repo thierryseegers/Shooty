@@ -14,6 +14,8 @@ namespace scene
 class node_t : public sf::Transformable, public sf::Drawable, private sf::NonCopyable
 {
 public:
+    virtual ~node_t() = default;
+
     void attach(
         std::unique_ptr<node_t> child);
     std::unique_ptr<node_t> detach(
@@ -24,26 +26,38 @@ public:
         sf::RenderStates states) const final;
 
     sf::Transform world_transform() const;
-    sf::Vector2f world_positiion() const;
+    sf::Vector2f world_position() const;
 
     void update(
-        sf::Time const& dt);
+        sf::Time const& dt,
+        commands_t& commands);
 
     void on_command(
         command_t const& command,
         sf::Time const& dt);
 
-private:
+protected:
     virtual void draw_self(
         sf::RenderTarget& target,
         sf::RenderStates states) const;
 
     virtual void update_self(
-        sf::Time const& dt);
+        sf::Time const& dt,
+        commands_t& commands);
 
     std::vector<std::unique_ptr<node_t>> children;
-    node_t *parent;
+    node_t *parent = nullptr;
 };
+
+float distance(
+    node_t const& lhs,
+    node_t const& rhs);
+
+class background : public node_t
+{};
+
+class air : public node_t
+{};
 
 template<size_t Count>
 using layers = std::array<scene::node_t*, Count>;
