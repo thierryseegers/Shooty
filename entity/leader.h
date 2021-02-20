@@ -14,15 +14,25 @@ public:
 
     virtual ~leader_t() = default;
 
-    virtual void update_self(
-        sf::Time const& dt,
-        commands_t& commands) override;
+    void repair(
+        int const amount);
 
     void fire();
 
     void launch_missile();
 
+    void increase_fire_rate();
+
+    void increase_bullet_spread();
+
+    void collect_missile(
+        int const amount);
+
 private:
+    virtual void update_self(
+        sf::Time const& dt,
+        commands_t& commands) override;
+
     void shoot_bullet(
         scene::air& air) const;
 

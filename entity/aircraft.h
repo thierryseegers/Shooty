@@ -20,11 +20,19 @@ public:
 
     virtual ~aircraft_t() = default;
 
+    void hurt(
+        int const amount);
+
+    [[nodiscard]] int health() const
+    {
+        return life;
+    }
+
+protected:
     virtual void update_self(
         sf::Time const& dt,
         commands_t& commands) override;
 
-protected:
     template<typename Projectile>
     void add_projectile(
         scene::air& air,
@@ -46,6 +54,9 @@ protected:
 
         air.attach(std::move(p));
     }
+
+    int const starting_life;
+    int life;
 
     lifebar *bar;
 };

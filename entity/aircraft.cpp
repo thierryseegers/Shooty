@@ -16,7 +16,8 @@ namespace entity
 aircraft_t::aircraft_t(
     int const starting_life,
     sf::Texture const& texture)
-    : entity{starting_life}
+    : starting_life{starting_life}
+    , life{starting_life}
     , scene::sprite_t(texture)
 {
     utility::center_origin(sprite);
@@ -25,6 +26,15 @@ aircraft_t::aircraft_t(
     auto b = std::make_unique<lifebar>(sprite.getLocalBounds().width);
     bar = b.get();
     attach(std::move(b));
+}
+
+void aircraft_t::hurt(
+    int const amount)
+{
+    if(life -= amount; life <= 0)
+    {
+        destroyed = true;
+    }
 }
 
 void aircraft_t::update_self(

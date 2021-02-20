@@ -56,6 +56,11 @@ void node_t::draw_self(
     sf::RenderStates states) const
 {}
 
+sf::FloatRect node_t::bounding_rect() const
+{
+    return {};
+}
+
 sf::Transform node_t::world_transform() const
 {
     auto transform = sf::Transform::Identity;
@@ -102,6 +107,13 @@ void node_t::update_self(
     commands_t& commands)
 {}
 
+bool collision(
+    node_t const& lhs,
+    node_t const& rhs)
+{
+    return lhs.bounding_rect().intersects(rhs.bounding_rect());
+}
+
 float distance(
     node_t const& lhs,
     node_t const& rhs)
@@ -119,6 +131,11 @@ sprite_t::sprite_t(
     sf::IntRect const& rect)
     : sprite{texture, rect}
 {}
+
+sf::FloatRect sprite_t::bounding_rect() const
+{
+    return world_transform().transformRect(sprite.getGlobalBounds());
+}
 
 void sprite_t::draw_self(
     sf::RenderTarget& target,

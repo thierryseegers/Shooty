@@ -55,6 +55,8 @@ add_executable(Shooty
     entity/leader.h
     entity/missile.cpp
     entity/missile.h
+    entity/pickup.cpp
+    entity/pickup.h
     entity/projectile.cpp
     entity/projectile.h
     gui/button.cpp

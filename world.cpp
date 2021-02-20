@@ -38,6 +38,10 @@ void world_t::load_textures()
     textures.load(resources::texture::desert, "Media/Textures/Desert.png");
     textures.load(resources::texture::bullet, "Media/Textures/Bullet.png");
     textures.load(resources::texture::missile, "Media/Textures/Missile.png");
+    textures.load(resources::texture::health, "Media/Textures/HealthRefill.png");
+    textures.load(resources::texture::increase_fire_rate, "Media/Textures/FireRate.png");
+    textures.load(resources::texture::increase_spread, "Media/Textures/FireSpread.png");
+    textures.load(resources::texture::missile_refill, "Media/Textures/MissileRefill.png");
     textures.load(resources::texture::avenger, *utility::single::instance<configuration::values>()["avenger"]["texture"].value<std::string>());
     textures.load(resources::texture::eagle, *utility::single::instance<configuration::values>()["leader"]["texture"].value<std::string>());
     textures.load(resources::texture::raptor, *utility::single::instance<configuration::values>()["raptor"]["texture"].value<std::string>());

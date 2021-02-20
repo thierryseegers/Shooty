@@ -25,7 +25,10 @@ public:
         sf::RenderTarget& target,
         sf::RenderStates states) const final;
 
+    virtual sf::FloatRect bounding_rect() const;
+
     sf::Transform world_transform() const;
+
     sf::Vector2f world_position() const;
 
     void update(
@@ -49,6 +52,10 @@ protected:
     node_t *parent = nullptr;
 };
 
+bool collision(
+    node_t const& lhs,
+    node_t const& rhs);
+
 float distance(
     node_t const& lhs,
     node_t const& rhs);
@@ -70,6 +77,8 @@ public:
     sprite_t(
         sf::Texture const& texture,
         sf::IntRect const& rect);
+
+    virtual sf::FloatRect bounding_rect() const override;
 
 protected:
     sf::Sprite sprite;

@@ -26,6 +26,42 @@ leader_t::leader_t()
     , launching_missile{false}
 {}
 
+void leader_t::fire()
+{
+    firing = true;
+}
+
+void leader_t::launch_missile()
+{
+    if(missile_ammo > 0 && !launching_missile)
+    {
+        launching_missile = true;
+        --missile_ammo;
+    }
+}
+
+void leader_t::repair(
+    int const amount)
+{
+    life = std::max(life + amount, starting_life);
+}
+
+void leader_t::increase_fire_rate()
+{
+    fire_rate = std::max(10, fire_rate + 1);
+}
+
+void leader_t::increase_bullet_spread()
+{
+    bullet_spread = std::max(3, bullet_spread + 1);
+}
+
+void leader_t::collect_missile(
+    int const amount)
+{
+    missile_ammo += 3;
+}
+
 void leader_t::update_self(
         sf::Time const& dt,
         commands_t& commands)
@@ -56,20 +92,6 @@ void leader_t::update_self(
     }
 
     aircraft_t::update_self(dt, commands);
-}
-
-void leader_t::fire()
-{
-    firing = true;
-}
-
-void leader_t::launch_missile()
-{
-    if(missile_ammo > 0 && !launching_missile)
-    {
-        launching_missile = true;
-        --missile_ammo;
-    }
 }
 
 void leader_t::shoot_bullet(
