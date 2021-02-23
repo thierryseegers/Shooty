@@ -2,9 +2,11 @@
 
 #include "command.h"
 #include "configuration.h"
-#include "entity/enemy.h"
-#include "entity/leader.h"
+#include "entity/aircraft.h"
+#include "entity/entity.h"
 #include "entity/missile.h"
+#include "entity/projectile.h"
+#include "entity/pickup.h"
 #include "resources.h"
 #include "scene.h"
 #include "utility.h"
@@ -16,6 +18,8 @@
 #include <cmath>
 #include <memory>
 #include <vector>
+
+#include <iostream>
 
 world_t::world_t(
     sf::RenderWindow& window)
@@ -96,6 +100,17 @@ void world_t::build_scene()
     add_enemy(make_avenger, {+70.,  -1600.});
 }
 
+void world_t::remove_unviewables()
+{
+    commands_.push(make_command<entity::entity>([battlefield = battlefield_bounds()](entity::entity& e, sf::Time const&)
+        {
+            if(!battlefield.intersects(e.collision_bounds()))
+            {
+                e.remove = true;
+            }
+        }));
+}
+
 void world_t::spawn_enemies()
 {
     while(!enemy_spawns.empty() &&
@@ -111,16 +126,67 @@ void world_t::spawn_enemies()
     }
 }
 
+template<typename Entity1, typename Entity2>
+std::pair<Entity1*, Entity2*> match(std::pair<scene::node_t*, scene::node_t*> const& p)
+{
+    if(auto *pa = dynamic_cast<Entity1*>(p.first))
+    {
+        if(auto *pb = dynamic_cast<Entity2*>(p.second))
+        {
+            return {pa, pb};
+        }
+    }
+    else if(auto *pa = dynamic_cast<Entity2*>(p.first))
+    {
+        if(auto *pb = dynamic_cast<Entity1*>(p.second))
+        {
+            return {pb, pa};
+        }
+    }
+    
+    return {nullptr, nullptr};
+}
+
+void world_t::handle_collisions()
+{
+    for(auto const& collision : graph.collisions())
+    {
+        if(auto [aircraft, projectile] = match<entity::hostile<entity::aircraft_t>, entity::friendly<entity::projectile>>(collision); aircraft && projectile)
+        {
+            std::cout << "Friendly shot a hostile!\n";
+            aircraft->damage(projectile->damage);
+            projectile->remove = true;
+        }
+        else if(auto [aircraft, projectile] = match<entity::friendly<entity::aircraft_t>, entity::hostile<entity::projectile>>(collision); aircraft && projectile)
+        {
+            std::cout << "Friendly got shot!\n";
+            aircraft->damage(projectile->damage);
+            projectile->remove = true;
+        }
+        else if(auto [leader, pickup] = match<entity::leader_t, entity::pickup>(collision); leader && pickup)
+        {
+            std::cout << "Leader got pickup!\n";
+            pickup->apply(*leader);
+            pickup->remove = true;;
+        }
+        else if(auto [leader, enemy] = match<entity::leader_t, entity::enemy>(collision); leader && enemy)
+        {
+            std::cout << "Leader crashed into enemy!\n";
+            leader->damage(enemy->health());
+            enemy->remove = true;
+        }
+    }
+}
+
 void world_t::guide_missiles()
 {
-	// Setup command that stores all enemies in mActiveEnemies
+	// Setup command that stores all enemies in container.
     commands_.push(make_command<entity::enemy>([=](entity::enemy& e, sf::Time const&)
         {
-            // if(!destroyed)
             enemies.push_back(&e);
         }));
 
-    commands_.push(make_command<entity::guided_missile>([=](entity::guided_missile& gm, sf::Time const&)
+    commands_.push(make_command<entity::guided_missile<entity::friendly>>([=](entity::guided_missile<entity::friendly>& gm, sf::Time const&)
         {
             if(!enemies.empty())
             {
@@ -157,6 +223,13 @@ void world_t::update(
     // Scroll the view.
     view.move(0.f, scroll_speed * dt.asSeconds());
 
+    // Flag entities outside viewable area.
+    remove_unviewables();
+
+    // Guide guided missiles.
+    guide_missiles();
+
+
     // Reset player velocity.
     player->velocity = {0.f, 0.f};
 
@@ -175,11 +248,14 @@ void world_t::update(
     }
     player->velocity += {0.f, scroll_speed};
 
-    // Guide guided missiles.
-    guide_missiles();
+    // Deal with collision.
+    handle_collisions();
 
     // Remove all destroyed entities, create new ones.
-	spawn_enemies();
+    // gather_destroyed();
+    graph.sweep_removed();
+
+    spawn_enemies();
 
     // Update the entire graph.
     graph.update(dt, commands_);

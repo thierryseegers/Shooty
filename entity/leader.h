@@ -7,7 +7,7 @@
 namespace entity
 {
 
-class leader_t : public aircraft_t
+class leader_t : public friendly<aircraft_t>
 {
 public:
     leader_t();

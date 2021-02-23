@@ -15,7 +15,7 @@ namespace entity
 {
 
 
-class enemy : public aircraft_t
+class enemy : public hostile<aircraft_t>
 {
 public:
     enemy(

@@ -4,21 +4,39 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <algorithm>
 namespace entity
 {
 
-class entity : public virtual scene::node_t
+template<typename T>
+class friendly : public T
 {
 public:
-    explicit entity()
-        : destroyed{false}
+    using T::T;
+};
+
+template<typename T>
+class hostile : public T
+{
+public:
+    using T::T;
+};
+
+class entity : public scene::sprite_t
+{
+public:
+    explicit entity(
+    sf::Texture const& texture)
+        : sprite_t{texture}
     {}
 
     virtual ~entity() = default;
 
+    virtual sf::FloatRect collision_bounds() const override
+    {
+        return world_transform().transformRect(sprite.getGlobalBounds());
+    }
+
     sf::Vector2f velocity;
-    bool destroyed;
 
 protected:
     virtual void update_self(

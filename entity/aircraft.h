@@ -11,7 +11,7 @@
 namespace entity
 {
 
-class aircraft_t : public entity, public scene::sprite_t
+class aircraft_t : public entity
 {
 public:
     explicit aircraft_t(
@@ -20,7 +20,7 @@ public:
 
     virtual ~aircraft_t() = default;
 
-    void hurt(
+    void damage(
         int const amount);
 
     [[nodiscard]] int health() const

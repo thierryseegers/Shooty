@@ -11,7 +11,7 @@ namespace entity
 
 pickup::pickup(
     sf::Texture const& texture)
-    : sprite_t{texture}
+    : entity{texture}
 {}
 
 health::health()

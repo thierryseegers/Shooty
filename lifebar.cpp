@@ -13,7 +13,8 @@ namespace entity
 lifebar::lifebar(
     float const length,
     int const percent)
-    : percent{percent}
+    : percent{100}
+    , target_percent{percent}
 {
     outline.setSize({length, std::max(10.f, length / 10.f)});
     outline.setOutlineThickness(2);
@@ -22,7 +23,7 @@ lifebar::lifebar(
 
     bar.setSize({outline.getLocalBounds().width - outline.getOutlineThickness() * 2,
                  outline.getLocalBounds().height - outline.getOutlineThickness() * 2});
-    adjust(percent);
+    adjust(target_percent);
 
     utility::center_origin(outline);
     utility::center_origin(bar);
@@ -33,6 +34,32 @@ void lifebar::adjust(
 {
     assert(percent >= 0 && percent <= 100);
 
+    target_percent = percent;
+}
+
+void lifebar::draw_self(
+    sf::RenderTarget& target,
+    sf::RenderStates states) const
+{
+    target.draw(outline, states);
+    target.draw(bar, states);
+}
+
+void lifebar::update_self(
+    sf::Time const& dt,
+    commands_t& commands)
+{
+    // Make current percent crawl toawrds target.
+    if(percent > target_percent)
+    {
+        --percent;
+    }
+    else if(percent < target_percent)
+    {
+        ++percent;
+    }
+
+    // Adjust color given current percent.
     if(percent >= 65)
     {
         bar.setFillColor(sf::Color::Green);
@@ -54,16 +81,9 @@ void lifebar::adjust(
         bar.setFillColor(sf::Color::Red);
     }
 
+    // Adjust length of lifebar given current percent.
     bar.setSize({(outline.getLocalBounds().width - outline.getOutlineThickness() * 2) * (percent / 100.f),
                   bar.getSize().y});
-}
-
-void lifebar::draw_self(
-    sf::RenderTarget& target,
-    sf::RenderStates states) const
-{
-    target.draw(outline, states);
-    target.draw(bar, states);
 }
 
 }

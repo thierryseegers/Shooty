@@ -22,7 +22,12 @@ private:
         sf::RenderTarget& target,
         sf::RenderStates states) const override;
 
-    int const percent;
+    virtual void update_self(
+        sf::Time const& dt,
+        commands_t& commands) override;
+
+    int percent;
+    int target_percent;
     sf::RectangleShape outline, bar;
 };
 

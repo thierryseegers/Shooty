@@ -2,6 +2,7 @@
 
 #include "configuration.h"
 #include "entity/bullet.h"
+#include "entity/entity.h"
 #include "entity/flight.h"
 #include "entity/missile.h"
 #include "resources.h"
@@ -34,7 +35,7 @@ enemy::enemy(
     float const attack_rate,
     sf::Texture const& texture,
     std::vector<flight::direction> const& pattern)
-    : aircraft_t{starting_life, texture}
+    : hostile<aircraft_t>{starting_life, texture}
     , speed{speed}
     , attack_rate{attack_rate}
     , pattern{pattern}
@@ -87,7 +88,7 @@ avenger::avenger()
 void avenger::attack(
     scene::air& air) const
 {
-    add_projectile<bullet>(air, {0.f, 0.5f}, projectile::downward);
+    add_projectile<bullet<hostile>>(air, {0.f, 0.5f}, projectile::downward);
 }
 
 raptor::raptor()
@@ -101,7 +102,7 @@ raptor::raptor()
 void raptor::attack(
     scene::air& air) const
 {
-    add_projectile<missile>(air, {0.f, 0.5f}, projectile::downward);
+    add_projectile<missile<hostile>>(air, {0.f, 0.5f}, projectile::downward);
 }
 
 }

@@ -9,7 +9,7 @@
 namespace entity
 {
 
-class pickup : public entity, public scene::sprite_t
+class pickup : public entity
 {
 public:
     pickup(

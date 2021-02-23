@@ -10,7 +10,7 @@
 
 #include <array>
 #include <set>
-
+#include <vector>
 class world_t
 {
 public:
@@ -25,8 +25,11 @@ public:
 private:
     void load_textures();
     void build_scene();
-    void spawn_enemies();
+    
+    void remove_unviewables();
+    void handle_collisions();
     void guide_missiles();
+    void spawn_enemies();
 
     sf::FloatRect view_bounds() const;
     sf::FloatRect battlefield_bounds() const;

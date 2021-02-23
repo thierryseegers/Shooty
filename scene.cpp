@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cassert>
 #include <functional>
+#include <iterator>
 #include <memory>
 #include <numeric>
 #include <vector>
@@ -37,6 +38,36 @@ std::unique_ptr<node_t> node_t::detach(
     return p;
 }
 
+void node_t::on_command(
+    command_t const& command,
+    sf::Time const& dt)
+{
+    command(*this, dt);
+
+    for(auto& child : children)
+    {
+        child->on_command(command, dt);
+    }
+}
+
+void node_t::update(
+    sf::Time const& dt,
+    commands_t& commands)
+{
+    update_self(dt, commands);
+
+    for(auto& child : children)
+    {
+        child->update(dt, commands);
+    }
+}
+
+void node_t::sweep_removed()
+{
+    children.erase(std::remove_if(children.begin(), children.end(), [](auto const& n){ return n->remove; }), children.end());
+    std::for_each(children.begin(), children.end(), std::mem_fn(&node_t::sweep_removed));
+}
+
 void node_t::draw(
     sf::RenderTarget& target,
     sf::RenderStates states) const
@@ -49,16 +80,6 @@ void node_t::draw(
     {
         child->draw(target, states);
     }
-}
-
-void node_t::draw_self(
-    sf::RenderTarget& target,
-    sf::RenderStates states) const
-{}
-
-sf::FloatRect node_t::bounding_rect() const
-{
-    return {};
 }
 
 sf::Transform node_t::world_transform() const
@@ -78,40 +99,42 @@ sf::Vector2f node_t::world_position() const
     return world_transform() * sf::Vector2f{};
 }
 
-void node_t::update(
-    sf::Time const& dt,
-    commands_t& commands)
+std::set<std::pair<node_t*, node_t*>> node_t::collisions()
 {
-    update_self(dt, commands);
+    std::set<std::pair<node_t*, node_t*>> c;
 
-    for(auto& child : children)
+    for(auto left = begin(), e = end(); left != e; ++left)
     {
-        child->update(dt, commands);
+        for(auto right = std::next(left); right != e; ++right)
+        {
+            if(left->collides(&(*right)))
+            {
+                c.insert(std::minmax(&(*left), &(*right)));
+            }
+        }
     }
+
+    return c;
 }
 
-void node_t::on_command(
-    command_t const& command,
-    sf::Time const& dt)
-{
-    command(*this, dt);
-
-    for(auto& child : children)
-    {
-        child->on_command(command, dt);
-    }
-}
+void node_t::draw_self(
+    sf::RenderTarget& target,
+    sf::RenderStates states) const
+{}
 
 void node_t::update_self(
     sf::Time const& dt,
     commands_t& commands)
 {}
 
-bool collision(
-    node_t const& lhs,
-    node_t const& rhs)
+bool node_t::collides(node_t const* other) const
 {
-    return lhs.bounding_rect().intersects(rhs.bounding_rect());
+    return collision_bounds().intersects(other->collision_bounds());
+}
+
+sf::FloatRect node_t::collision_bounds() const
+{
+    return {};
 }
 
 float distance(
@@ -131,11 +154,6 @@ sprite_t::sprite_t(
     sf::IntRect const& rect)
     : sprite{texture, rect}
 {}
-
-sf::FloatRect sprite_t::bounding_rect() const
-{
-    return world_transform().transformRect(sprite.getGlobalBounds());
-}
 
 void sprite_t::draw_self(
     sf::RenderTarget& target,

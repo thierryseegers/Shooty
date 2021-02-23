@@ -16,9 +16,9 @@ namespace entity
 aircraft_t::aircraft_t(
     int const starting_life,
     sf::Texture const& texture)
-    : starting_life{starting_life}
+    : entity{texture}
+    , starting_life{starting_life}
     , life{starting_life}
-    , scene::sprite_t(texture)
 {
     utility::center_origin(sprite);
 
@@ -28,12 +28,12 @@ aircraft_t::aircraft_t(
     attach(std::move(b));
 }
 
-void aircraft_t::hurt(
+void aircraft_t::damage(
     int const amount)
 {
-    if(life -= amount; life <= 0)
+    if(life = std::max(0, life - amount); life == 0)
     {
-        destroyed = true;
+        // remove = true;
     }
 }
 

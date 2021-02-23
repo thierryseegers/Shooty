@@ -15,8 +15,8 @@ namespace entity
 {
 
 leader_t::leader_t()
-    : aircraft_t{*utility::single::instance<configuration::values>()["leader"]["starting_health"].value<int>(),
-                 utility::single::instance<resources::textures>().get(resources::texture::eagle)}
+    : friendly<aircraft_t>{*utility::single::instance<configuration::values>()["leader"]["starting_health"].value<int>(),
+                           utility::single::instance<resources::textures>().get(resources::texture::eagle)}
     , fire_rate{1}
     , bullet_spread{1}
     , fire_countdown{sf::Time::Zero}
@@ -100,16 +100,16 @@ void leader_t::shoot_bullet(
     switch(bullet_spread)
     {
     case 1:
-        add_projectile<bullet>(air, {0.f, 0.5f}, projectile::upward);
+        add_projectile<bullet<friendly>>(air, {0.f, 0.5f}, projectile::upward);
         break;
     case 2:
-        add_projectile<bullet>(air, {-0.33f, 0.33f}, projectile::upward);
-        add_projectile<bullet>(air, {0.33f, 0.33f}, projectile::upward);
+        add_projectile<bullet<friendly>>(air, {-0.33f, 0.33f}, projectile::upward);
+        add_projectile<bullet<friendly>>(air, {0.33f, 0.33f}, projectile::upward);
         break;
     case 3:
-        add_projectile<bullet>(air, {0.f, 0.5f}, projectile::upward);
-        add_projectile<bullet>(air, {-0.33f, 0.33f}, projectile::upward);
-        add_projectile<bullet>(air, {0.33f, 0.33f}, projectile::upward);
+        add_projectile<bullet<friendly>>(air, {0.f, 0.5f}, projectile::upward);
+        add_projectile<bullet<friendly>>(air, {-0.33f, 0.33f}, projectile::upward);
+        add_projectile<bullet<friendly>>(air, {0.33f, 0.33f}, projectile::upward);
         break;
     }
 }
@@ -118,11 +118,11 @@ void leader_t::shoot_missile(scene::air& air) const
 {
     if(missile_guidance)
     {
-        add_projectile<guided_missile>(air, {0.f, 0.5f}, projectile::upward);
+        add_projectile<guided_missile<friendly>>(air, {0.f, 0.5f}, projectile::upward);
     }
     else
     {
-        add_projectile<missile>(air, {0.f, 0.5f}, projectile::upward);
+        add_projectile<missile<friendly>>(air, {0.f, 0.5f}, projectile::upward);
     }
 }
 

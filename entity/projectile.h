@@ -7,7 +7,7 @@
 namespace entity
 {
 
-class projectile : public entity, public scene::sprite_t
+class projectile : public entity
 {
 public:
     projectile(
