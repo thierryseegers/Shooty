@@ -43,7 +43,7 @@ void leader_t::launch_missile()
 void leader_t::repair(
     int const amount)
 {
-    life = std::max(life + amount, starting_life);
+    life = std::min(life + amount, starting_life);
 }
 
 void leader_t::increase_fire_rate()
@@ -53,7 +53,7 @@ void leader_t::increase_fire_rate()
 
 void leader_t::increase_bullet_spread()
 {
-    bullet_spread = std::max(3, bullet_spread + 1);
+    bullet_spread = std::min(3, bullet_spread + 1);
 }
 
 void leader_t::collect_missile(

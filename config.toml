@@ -22,5 +22,5 @@ damage = 10
 speed = 300.0
 
 [missile]
-damage = 200
+damage = 40
 speed = 150.0

@@ -31,16 +31,18 @@ aircraft_t::aircraft_t(
 void aircraft_t::damage(
     int const amount)
 {
-    if(life = std::max(0, life - amount); life == 0)
-    {
-        // remove = true;
-    }
+    life = std::max(0, life - amount);
 }
 
 void aircraft_t::update_self(
     sf::Time const& dt,
         commands_t& commands)
 {
+    if(!life)
+    {
+        // remove = true;
+    }
+
     entity::update_self(dt, commands);
 
     bar->adjust((health() * 100) / starting_life);

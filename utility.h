@@ -2,8 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <array>
 #include <cmath>
 #include <iterator>
+#include <random>
 #include <string>
 #include <type_traits>
 
@@ -47,6 +49,9 @@ float length(
 
 sf::Vector2f unit(
     sf::Vector2f const& vector);
+
+int random(
+    int const max);
 
 // An iterator that cyles forward or barckward when it reaches the end or the beginning of its container.
 template<class Container,

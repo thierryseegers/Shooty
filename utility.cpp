@@ -172,4 +172,28 @@ sf::Vector2f unit(
     return vector / length(vector);
 }
 
+std::mt19937& random_engine()
+{
+    static std::mt19937 re;
+    static bool initialized = false;
+    if(!initialized)
+    {
+        std::random_device rd;
+        std::array<std::mt19937::result_type, std::mt19937::state_size> data;
+        std::generate(std::begin(data), std::end(data), std::ref(rd));
+        
+        std::seed_seq ss(std::begin(data), std::end(data));
+        re.seed(ss);
+    }
+
+    return re;
+}
+
+int random(
+    int const max)
+{
+    std::uniform_int_distribution<> d(0, max);
+    return d(random_engine());
+}
+
 }

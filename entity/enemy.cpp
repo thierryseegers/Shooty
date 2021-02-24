@@ -5,12 +5,14 @@
 #include "entity/entity.h"
 #include "entity/flight.h"
 #include "entity/missile.h"
+#include "entity/pickup.h"
 #include "resources.h"
 #include "scene.h"
 #include "utility.h"
 
 #include <SFML/Graphics.hpp>
 
+#include <memory>
 #include <vector>
 
 namespace entity
@@ -47,31 +49,65 @@ void enemy::update_self(
         sf::Time const& dt,
         commands_t& commands)
 {
-    // Update travel.
-    if(travelled > current->distance)
+    if(life)
     {
-        ++current;
-        travelled = 0;
-    }
-
-    float const rad = utility::to_radian(current->angle + 90.f);
-    velocity = {speed * std::cos(rad), speed * std::sin(rad)};
-
-    travelled += speed * dt.asSeconds();
-
-    // Update attack.
-    if(attack_countdown <= sf::Time::Zero)
-    {
-        commands.push(make_command<scene::air>([=](scene::air& air, sf::Time const&)
+        // Update travel.
+        if(travelled > current->distance)
         {
-            attack(air);
-        }));
+            ++current;
+            travelled = 0;
+        }
 
-        attack_countdown += sf::seconds(1.f / attack_rate);
+        float const rad = utility::to_radian(current->angle + 90.f);
+        velocity = {speed * std::cos(rad), speed * std::sin(rad)};
+
+        travelled += speed * dt.asSeconds();
+
+        // Update attack.
+        if(attack_countdown <= sf::Time::Zero)
+        {
+            commands.push(make_command<scene::air>([=](scene::air& air, sf::Time const&)
+            {
+                attack(air);
+            }));
+
+            attack_countdown += sf::seconds(1.f / attack_rate);
+        }
+        else
+        {
+            attack_countdown -= dt;
+        }
     }
-    else
+    else if(!remove)
     {
-        attack_countdown -= dt;
+        if(utility::random(2) == 0)
+        {
+            commands.push(make_command<scene::air>([=](scene::air& air, sf::Time const&)
+            {
+                std::unique_ptr<pickup::pickup> pickup;
+                switch(utility::random(3))
+                {
+                    case 0:
+                        pickup = std::make_unique<pickup::health>();
+                        break;
+                    case 1:
+                        pickup = std::make_unique<pickup::missile_refill>();
+                        break;
+                    case 2:
+                        pickup = std::make_unique<pickup::increase_spread>();
+                        break;
+                    case 3:
+                        pickup = std::make_unique<pickup::increase_fire_rate>();
+                        break;
+                }
+
+                pickup->setPosition(world_position());
+                pickup->velocity = {0.f, 1.f};
+                air.attach(std::move(pickup));
+            }));
+        }
+
+        remove = true;
     }
 
     aircraft_t::update_self(dt, commands);

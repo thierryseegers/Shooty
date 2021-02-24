@@ -6,7 +6,7 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace entity
+namespace entity::pickup
 {
 
 class pickup : public entity

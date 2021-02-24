@@ -20,7 +20,7 @@ public:
 
     virtual ~aircraft_t() = default;
 
-    void damage(
+    virtual void damage(
         int const amount);
 
     [[nodiscard]] int health() const

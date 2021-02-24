@@ -163,7 +163,7 @@ void world_t::handle_collisions()
             aircraft->damage(projectile->damage);
             projectile->remove = true;
         }
-        else if(auto [leader, pickup] = match<entity::leader_t, entity::pickup>(collision); leader && pickup)
+        else if(auto [leader, pickup] = match<entity::leader_t, entity::pickup::pickup>(collision); leader && pickup)
         {
             std::cout << "Leader got pickup!\n";
             pickup->apply(*leader);
