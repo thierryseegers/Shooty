@@ -11,6 +11,7 @@
 #include "utility.h"
 
 #include <SFML/Graphics.hpp>
+#include <spdlog/spdlog.h>
 
 #include <memory>
 #include <vector>
@@ -78,36 +79,33 @@ void enemy::update_self(
             attack_countdown -= dt;
         }
     }
-    else if(!remove)
+    else if(utility::random(2) == 0)
     {
-        if(utility::random(2) == 0)
+        spdlog::info("Loot dropped.");
+
+        commands.push(make_command<scene::air>([=](scene::air& air, sf::Time const&)
         {
-            commands.push(make_command<scene::air>([=](scene::air& air, sf::Time const&)
+            std::unique_ptr<pickup::pickup> pickup;
+            switch(utility::random(3))
             {
-                std::unique_ptr<pickup::pickup> pickup;
-                switch(utility::random(3))
-                {
-                    case 0:
-                        pickup = std::make_unique<pickup::health>();
-                        break;
-                    case 1:
-                        pickup = std::make_unique<pickup::missile_refill>();
-                        break;
-                    case 2:
-                        pickup = std::make_unique<pickup::increase_spread>();
-                        break;
-                    case 3:
-                        pickup = std::make_unique<pickup::increase_fire_rate>();
-                        break;
-                }
+                case 0:
+                    pickup = std::make_unique<pickup::health>();
+                    break;
+                case 1:
+                    pickup = std::make_unique<pickup::missile_refill>();
+                    break;
+                case 2:
+                    pickup = std::make_unique<pickup::increase_spread>();
+                    break;
+                case 3:
+                    pickup = std::make_unique<pickup::increase_fire_rate>();
+                    break;
+            }
 
-                pickup->setPosition(world_position());
-                pickup->velocity = {0.f, 1.f};
-                air.attach(std::move(pickup));
-            }));
-        }
-
-        remove = true;
+            pickup->setPosition(world_position());
+            pickup->velocity = {0.f, 1.f};
+            air.attach(std::move(pickup));
+        }));
     }
 
     aircraft_t::update_self(dt, commands);

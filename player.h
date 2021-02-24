@@ -20,6 +20,13 @@ public:
         count
     };
 
+    enum class mission
+    {
+        failure,
+        running,
+        success,
+    };
+
     player_t();
 
     sf::Keyboard::Key bound_key(
@@ -36,9 +43,21 @@ public:
     void handle_realtime_input(
         commands_t& commands);
 
+    mission& mission_status()
+    {
+        return status;
+    }
+
+    [[nodiscard]] mission mission_status() const
+    {
+        return status;
+    }
+
 private:
     [[nodiscard]] static bool is_realtime_action(action const a);
 
     std::map<sf::Keyboard::Key, action> key_bindings;
     std::map<action, command_t> action_bindings;
+
+    mission status;
 };

@@ -22,6 +22,18 @@ bool game::update(
     sf::Time const& dt)
 {
     world.update(dt);
+
+    if(!world.player_alive())
+    {
+        states.context.player.mission_status() = player_t::mission::failure;
+        states.request_push(id::game_over);
+    }
+    else if(world.player_reached_end())
+    {
+        states.context.player.mission_status() = player_t::mission::success;
+        states.request_push(id::game_over);
+    }
+
     states.context.player.handle_realtime_input(world.commands());
 
     return true;

@@ -15,8 +15,9 @@ include(
 # Request Conan to install Find*.cmake modules for the dependencies.
 set(CONAN_INSTALL_FOLDER ${CMAKE_BINARY_DIR}/conan)
 conan_cmake_run(REQUIRES
-                    tomlplusplus/2.3.0@
+                    tomlplusplus/2.3.0
                     sfml/2.5.1@bincrafters/stable
+                    spdlog/1.8.2
                 BASIC_SETUP
                 BUILD
                     missing
@@ -25,12 +26,16 @@ conan_cmake_run(REQUIRES
                 INSTALL_FOLDER
                     ${CONAN_INSTALL_FOLDER}
                 OPTIONS
-                    tomlplusplus:multiple_headers=True
+                    # tomlplusplus:multiple_headers=True
 )
 list(APPEND CMAKE_MODULE_PATH ${CONAN_INSTALL_FOLDER})
 
 find_package(sfml 2.5.1 MODULE
     COMPONENTS audio graphics network system window
+    REQUIRED
+)
+
+find_package(spdlog 1.8.2 MODULE
     REQUIRED
 )
 
@@ -75,6 +80,8 @@ add_executable(Shooty
     resources.h
     scene.cpp
     scene.h
+    state/game_over.cpp
+    state/game_over.h
     state/game.cpp
     state/game.h
     state/menu.cpp
@@ -98,11 +105,13 @@ add_executable(Shooty
 target_include_directories(Shooty
     PRIVATE ${CMAKE_SOURCE_DIR}
     PRIVATE sfml::sfml
+    PRIVATE spdlog::spdlog
     PRIVATE tomlplusplus::tomlplusplus
 )
 
 target_link_libraries(Shooty
     PRIVATE sfml::sfml
+    PRIVATE spdlog::spdlog
 )
 
 set_property(

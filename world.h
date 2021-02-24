@@ -22,6 +22,10 @@ public:
 
     commands_t& commands();
 
+    [[nodiscard]] bool player_alive() const;
+
+    [[nodiscard]] bool player_reached_end() const;
+
 private:
     void load_textures();
     void build_scene();

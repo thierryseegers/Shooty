@@ -9,6 +9,7 @@
 #include <map>
 
 player_t::player_t()
+    : status{mission::running}
 {
     bind_key(sf::Keyboard::Down, action::move_down);
     bind_key(sf::Keyboard::Left, action::move_left);

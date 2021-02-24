@@ -40,7 +40,7 @@ void aircraft_t::update_self(
 {
     if(!life)
     {
-        // remove = true;
+        remove = true;
     }
 
     entity::update_self(dt, commands);

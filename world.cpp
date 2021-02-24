@@ -12,14 +12,13 @@
 #include "utility.h"
 
 #include <SFML/Graphics.hpp>
+#include <spdlog/spdlog.h>
 
 #include <algorithm>
 #include <array>
 #include <cmath>
 #include <memory>
 #include <vector>
-
-#include <iostream>
 
 world_t::world_t(
     sf::RenderWindow& window)
@@ -34,6 +33,21 @@ world_t::world_t(
     build_scene();
 
     view.setCenter(player_spawn_point);
+}
+
+commands_t& world_t::commands()
+{
+    return commands_;
+}
+
+bool world_t::player_alive() const
+{
+    return !player->remove;
+}
+
+bool world_t::player_reached_end() const
+{
+	return !bounds.contains(player->getPosition());
 }
 
 void world_t::load_textures()
@@ -153,25 +167,25 @@ void world_t::handle_collisions()
     {
         if(auto [aircraft, projectile] = match<entity::hostile<entity::aircraft_t>, entity::friendly<entity::projectile>>(collision); aircraft && projectile)
         {
-            std::cout << "Friendly shot a hostile!\n";
+            spdlog::info("Friendly shot a hostile!");
             aircraft->damage(projectile->damage);
             projectile->remove = true;
         }
         else if(auto [aircraft, projectile] = match<entity::friendly<entity::aircraft_t>, entity::hostile<entity::projectile>>(collision); aircraft && projectile)
         {
-            std::cout << "Friendly got shot!\n";
+            spdlog::info("Friendly got shot!");
             aircraft->damage(projectile->damage);
             projectile->remove = true;
         }
         else if(auto [leader, pickup] = match<entity::leader_t, entity::pickup::pickup>(collision); leader && pickup)
         {
-            std::cout << "Leader got pickup!\n";
+            spdlog::info("Leader got pickup!");
             pickup->apply(*leader);
             pickup->remove = true;;
         }
         else if(auto [leader, enemy] = match<entity::leader_t, entity::enemy>(collision); leader && enemy)
         {
-            std::cout << "Leader crashed into enemy!\n";
+            spdlog::info("Leader crashed into enemy!");
             leader->damage(enemy->health());
             enemy->remove = true;
         }
@@ -248,18 +262,6 @@ void world_t::update(
     }
     player->velocity += {0.f, scroll_speed};
 
-    // Deal with collision.
-    handle_collisions();
-
-    // Remove all destroyed entities, create new ones.
-    // gather_destroyed();
-    graph.sweep_removed();
-
-    spawn_enemies();
-
-    // Update the entire graph.
-    graph.update(dt, commands_);
-
     // Prevent the player from going off-screen.
     sf::FloatRect const bounds{view.getCenter() - view.getSize() / 2.f, view.getSize()};
     float const border_distance = 40.f;
@@ -269,15 +271,20 @@ void world_t::update(
     position.y = std::clamp(position.y, bounds.top + border_distance, bounds.top + bounds.height - border_distance);
 
     player->setPosition(position);
+
+    // Deal with collision.
+    handle_collisions();
+
+    // Remove all destroyed entities, spawn new enemies if need be.
+    graph.sweep_removed();
+    spawn_enemies();
+
+    // Update the entire graph.
+    graph.update(dt, commands_);
 }
 
 void world_t::draw() const
 {
     window.setView(view);
     window.draw(graph);
-}
-
-commands_t& world_t::commands()
-{
-    return commands_;
 }

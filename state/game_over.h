@@ -2,17 +2,17 @@
 
 #include "state/stack.h"
 #include "state/state.h"
-#include "world.h"
 
+#include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
 namespace state
 {
 
-class game : public state
+class game_over : public state
 {
 public:
-    game(
+    game_over(
         stack& states);
 
     virtual void draw() override;
@@ -24,7 +24,8 @@ public:
         sf::Event const& event) override;
 
 private:
-    world_t world;
+    sf::Text text;
+    sf::Time elapsed;
 };
 
 }
