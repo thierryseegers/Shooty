@@ -1,7 +1,9 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/System/NonCopyable.hpp>
+#include <SFML/Window/Event.hpp>
 
 namespace gui
 {

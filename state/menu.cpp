@@ -17,7 +17,7 @@ menu::menu(
     stack& states)
     : state{states}
 {
-    background.setTexture(utility::single::instance<resources::textures>().get(resources::texture::title_screen));
+    background.setTexture(resources::textures().get(resources::texture::title_screen));
 
     auto play = std::make_shared<gui::button>();
     play->setPosition(100, 250);

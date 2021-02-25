@@ -2,7 +2,9 @@
 
 #include "gui/component.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Window/Event.hpp>
 
 #include <memory>
 #include <vector>

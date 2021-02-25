@@ -9,6 +9,11 @@
 namespace configuration
 {
 
+values_t const& values()
+{
+    return utility::single::instance<configuration::values_t>();
+}
+
 void initialize(
     std::filesystem::path const& config_file)
 {
@@ -16,7 +21,7 @@ void initialize(
 
     if(!initialized)
     {
-        utility::single::mutable_instance<values>() = toml::parse_file(config_file.native());
+        utility::single::mutable_instance<values_t>() = toml::parse_file(config_file.native());
         initialized = true;
     }
     else

@@ -23,7 +23,7 @@ settings::settings(
     stack& states)
     : state{states}
 {
-    background.setTexture(utility::single::instance<resources::textures>().get(resources::texture::title_screen));
+    background.setTexture(resources::textures().get(resources::texture::title_screen));
 
     // Build key binding buttons and labels.
     add_button_label(player_t::action::move_left,  150.f, "Move Left");

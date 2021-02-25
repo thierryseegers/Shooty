@@ -1,6 +1,7 @@
 #pragma once
 
 #include "command.h"
+#include "resources.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -26,68 +27,23 @@ public:
         using pointer = node_t*;
         using difference_type = std::ptrdiff_t;
 
-        iterator(node_t* root = nullptr)
-        {
-            indices.push_back(0);
-            current = next(root);
-        }
+        iterator(
+            node_t* root = nullptr);
 
-        reference operator*()
-        {
-            return *current;
-        }
+        reference operator*();
 
-        pointer operator->()
-        {
-            return current;
-        }
+        pointer operator->();
 
-        iterator operator++()
-        {
-            if(current->parent && ++indices.back() != current->parent->children.size())
-            {
-                current = next(current->parent->children[indices.back()].get());
-            }
-            else
-            {
-                indices.pop_back();
-                current = current->parent;
-            }
+        iterator operator++();
 
-            return *this;
-        }
+        iterator operator++(int);
 
-        iterator operator++(int)
-        {
-            auto tmp = *this;
-            this->operator++();
-            return tmp;
-        }
+        iterator& operator=(iterator const& rhs);
 
-        iterator& operator=(iterator const& rhs)
-        {
-            current = rhs.current;
-            indices = rhs.indices;
-
-            return *this;
-        }
-
-        [[nodiscard]] bool operator!=(iterator const& rhs)
-        {
-            return rhs.current != current;
-        }
+        [[nodiscard]] bool operator!=(iterator const& rhs);
 
     private:
-        node_t* next(node_t* n)
-        {
-            if(n && n->children.size())
-            {
-                indices.push_back(0);
-                return next(n->children[0].get());
-            }
-            else
-                return n;
-        }
+        node_t* next(node_t* n);
 
         std::deque<size_t> indices;
         node_t* current;
@@ -173,10 +129,10 @@ class sprite_t : public node_t
 {
 public:
     explicit sprite_t(
-        sf::Texture const& texture);
+        resources::texture const& texture);
 
     sprite_t(
-        sf::Texture const& texture,
+        resources::texture const& texture,
         sf::IntRect const& rect);
 
     virtual ~sprite_t() = default;

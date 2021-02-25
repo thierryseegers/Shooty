@@ -3,10 +3,13 @@
 #include "gui/component.h"
 #include "utility.h"
 
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 #include <algorithm>
+#include <iterator>
 #include <memory>
 
 namespace gui

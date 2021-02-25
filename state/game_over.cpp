@@ -15,8 +15,7 @@ game_over::game_over(
     stack& states)
     : state{states}
 {
-    sf::Font const& font = utility::single::instance<resources::fonts>().get(resources::font::main);
-    text.setFont(font);
+    text.setFont(resources::fonts().get(resources::font::main));
 
     if(states.context.player.mission_status() == player_t::mission::failure)
         text.setString("Mission failed!");	

@@ -4,7 +4,10 @@
 #include "resources.h"
 #include "utility.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Window/Event.hpp>
 
 #include <string>
 
@@ -16,7 +19,7 @@ class label : public component
 public:
     label(
         std::string const& contents)
-        : text{sf::Text{contents, utility::single::instance<resources::fonts>().get(resources::font::label), 16}}
+        : text{sf::Text{contents, resources::fonts().get(resources::font::label), 16}}
     {}
 
     [[nodiscard]] virtual bool selectable() const override

@@ -25,15 +25,13 @@ application::application()
     window.setKeyRepeatEnabled(false);
     window.setFramerateLimit(60);
 
-    auto& fonts = utility::single::mutable_instance<resources::fonts>();
+    auto& fonts = utility::single::mutable_instance<resources::fonts_t>();
     fonts.load(resources::font::main, "Media/Sansation.ttf");
     fonts.load(resources::font::label, "Media/Sansation.ttf");
     
-    auto& textures = utility::single::mutable_instance<resources::textures>();
+    auto& textures = utility::single::mutable_instance<resources::textures_t>();
     textures.load(resources::texture::title_screen, "Media/Textures/TitleScreen.png");
-	textures.load(resources::texture::button_normal, "Media/Textures/ButtonNormal.png");
-	textures.load(resources::texture::button_selected, "Media/Textures/ButtonSelected.png");
-	textures.load(resources::texture::button_pressed, "Media/Textures/ButtonPressed.png");
+	textures.load(resources::texture::buttons, "Media/Textures/Buttons.png");
 
     statistics_text.setFont(fonts.get(resources::font::main));
     statistics_text.setPosition(5.f, 5.f);

@@ -1,8 +1,9 @@
 #pragma once
 
 #include "entity.h"
+#include "resources.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 namespace entity
 {
@@ -13,7 +14,8 @@ public:
     projectile(
         float const speed,
         int const damage,
-        sf::Texture const& texture);
+    resources::texture const& texture,
+    sf::IntRect const& texture_rect);
 
     virtual ~projectile() = default;
 

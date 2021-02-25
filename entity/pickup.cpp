@@ -1,21 +1,27 @@
 #include "pickup.h"
 
+#include "configuration.h"
 #include "entity/leader.h"
 #include "resources.h"
 #include "utility.h"
 
-#include <SFML/Graphics.hpp>
+#include <magic_enum.hpp>
+#include <SFML/Graphics/Rect.hpp>
+
+#include <string>
 
 namespace entity::pickup
 {
 
 pickup::pickup(
-    sf::Texture const& texture)
-    : entity{texture}
+    resources::texture const& texture,
+    sf::IntRect const& texture_rect)
+    : entity{texture, texture_rect}
 {}
 
 health::health()
-    : pickup{utility::single::instance<resources::textures>().get(resources::texture::health)}
+    : pickup{*magic_enum::enum_cast<resources::texture>(*configuration::values()["pickup"]["texture"].value<std::string>()),
+             utility::to_intrect(*configuration::values()["pickup"]["health"]["texture_rect"].as_array())}
 {}
 
 void health::apply(
@@ -25,7 +31,8 @@ void health::apply(
 }
 
 missile_refill::missile_refill()
-    : pickup{utility::single::instance<resources::textures>().get(resources::texture::missile_refill)}
+    : pickup{*magic_enum::enum_cast<resources::texture>(*configuration::values()["pickup"]["texture"].value<std::string>()),
+             utility::to_intrect(*configuration::values()["pickup"]["missile_refill"]["texture_rect"].as_array())}
 {}
 
 void missile_refill::apply(
@@ -35,7 +42,8 @@ void missile_refill::apply(
 }
 
 increase_spread::increase_spread()
-    : pickup{utility::single::instance<resources::textures>().get(resources::texture::increase_spread)}
+    : pickup{*magic_enum::enum_cast<resources::texture>(*configuration::values()["pickup"]["texture"].value<std::string>()),
+             utility::to_intrect(*configuration::values()["pickup"]["fire_spread"]["texture_rect"].as_array())}
 {}
 
 void increase_spread::apply(
@@ -45,7 +53,8 @@ void increase_spread::apply(
 }
 
 increase_fire_rate::increase_fire_rate()
-    : pickup{utility::single::instance<resources::textures>().get(resources::texture::increase_fire_rate)}
+    : pickup{*magic_enum::enum_cast<resources::texture>(*configuration::values()["pickup"]["texture"].value<std::string>()),
+             utility::to_intrect(*configuration::values()["pickup"]["fire_rate"]["texture_rect"].as_array())}
 {}
 
 void increase_fire_rate::apply(

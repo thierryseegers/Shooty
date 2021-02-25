@@ -1,11 +1,10 @@
 #include "entity/aircraft.h"
 
-#include "configuration.h"
 #include "lifebar.h"
+#include "resources.h"
 #include "scene.h"
 #include "utility.h"
 
-#include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
 #include <memory>
@@ -15,8 +14,9 @@ namespace entity
 
 aircraft_t::aircraft_t(
     int const starting_life,
-    sf::Texture const& texture)
-    : entity{texture}
+    resources::texture const& texture,
+    sf::IntRect const& texture_rect)
+    : entity{texture, texture_rect}
     , starting_life{starting_life}
     , life{starting_life}
 {
@@ -36,7 +36,7 @@ void aircraft_t::damage(
 
 void aircraft_t::update_self(
     sf::Time const& dt,
-        commands_t& commands)
+    commands_t& commands)
 {
     if(!life)
     {

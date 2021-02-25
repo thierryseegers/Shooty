@@ -15,6 +15,7 @@ include(
 # Request Conan to install Find*.cmake modules for the dependencies.
 set(CONAN_INSTALL_FOLDER ${CMAKE_BINARY_DIR}/conan)
 conan_cmake_run(REQUIRES
+                    magic_enum/0.7.2
                     tomlplusplus/2.3.0
                     sfml/2.5.1@bincrafters/stable
                     spdlog/1.8.2
@@ -29,6 +30,10 @@ conan_cmake_run(REQUIRES
                     # tomlplusplus:multiple_headers=True
 )
 list(APPEND CMAKE_MODULE_PATH ${CONAN_INSTALL_FOLDER})
+
+find_package(magic_enum 0.7.2 MODULE
+    REQUIRED
+)
 
 find_package(sfml 2.5.1 MODULE
     COMPONENTS audio graphics network system window
@@ -77,6 +82,7 @@ add_executable(Shooty
     main.cpp
     player.cpp
     player.h
+    resources.cpp
     resources.h
     scene.cpp
     scene.h
@@ -104,6 +110,7 @@ add_executable(Shooty
 
 target_include_directories(Shooty
     PRIVATE ${CMAKE_SOURCE_DIR}
+    PRIVATE magic_enum::magic_enum
     PRIVATE sfml::sfml
     PRIVATE spdlog::spdlog
     PRIVATE tomlplusplus::tomlplusplus
@@ -121,7 +128,7 @@ set_property(
 
 # Copy media files from the book's chapters and the configuration file.
 add_custom_target(copy-runtime-files ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Book/07_Gameplay/Media ${CMAKE_BINARY_DIR}/Media
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Book/08_Graphics/Media ${CMAKE_BINARY_DIR}/Media
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/config.toml ${CMAKE_BINARY_DIR}/config.toml
 )
 

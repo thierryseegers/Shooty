@@ -1,22 +1,29 @@
 #include "entity/leader.h"
 
-
+#include "command.h"
 #include "configuration.h"
+#include "entity/aircraft.h"
 #include "entity/bullet.h"
+#include "entity/entity.h"
 #include "entity/missile.h"
 #include "entity/projectile.h"
 #include "resources.h"
 #include "scene.h"
 #include "utility.h"
 
-#include <SFML/System.hpp>
+#include <magic_enum.hpp>
+#include <SFML/System/Time.hpp>
+
+#include <algorithm>
+#include <string>
 
 namespace entity
 {
 
 leader_t::leader_t()
-    : friendly<aircraft_t>{*utility::single::instance<configuration::values>()["leader"]["starting_health"].value<int>(),
-                           utility::single::instance<resources::textures>().get(resources::texture::eagle)}
+    : friendly<aircraft_t>{*configuration::values()["aircraft"]["leader"]["starting_health"].value<int>(),
+                           *magic_enum::enum_cast<resources::texture>(*configuration::values()["aircraft"]["texture"].value<std::string>()),
+                           utility::to_intrect(*configuration::values()["aircraft"]["leader"]["texture_rect"].as_array())}
     , fire_rate{1}
     , bullet_spread{1}
     , fire_countdown{sf::Time::Zero}

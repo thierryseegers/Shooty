@@ -8,20 +8,24 @@
 #include "entity/pickup.h"
 #include "resources.h"
 #include "scene.h"
+#include "tomlpp.h"
 #include "utility.h"
 
+#include <magic_enum.hpp>
 #include <SFML/Graphics.hpp>
 #include <spdlog/spdlog.h>
 
 #include <memory>
+#include <string_view>
 #include <vector>
 
 namespace entity
 {
 
-std::vector<flight::direction> to_pattern(toml::array const& values)
+flight::pattern to_flight_pattern(
+    toml::array const& values)
 {
-    std::vector<flight::direction> pattern;
+    flight::pattern pattern;
 
     for(auto const& node : values)
     {
@@ -36,9 +40,10 @@ enemy::enemy(
     int const starting_life,
     int const speed,
     float const attack_rate,
-    sf::Texture const& texture,
-    std::vector<flight::direction> const& pattern)
-    : hostile<aircraft_t>{starting_life, texture}
+    flight::pattern const& pattern,
+    resources::texture const& texture,
+    sf::IntRect const& texture_rect)
+    : hostile<aircraft_t>{starting_life, texture, texture_rect}
     , speed{speed}
     , attack_rate{attack_rate}
     , pattern{pattern}
@@ -112,11 +117,12 @@ void enemy::update_self(
 }
 
 avenger::avenger()
-    : enemy{*utility::single::instance<configuration::values>()["avenger"]["starting_health"].value<int>(),
-            *utility::single::instance<configuration::values>()["avenger"]["speed"].value<int>(),
-            *utility::single::instance<configuration::values>()["avenger"]["attack_rate"].value<float>(),
-            utility::single::instance<resources::textures>().get(resources::texture::avenger),
-            to_pattern(*utility::single::instance<configuration::values>()["avenger"]["flight_pattern"].as_array())}
+    : enemy{*configuration::values()["aircraft"]["avenger"]["starting_health"].value<int>(),
+            *configuration::values()["aircraft"]["avenger"]["speed"].value<int>(),
+            *configuration::values()["aircraft"]["avenger"]["attack_rate"].value<float>(),
+            to_flight_pattern(*configuration::values()["aircraft"]["avenger"]["flight_pattern"].as_array()),
+            *magic_enum::enum_cast<resources::texture>(*configuration::values()["aircraft"]["texture"].value<std::string_view>()),
+            utility::to_intrect(*configuration::values()["aircraft"]["avenger"]["texture_rect"].as_array())}
 {}
 
 void avenger::attack(
@@ -126,11 +132,12 @@ void avenger::attack(
 }
 
 raptor::raptor()
-    : enemy{*utility::single::instance<configuration::values>()["raptor"]["starting_health"].value<int>(),
-            *utility::single::instance<configuration::values>()["raptor"]["speed"].value<int>(),
-            *utility::single::instance<configuration::values>()["raptor"]["attack_rate"].value<float>(),
-            utility::single::instance<resources::textures>().get(resources::texture::raptor),
-            to_pattern(*utility::single::instance<configuration::values>()["raptor"]["flight_pattern"].as_array())}
+    : enemy{*configuration::values()["aircraft"]["raptor"]["starting_health"].value<int>(),
+            *configuration::values()["aircraft"]["raptor"]["speed"].value<int>(),
+            *configuration::values()["aircraft"]["raptor"]["attack_rate"].value<float>(),
+            to_flight_pattern(*configuration::values()["aircraft"]["raptor"]["flight_pattern"].as_array()),
+            *magic_enum::enum_cast<resources::texture>(*configuration::values()["aircraft"]["texture"].value<std::string_view>()),
+            utility::to_intrect(*configuration::values()["aircraft"]["raptor"]["texture_rect"].as_array())}
 {}
 
 void raptor::attack(

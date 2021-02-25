@@ -4,7 +4,11 @@
 
 #include "utility.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Window/Event.hpp>
 
 #include <functional>
 #include <string>
@@ -47,10 +51,21 @@ private:
         sf::RenderTarget& target,
         sf::RenderStates states) const override;
 
-    sf::Texture const& normal;
-    sf::Texture const& selected;
-    sf::Texture const& pressed;
     sf::Sprite sprite;
+
+    enum class position
+    {
+        normal,
+        pressed,
+        selected,
+    };
+
+    struct state_t
+    {
+        sf::Sprite& sprite;
+
+        void operator=(position const);
+    } state;
 };
 
 }

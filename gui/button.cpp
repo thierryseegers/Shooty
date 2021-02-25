@@ -2,18 +2,37 @@
 
 #include "resources.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Window/Event.hpp>
 
 namespace gui
 {
-button::button()
-    : normal{utility::single::instance<resources::textures>().get(resources::texture::button_normal)}
-    , selected{utility::single::instance<resources::textures>().get(resources::texture::button_selected)}
-    , pressed{utility::single::instance<resources::textures>().get(resources::texture::button_pressed)}
-    , text{sf::Text{"", utility::single::instance<resources::fonts>().get(resources::font::main), 16}}
-    , toggle{false}
+
+void button::state_t::operator=(button::position const p)
 {
-    sprite.setTexture(normal);
+    switch(p)
+    {
+    case position::normal:
+        sprite.setTextureRect({0, 0, 200, 50});
+        break;
+    case position::pressed:
+        sprite.setTextureRect({0, 100, 200, 50});
+        break;
+    case position::selected:
+        sprite.setTextureRect({0, 50, 200, 50});
+        break;
+    }
+}
+
+button::button()
+    : text{sf::Text{"", resources::fonts().get(resources::font::main), 16}}
+    , toggle{false}
+    , state{sprite}
+{
+    sprite.setTexture(resources::textures().get(resources::texture::buttons));
+    state = position::normal;
 
     auto const bounds = sprite.getLocalBounds();
     text.text_.setPosition(bounds.width / 2.f, bounds.height / 2.f);
@@ -27,13 +46,13 @@ bool button::selectable() const
 void button::select()
 {
     component::select();
-    sprite.setTexture(selected);
+    state = position::selected;
 }
 
 void button::deselect()
 {
     component::deselect();
-    sprite.setTexture(normal);
+    state = position::normal;
 }
 
 void button::activate()
@@ -42,7 +61,7 @@ void button::activate()
 
     if(toggle)
     {
-        sprite.setTexture(pressed);
+        state = position::pressed;
     }
 
     if(click)
@@ -62,7 +81,7 @@ void button::deactivate()
 
     if(toggle)
     {
-        sprite.setTexture(component::selected() ? selected : normal);
+        state = component::selected() ? position::selected : position::normal;
     }
 }
 

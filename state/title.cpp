@@ -16,9 +16,9 @@ title::title(
     , show_text(true)
     , blink_delay(sf::Time::Zero)
 {
-    background.setTexture(utility::single::instance<resources::textures>().get(resources::texture::title_screen));
+    background.setTexture(resources::textures().get(resources::texture::title_screen));
 
-    text.setFont(utility::single::instance<resources::fonts>().get(resources::font::main));
+    text.setFont(resources::fonts().get(resources::font::main));
     text.setString("Press any key to start");
     utility::center_origin(text);
     text.setPosition(states.context.window.getView().getSize() / 2.f);

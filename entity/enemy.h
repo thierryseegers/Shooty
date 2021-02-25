@@ -2,12 +2,14 @@
 
 #include "command.h"
 #include "entity/aircraft.h"
+#include "entity/entity.h"
 #include "entity/flight.h"
 #include "resources.h"
 #include "scene.h"
 #include "utility.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Time.hpp>
 
 #include <vector>
 
@@ -22,8 +24,9 @@ public:
         int const starting_life,
         int const speed,
         float const attack_rate,
-        sf::Texture const& texture,
-        std::vector<flight::direction> const& pattern);
+        flight::pattern const& pattern,
+        resources::texture const& texture,
+        sf::IntRect const& text_rect);
 
     virtual ~enemy() = default;
 
@@ -37,7 +40,7 @@ protected:
 
     int const speed;
 
-    std::vector<flight::direction> const pattern;
+    flight::pattern const pattern;
     utility::cyclic_iterator<decltype(pattern)> current;
 
     float travelled;

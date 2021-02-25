@@ -2,9 +2,9 @@
 
 #include "entity/entity.h"
 #include "entity/leader.h"
-#include "scene.h"
+#include "resources.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 namespace entity::pickup
 {
@@ -13,7 +13,8 @@ class pickup : public entity
 {
 public:
     pickup(
-        sf::Texture const& texture);
+        resources::texture const& texture,
+        sf::IntRect const& texture_rect);
 
     virtual void apply(
         leader_t& leader) const = 0;

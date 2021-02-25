@@ -7,8 +7,9 @@
 #include "resources.h"
 #include "utility.h"
 
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
+#include <magic_enum.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #include <cmath>
 
@@ -20,9 +21,10 @@ class missile : public Kind<projectile>
 {
 public:
     missile()
-        : Kind<projectile>{*utility::single::instance<configuration::values>()["missile"]["speed"].value<float>(),
-                          *utility::single::instance<configuration::values>()["missile"]["damage"].value<int>(),
-                          utility::single::instance<resources::textures>().get(resources::texture::missile)}
+        : Kind<projectile>{*configuration::values()["projectile"]["missile"]["speed"].value<float>(),
+                           *configuration::values()["projectile"]["missile"]["damage"].value<int>(),
+                           *magic_enum::enum_cast<resources::texture>(*configuration::values()["projectile"]["texture"].value<std::string_view>()),
+                           utility::to_intrect(*configuration::values()["projectile"]["missile"]["texture_rect"].as_array())}
 {}
 
     virtual ~missile() = default;

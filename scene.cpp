@@ -15,6 +15,79 @@
 namespace scene
 {
 
+node_t::iterator::iterator(
+    node_t* root)
+{
+    if(root)
+    {
+        indices.push_back(0);
+        current = next(root);
+    }
+    else
+    {
+        current = nullptr;
+    }
+}
+
+node_t::iterator::reference node_t::iterator::operator*()
+{
+    return *current;
+}
+
+node_t::iterator::pointer node_t::iterator::operator->()
+{
+    return current;
+}
+
+node_t::iterator node_t::iterator::operator++()
+{
+    if(current->parent && ++indices.back() != current->parent->children.size())
+    {
+        current = next(current->parent->children[indices.back()].get());
+    }
+    else
+    {
+        current = current->parent;
+        if(current)
+        {
+            indices.pop_back();
+        }
+    }
+
+    return *this;
+}
+
+node_t::iterator node_t::iterator::operator++(int)
+{
+    auto tmp = *this;
+    this->operator++();
+    return tmp;
+}
+
+node_t::iterator& node_t::iterator::operator=(iterator const& rhs)
+{
+    current = rhs.current;
+    indices = rhs.indices;
+
+    return *this;
+}
+
+bool node_t::iterator::operator!=(iterator const& rhs)
+{
+    return rhs.current != current;
+}
+
+node_t* node_t::iterator::next(node_t* n)
+{
+    if(n && n->children.size())
+    {
+        indices.push_back(0);
+        return next(n->children[0].get());
+    }
+    else
+        return n;
+}
+
 void node_t::attach(
     std::unique_ptr<node_t> child)
 {
@@ -145,14 +218,14 @@ float distance(
 }
 
 sprite_t::sprite_t(
-    sf::Texture const& texture)
-    : sprite{texture}
+    resources::texture const& texture)
+    : sprite{resources::textures().get(texture)}
 {}
 
 sprite_t::sprite_t(
-    sf::Texture const& texture,
+    resources::texture const& texture,
     sf::IntRect const& rect)
-    : sprite{texture, rect}
+    : sprite{resources::textures().get(texture), rect}
 {}
 
 void sprite_t::draw_self(

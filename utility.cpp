@@ -1,5 +1,7 @@
 #include "utility.h"
 
+#include "tomlpp.h"
+
 #include <SFML/Graphics.hpp>
 
 #include <cassert>
@@ -170,6 +172,12 @@ sf::Vector2f unit(
     assert(vector != sf::Vector2f(0.f, 0.f));
 
     return vector / length(vector);
+}
+
+sf::IntRect to_intrect(
+    toml::array const& values)
+{
+    return {*values[0].value<int>(), *values[1].value<int>(), *values[2].value<int>(), *values[3].value<int>()};
 }
 
 std::mt19937& random_engine()

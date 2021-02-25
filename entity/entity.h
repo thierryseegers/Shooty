@@ -1,8 +1,11 @@
 #pragma once
 
+#include "command.h"
 #include "scene.h"
+#include "resources.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
 
 namespace entity
 {
@@ -25,8 +28,9 @@ class entity : public scene::sprite_t
 {
 public:
     explicit entity(
-    sf::Texture const& texture)
-        : sprite_t{texture}
+        resources::texture const& texture,
+        sf::IntRect const texture_rect)
+        : sprite_t{texture, texture_rect}
     {}
 
     virtual ~entity() = default;

@@ -4,9 +4,12 @@
 #include "entity/entity.h"
 #include "lifebar.h"
 #include "projectile.h"
+#include "resources.h"
 #include "scene.h"
 
-#include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
+
+#include <utility>
 
 namespace entity
 {
@@ -16,7 +19,8 @@ class aircraft_t : public entity
 public:
     explicit aircraft_t(
         int const starting_life,
-        sf::Texture const& texture);
+        resources::texture const& texture,
+        sf::IntRect const& texture_rect);
 
     virtual ~aircraft_t() = default;
 

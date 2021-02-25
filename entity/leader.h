@@ -1,9 +1,11 @@
 #pragma once
 
+#include "command.h"
 #include "entity/aircraft.h"
-#include "resources.h"
+#include "entity/entity.h"
 #include "scene.h"
 
+#include <SFML/System/Time.hpp>
 namespace entity
 {
 

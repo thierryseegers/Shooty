@@ -10,6 +10,8 @@ int main(int, char**)
     {
         configuration::initialize("./config.toml");
 
+        std::cout << configuration::values();
+        
         application a;
         a.run();
     }

@@ -1,26 +1,74 @@
-[leader]
+[aircraft]
+
+texture = "entities"
+
+[aircraft.leader]
 speed = 20.0
 starting_health = 100
-texture = "Media/Textures/Eagle.png"
+texture_rect = [0, 0, 48, 64]
 
-[raptor]
+[aircraft.raptor]
 attack_rate = 0.2
 flight_pattern = [[45.0, 80.0], [-45.0, 160.0], [45.0, 80.0]]
 speed = 50.0
 starting_health = 40
-texture = "Media/Textures/Raptor.png"
+texture_rect = [144, 0, 84, 64]
 
-[avenger]
+[aircraft.avenger]
 attack_rate = 0.5
 flight_pattern = [[45.0, 50.0], [0.0, 50.0], [-45.0, 100.0], [0.0, 50.0], [45.0, 50.0]]
 speed = 80.0
 starting_health = 20
-texture = "Media/Textures/Avenger.png"
+texture_rect = [228, 0, 60, 59]
 
-[bullet]
+
+[projectile]
+
+texture = "entities"
+
+[projectile.bullet]
 damage = 10
 speed = 300.0
 
-[missile]
+[projectile.bullet.friendly]
+texture_rect = [175, 64, 3, 14]
+
+[projectile.bullet.hostile]
+texture_rect = [178, 64, 3, 14]
+
+[projectile.missile]
 damage = 40
 speed = 150.0
+texture_rect = [160, 64, 15, 32]
+
+
+[pickup]
+
+texture = "entities"
+
+[pickup.health]
+amount = 40
+texture_rect = [0, 64, 40, 40]
+
+[pickup.missile_refill]
+amount = 3
+texture_rect = [40, 64, 40, 40]
+
+[pickup.fire_spread]
+texture_rect = [80, 64, 40, 40]
+
+[pickup.fire_rate]
+texture_rect = [120, 64, 40, 40]
+
+
+[particle]
+
+texture = "entities"
+
+[particle.propellant]
+color = [255, 255, 50]
+lifetime = 0.6
+
+[particle.smoke]
+color = [50, 50, 50]
+lifetime = 4.0

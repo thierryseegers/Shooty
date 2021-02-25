@@ -1,5 +1,7 @@
 #pragma once
 
+#include "tomlpp.h"
+
 #include <SFML/Graphics.hpp>
 
 #include <array>
@@ -15,8 +17,10 @@ namespace utility
 // Change origin of object to be its center rather than its top-left corner.
 void center_origin(
     sf::Sprite& sprite);
+
 void center_origin(
     sf::Text& text);
+    
 void center_origin(
     sf::Shape& shape);
 
@@ -49,6 +53,9 @@ float length(
 
 sf::Vector2f unit(
     sf::Vector2f const& vector);
+
+sf::IntRect to_intrect(
+    toml::array const& values);
 
 int random(
     int const max);

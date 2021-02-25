@@ -18,19 +18,12 @@ enum class font
 
 enum class texture
 {
-    avenger,
-    bullet,
-    button_normal, 
-    button_pressed,
-    button_selected,
-    desert,
-    eagle,
-    health,
-    increase_fire_rate,
-    increase_spread,
-    missile_refill,
-    missile,
-    raptor,
+    buttons, 
+    entities,
+    explosion,
+    finish_line,
+    jungle,
+    particle,
     title_screen,
 };
 
@@ -87,7 +80,11 @@ private:
     std::map<Type, std::unique_ptr<Resource>> resources;
 };
 
-using fonts = holder<font, sf::Font>;
-using textures = holder<texture, sf::Texture>;
+using fonts_t = holder<font, sf::Font>;
+using textures_t = holder<texture, sf::Texture>;
+
+fonts_t const& fonts();
+
+textures_t const& textures();
 
 }
