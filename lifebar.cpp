@@ -7,9 +7,6 @@
 #include <algorithm>
 #include <cassert>
 
-namespace entity
-{
-
 lifebar::lifebar(
     float const length,
     int const percent)
@@ -84,6 +81,4 @@ void lifebar::update_self(
     // Adjust length of lifebar given current percent.
     bar.setSize({(outline.getLocalBounds().width - outline.getOutlineThickness() * 2) * (percent / 100.f),
                   bar.getSize().y});
-}
-
 }

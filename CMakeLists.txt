@@ -27,7 +27,7 @@ conan_cmake_run(REQUIRES
                 INSTALL_FOLDER
                     ${CONAN_INSTALL_FOLDER}
                 OPTIONS
-                    # tomlplusplus:multiple_headers=True
+                    tomlplusplus:multiple_headers=True
 )
 list(APPEND CMAKE_MODULE_PATH ${CONAN_INSTALL_FOLDER})
 
@@ -80,6 +80,8 @@ add_executable(Shooty
     lifebar.cpp
     lifebar.h
     main.cpp
+    particle.cpp
+    particle.h
     player.cpp
     player.h
     resources.cpp
@@ -90,6 +92,7 @@ add_executable(Shooty
     state/game_over.h
     state/game.cpp
     state/game.h
+    state/id.h
     state/menu.cpp
     state/menu.h
     state/pause.cpp

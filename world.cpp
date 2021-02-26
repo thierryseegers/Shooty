@@ -7,6 +7,7 @@
 #include "entity/missile.h"
 #include "entity/projectile.h"
 #include "entity/pickup.h"
+#include "particle.h"
 #include "resources.h"
 #include "scene.h"
 #include "utility.h"
@@ -67,33 +68,26 @@ void world_t::load_textures()
 void world_t::build_scene()
 {
     // Create layers.
-    auto air = std::make_unique<scene::air>();
-    layers[layer::air] = air.get();
-    graph.attach(std::move(air));
-    
-    auto background = std::make_unique<scene::background>();
-    layers[layer::background] = background.get();
-    graph.attach(std::move(background));
+    layers[layer::background] = graph.attach<scene::background>();
+    layers[layer::projectiles] = graph.attach<scene::projectiles>();
+    layers[layer::aircrafts] = graph.attach<scene::aircrafts>();
 
-    // Create background sprite and move to background layer.
+    // Create background sprite on background layer.
     sf::Texture& background_texture = utility::single::mutable_instance<resources::textures_t>().get(resources::texture::jungle);
     background_texture.setRepeated(true);
-    sf::IntRect background_rect{bounds};
+    sf::IntRect const background_rect{bounds};
+    layers[layer::background]->attach<scene::sprite_t>(resources::texture::jungle, background_rect)->setPosition(bounds.left, bounds.top);
 
-    auto background_sprite = std::make_unique<scene::sprite_t>(resources::texture::jungle, background_rect);
-    background_sprite->setPosition(bounds.left, bounds.top);
-    layers[layer::background]->attach(std::move(background_sprite));
+    // Add the finish line to background layer.
+    layers[layer::background]->attach<scene::sprite_t>(resources::texture::finish_line)->setPosition(0.f, -76.f);
 
-    // Add the finish line.
-    auto finish_sprite = std::make_unique<scene::sprite_t>(resources::texture::finish_line);
-    finish_sprite->setPosition(0.f, -76.f);
-    layers[layer::background]->attach(std::move(finish_sprite));
+    // Create the particle systems.
+    layers[layer::projectiles]->attach<particles<smoke>>(resources::textures().get(resources::texture::particle));
+    layers[layer::projectiles]->attach<particles<propellant>>(resources::textures().get(resources::texture::particle));
 
     // Create leader aircraft and move to air layer.
-    auto leader = std::make_unique<entity::leader_t>();
-    player = leader.get();
-    player->scene::sprite_t::setPosition(player_spawn_point);
-    layers[layer::air]->attach(std::move(leader));
+    player = layers[layer::aircrafts]->attach<entity::leader_t>();
+    player->setPosition(player_spawn_point);
 
     auto add_enemy = [=](auto const& f, sf::Vector2f const& ds) mutable
         {
@@ -157,7 +151,7 @@ void world_t::spawn_enemies()
         e->setPosition(enemy_spawn.where);
         e->setRotation(180.f);
 
-        layers[air]->attach(std::move(e));
+        layers[aircrafts]->attach(std::move(e));
     }
 }
 
@@ -184,7 +178,7 @@ std::pair<Entity1*, Entity2*> match(std::pair<scene::node_t*, scene::node_t*> co
 
 void world_t::handle_collisions()
 {
-    for(auto const& collision : layers[air]->collisions())
+    for(auto const& collision : graph.collisions())
     {
         if(auto [aircraft, projectile] = match<entity::hostile<entity::aircraft_t>, entity::friendly<entity::projectile>>(collision); aircraft && projectile)
         {

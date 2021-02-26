@@ -63,7 +63,7 @@ texture_rect = [120, 64, 40, 40]
 
 [particle]
 
-texture = "entities"
+texture = "particle"
 
 [particle.propellant]
 color = [255, 255, 50]

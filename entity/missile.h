@@ -4,7 +4,9 @@
 #include "configuration.h"
 #include "entity/entity.h"
 #include "entity/projectile.h"
+#include "particle.h"
 #include "resources.h"
+#include "scene.h"
 #include "utility.h"
 
 #include <magic_enum.hpp>
@@ -12,6 +14,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include <cmath>
+#include <memory>
 
 namespace entity
 {
@@ -25,7 +28,10 @@ public:
                            *configuration::values()["projectile"]["missile"]["damage"].value<int>(),
                            *magic_enum::enum_cast<resources::texture>(*configuration::values()["projectile"]["texture"].value<std::string_view>()),
                            utility::to_intrect(*configuration::values()["projectile"]["missile"]["texture_rect"].as_array())}
-{}
+    {
+        scene::node_t::attach<emitter<propellant>>()->setPosition(0.f, scene::sprite_t::sprite.getLocalBounds().height / 2.f);
+        scene::node_t::attach<emitter<smoke>>()->setPosition(0.f, scene::sprite_t::sprite.getLocalBounds().height / 2.f);
+    }
 
     virtual ~missile() = default;
 };

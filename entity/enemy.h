@@ -36,7 +36,7 @@ protected:
         commands_t& commands) override;
 
     virtual void attack(
-        scene::air& air) const = 0;
+        scene::projectiles& layer) const = 0;
 
     int const speed;
 
@@ -56,7 +56,7 @@ public:
 
 protected:
     virtual void attack(
-        scene::air& air) const override;
+        scene::projectiles& layer) const override;
 };
 
 class raptor : public enemy
@@ -66,7 +66,7 @@ public:
 
 protected:
     virtual void attack(
-        scene::air& air) const override;
+        scene::projectiles& layer) const override;
 };
 
 }

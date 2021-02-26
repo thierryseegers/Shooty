@@ -95,22 +95,6 @@ void node_t::attach(
     children.push_back(std::move(child));
 }
 
-std::unique_ptr<node_t> node_t::detach(
-    node_t const& node)
-{
-    auto i = std::find_if(children.begin(), children.end(), [&](auto& p)
-        {
-            return p.get() == &node;
-        });
-    assert(i != children.end());
-
-    auto p = std::move(*i);
-    p->parent = nullptr;
-    children.erase(i);
-
-    return p;
-}
-
 void node_t::on_command(
     command_t const& command,
     sf::Time const& dt)
@@ -149,7 +133,21 @@ void node_t::draw(
 
     draw_self(target, states);
 
-    for(auto& child : utility::reverse(children))
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+    {
+        sf::FloatRect const rect = collision_bounds();
+
+        sf::RectangleShape shape;
+        shape.setPosition(sf::Vector2f(rect.left, rect.top));
+        shape.setSize(sf::Vector2f(rect.width, rect.height));
+        shape.setFillColor(sf::Color::Transparent);
+        shape.setOutlineColor(sf::Color::Green);
+        shape.setOutlineThickness(1.f);
+
+        target.draw(shape);
+    }
+
+    for(auto& child : children)
     {
         child->draw(target, states);
     }
@@ -161,7 +159,7 @@ sf::Transform node_t::world_transform() const
 
     for(scene::node_t const* n = this; n; n = n->parent)
     {
-        transform *= n->getTransform();
+        transform = n->getTransform() * transform;
     }
 
     return transform;
@@ -214,7 +212,7 @@ float distance(
     node_t const& lhs,
     node_t const& rhs)
 {
-	return utility::length(lhs.world_position() - rhs.world_position());
+    return utility::length(lhs.world_position() - rhs.world_position());
 }
 
 sprite_t::sprite_t(

@@ -4,9 +4,6 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace entity
-{
-
 class lifebar : public scene::node_t
 {
 public:
@@ -30,5 +27,3 @@ private:
     int target_percent;
     sf::RectangleShape outline, bar;
 };
-
-}

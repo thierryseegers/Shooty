@@ -36,10 +36,10 @@ private:
         commands_t& commands) override;
 
     void shoot_bullet(
-        scene::air& air) const;
+        scene::projectiles& layer) const;
 
     void shoot_missile(
-        scene::air& air) const;
+        scene::projectiles& layer) const;
 
     int bullet_spread;
     int fire_rate;

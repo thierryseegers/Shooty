@@ -64,8 +64,14 @@ public:
     void attach(
         std::unique_ptr<node_t> child);
 
-    std::unique_ptr<node_t> detach(
-        node_t const& node);
+    template<typename Node, class... Args>
+    Node* attach(
+        Args&&... args)
+    {
+        auto& child = children.emplace_back(new Node(std::forward<Args>(args)...));
+        child->parent = this;
+        return static_cast<Node*>(child.get());
+    }
 
     void on_command(
         command_t const& command,
@@ -119,7 +125,10 @@ float distance(
 class background : public node_t
 {};
 
-class air : public node_t
+class projectiles : public node_t
+{};
+
+class aircrafts : public node_t
 {};
 
 template<size_t Count>

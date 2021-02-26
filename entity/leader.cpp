@@ -28,7 +28,8 @@ leader_t::leader_t()
     , bullet_spread{1}
     , fire_countdown{sf::Time::Zero}
     , firing{false}
-    , missile_guidance{false}
+    // , missile_guidance{false}
+    , missile_guidance{true}
     , missile_ammo{10}
     , launching_missile{false}
 {}
@@ -75,9 +76,9 @@ void leader_t::update_self(
 {
     if(firing && fire_countdown <= sf::Time::Zero)
     {
-        commands.push(make_command<scene::air>([=](scene::air& air, sf::Time const&)
+        commands.push(make_command<scene::projectiles>([=](scene::projectiles& layer, sf::Time const&)
         {
-            shoot_bullet(air);
+            shoot_bullet(layer);
         }));
 
         fire_countdown += sf::seconds(1.f / (fire_rate + 1));
@@ -91,9 +92,9 @@ void leader_t::update_self(
 
     if(launching_missile)
     {
-        commands.push(make_command<scene::air>([=](scene::air& air, sf::Time const&)
+        commands.push(make_command<scene::projectiles>([=](scene::projectiles& layer, sf::Time const&)
         {
-            shoot_missile(air);
+            shoot_missile(layer);
         }));
         launching_missile = false;
     }
@@ -102,34 +103,35 @@ void leader_t::update_self(
 }
 
 void leader_t::shoot_bullet(
-    scene::air& air) const
+    scene::projectiles& layer) const
 {
     switch(bullet_spread)
     {
     case 1:
-        add_projectile<bullet<friendly>>(air, {0.f, 0.5f}, projectile::upward);
+        add_projectile<bullet<friendly>>(layer, {0.f, 0.5f}, projectile::upward);
         break;
     case 2:
-        add_projectile<bullet<friendly>>(air, {-0.33f, 0.33f}, projectile::upward);
-        add_projectile<bullet<friendly>>(air, {0.33f, 0.33f}, projectile::upward);
+        add_projectile<bullet<friendly>>(layer, {-0.33f, 0.33f}, projectile::upward);
+        add_projectile<bullet<friendly>>(layer, {0.33f, 0.33f}, projectile::upward);
         break;
     case 3:
-        add_projectile<bullet<friendly>>(air, {0.f, 0.5f}, projectile::upward);
-        add_projectile<bullet<friendly>>(air, {-0.33f, 0.33f}, projectile::upward);
-        add_projectile<bullet<friendly>>(air, {0.33f, 0.33f}, projectile::upward);
+        add_projectile<bullet<friendly>>(layer, {0.f, 0.5f}, projectile::upward);
+        add_projectile<bullet<friendly>>(layer, {-0.33f, 0.33f}, projectile::upward);
+        add_projectile<bullet<friendly>>(layer, {0.33f, 0.33f}, projectile::upward);
         break;
     }
 }
 
-void leader_t::shoot_missile(scene::air& air) const
+void leader_t::shoot_missile(
+    scene::projectiles& layer) const
 {
     if(missile_guidance)
     {
-        add_projectile<guided_missile<friendly>>(air, {0.f, 0.5f}, projectile::upward);
+        add_projectile<guided_missile<friendly>>(layer, {0.f, 0.5f}, projectile::upward);
     }
     else
     {
-        add_projectile<missile<friendly>>(air, {0.f, 0.5f}, projectile::upward);
+        add_projectile<missile<friendly>>(layer, {0.f, 0.5f}, projectile::upward);
     }
 }
 

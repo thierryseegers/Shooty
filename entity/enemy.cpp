@@ -72,9 +72,9 @@ void enemy::update_self(
         // Update attack.
         if(attack_countdown <= sf::Time::Zero)
         {
-            commands.push(make_command<scene::air>([=](scene::air& air, sf::Time const&)
+            commands.push(make_command<scene::projectiles>([=](scene::projectiles& layer, sf::Time const&)
             {
-                attack(air);
+                attack(layer);
             }));
 
             attack_countdown += sf::seconds(1.f / attack_rate);
@@ -88,7 +88,7 @@ void enemy::update_self(
     {
         spdlog::info("Loot dropped.");
 
-        commands.push(make_command<scene::air>([=](scene::air& air, sf::Time const&)
+        commands.push(make_command<scene::projectiles>([=](scene::projectiles& layer, sf::Time const&)
         {
             std::unique_ptr<pickup::pickup> pickup;
             switch(utility::random(3))
@@ -109,7 +109,7 @@ void enemy::update_self(
 
             pickup->setPosition(world_position());
             pickup->velocity = {0.f, 1.f};
-            air.attach(std::move(pickup));
+            layer.attach(std::move(pickup));
         }));
     }
 
@@ -126,9 +126,9 @@ avenger::avenger()
 {}
 
 void avenger::attack(
-    scene::air& air) const
+    scene::projectiles& layer) const
 {
-    add_projectile<bullet<hostile>>(air, {0.f, 0.5f}, projectile::downward);
+    add_projectile<bullet<hostile>>(layer, {0.f, 0.5f}, projectile::downward);
 }
 
 raptor::raptor()
@@ -141,9 +141,9 @@ raptor::raptor()
 {}
 
 void raptor::attack(
-    scene::air& air) const
+    scene::projectiles& layer) const
 {
-    add_projectile<missile<hostile>>(air, {0.f, 0.5f}, projectile::downward);
+    add_projectile<missile<hostile>>(layer, {0.f, 0.5f}, projectile::downward);
 }
 
 }

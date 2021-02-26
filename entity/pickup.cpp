@@ -17,7 +17,9 @@ pickup::pickup(
     resources::texture const& texture,
     sf::IntRect const& texture_rect)
     : entity{texture, texture_rect}
-{}
+{
+    utility::center_origin(sprite);
+}
 
 health::health()
     : pickup{*magic_enum::enum_cast<resources::texture>(*configuration::values()["pickup"]["texture"].value<std::string>()),

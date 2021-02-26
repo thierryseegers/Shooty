@@ -8,7 +8,6 @@
 #include "state/pause.h"
 #include "state/settings.h"
 #include "state/title.h"
-#include "tomlpp.h"
 #include "utility.h"
 
 #include <SFML/Graphics.hpp>

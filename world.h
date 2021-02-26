@@ -41,7 +41,8 @@ private:
     enum layer
     {
         background,
-        air,
+        projectiles,
+        aircrafts,
         count
     };
 

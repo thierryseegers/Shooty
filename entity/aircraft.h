@@ -39,7 +39,7 @@ protected:
 
     template<typename Projectile>
     void add_projectile(
-        scene::air& air,
+        scene::projectiles& layer,
         sf::Vector2f const& offset,
         float const& dir) const
     {
@@ -48,15 +48,14 @@ protected:
         sf::Vector2f const o{offset.x * sprite.getGlobalBounds().width,
                              offset.y * sprite.getGlobalBounds().height};
 
+        p->setPosition(world_position() + o * dir);
         if(dir == projectile::downward)
         {
             p->setRotation(180.f);
         }
-
-        p->setPosition(world_position() + o * dir);
         p->velocity = sf::Vector2f{0, p->speed} * dir;
 
-        air.attach(std::move(p));
+        layer.attach(std::move(p));
     }
 
     int const starting_life;

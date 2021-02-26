@@ -180,6 +180,12 @@ sf::IntRect to_intrect(
     return {*values[0].value<int>(), *values[1].value<int>(), *values[2].value<int>(), *values[3].value<int>()};
 }
 
+sf::Color to_color(
+    toml::array const& values)
+{
+    return {*values[0].value<sf::Uint8>(), *values[1].value<sf::Uint8>(), *values[2].value<sf::Uint8>()};
+}
+
 std::mt19937& random_engine()
 {
     static std::mt19937 re;

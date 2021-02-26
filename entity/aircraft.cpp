@@ -23,9 +23,7 @@ aircraft_t::aircraft_t(
     utility::center_origin(sprite);
 
     // Make a lifebar for ourself.
-    auto b = std::make_unique<lifebar>(sprite.getLocalBounds().width);
-    bar = b.get();
-    attach(std::move(b));
+    (bar = attach<lifebar>(sprite.getLocalBounds().width))->setPosition(0.f, 20 + sprite.getLocalBounds().height / 2.f);
 }
 
 void aircraft_t::damage(
@@ -42,12 +40,9 @@ void aircraft_t::update_self(
     {
         remove = true;
     }
+    bar->adjust((life * 100) / starting_life);
 
     entity::update_self(dt, commands);
-
-    bar->adjust((health() * 100) / starting_life);
-    bar->setPosition(0.f, 50.f);
-    bar->setRotation(-getRotation());
 }
 
 }
