@@ -58,7 +58,7 @@ bool game_over::update(
 }
 
 bool game_over::handle_event(
-    sf::Event const& event)
+    sf::Event const&)
 {
     return false;
 }

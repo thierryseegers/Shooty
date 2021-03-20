@@ -26,13 +26,13 @@ leader_t::leader_t()
                            *magic_enum::enum_cast<resources::texture>(*configuration::values()["aircraft"]["texture"].value<std::string>()),
                            utility::to_intrect(*configuration::values()["aircraft"]["leader"]["texture_rect"].as_array())}
     , default_texture_rect{sprite.getTextureRect()}
-    , fire_rate{1}
     , bullet_spread{1}
+    , fire_rate{1}
     , fire_countdown{sf::Time::Zero}
     , firing{false}
+    , missile_ammo{10}
     // , missile_guidance{false}
     , missile_guidance{true}
-    , missile_ammo{10}
     , launching_missile{false}
 {}
 
@@ -69,7 +69,7 @@ void leader_t::increase_bullet_spread()
 void leader_t::collect_missile(
     int const amount)
 {
-    missile_ammo += 3;
+    missile_ammo += amount;
 }
 
 void leader_t::update_self(

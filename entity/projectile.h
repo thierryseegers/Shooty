@@ -8,7 +8,7 @@
 namespace entity
 {
 
-class projectile : public entity
+class projectile : public entity<>
 {
 public:
     projectile(

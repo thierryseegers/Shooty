@@ -48,7 +48,7 @@ public:
 
     void guide(sf::Vector2f const& position)
     {
-       direction = utility::unit(position - entity::world_position());
+       direction = utility::unit(position - entity<>::world_position());
     }
 
 private:
@@ -58,13 +58,13 @@ private:
     {
         float const approach_rate = 200.f;
 
-        auto const v = utility::unit(approach_rate * dt.asSeconds() * direction + entity::velocity) * projectile::speed;
+        auto const v = utility::unit(approach_rate * dt.asSeconds() * direction + entity<>::velocity) * projectile::speed;
         auto const angle = std::atan2(v.y, v.x);
 
         sf::Transformable::setRotation(utility::to_degree(angle) + 90.f);
-        entity::velocity = v;
+        entity<>::velocity = v;
 
-        entity::update_self(dt, commands);
+        entity<>::update_self(dt, commands);
     }
 
     sf::Vector2f direction;

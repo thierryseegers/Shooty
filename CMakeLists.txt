@@ -56,11 +56,13 @@ add_executable(Shooty
     configuration.h
     entity/aircraft.cpp
     entity/aircraft.h
+    entity/animation.h
     entity/bullet.cpp
     entity/bullet.h
     entity/enemy.cpp
     entity/enemy.h
     entity/entity.h
+    entity/explosion.h
     entity/leader.cpp
     entity/leader.h
     entity/missile.cpp
@@ -109,6 +111,13 @@ add_executable(Shooty
     utility.h
     world.cpp
     world.h
+)
+
+target_compile_options(Shooty
+    PRIVATE -Wall
+    PRIVATE -Wextra
+    PRIVATE -Werror
+    PRIVATE -pedantic
 )
 
 target_include_directories(Shooty

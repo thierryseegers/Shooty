@@ -104,7 +104,7 @@ public:
 private:
     virtual void update_self(
         sf::Time const& dt,
-        commands_t& commands) override
+        commands_t&) override
     {
         // Remove particles past their lifetime.
         particles_.erase(particles_.begin(), std::find_if_not(particles_.begin(), particles_.end(), [](particle const& p)

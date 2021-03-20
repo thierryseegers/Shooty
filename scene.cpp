@@ -189,13 +189,13 @@ std::set<std::pair<node_t*, node_t*>> node_t::collisions()
 }
 
 void node_t::draw_self(
-    sf::RenderTarget& target,
-    sf::RenderStates states) const
+    sf::RenderTarget&,
+    sf::RenderStates) const
 {}
 
 void node_t::update_self(
-    sf::Time const& dt,
-    commands_t& commands)
+    sf::Time const&,
+    commands_t&)
 {}
 
 bool node_t::collides(node_t const* other) const
@@ -231,6 +231,65 @@ void sprite_t::draw_self(
     sf::RenderStates states) const 
 {
     target.draw(sprite, states);
+}
+
+animated_sprite_t::animated_sprite_t(
+    resources::texture const& texture,
+    sf::Vector2i const frame_size,
+    std::size_t const n_frames,
+    sf::Time const duration,
+    bool const repeat)
+    : sprite_t{texture}
+    , frame_size{frame_size}
+    , n_frames{n_frames}
+    , current_frame{0}
+    , duration{duration}
+    , elapsed{sf::Time::Zero}
+    , repeat{repeat}
+{}
+
+void animated_sprite_t::update_self(
+    sf::Time const& dt,
+    commands_t&)
+{
+    auto const time_per_frame{duration / static_cast<float>(n_frames)};
+    elapsed += dt;
+
+    auto const texture_bounds{sprite.getTexture()->getSize()};
+    auto texture_rect{sprite.getTextureRect()};
+
+    if(current_frame == 0)
+    {
+        texture_rect = sf::IntRect{0, 0, frame_size.x, frame_size.y};
+    }
+
+    while(elapsed >= time_per_frame && (current_frame <= n_frames || repeat))
+    {
+        // Move texture rect to next rect.
+        texture_rect.left += texture_rect.width;
+        if(texture_rect.left + texture_rect.width > (int)texture_bounds.x)
+        {
+            texture_rect.left = 0;
+            texture_rect.top += texture_rect.height;
+        }
+
+        elapsed -= time_per_frame;
+
+        if(repeat)
+        {
+            current_frame = (current_frame + 1) % n_frames;
+            if(current_frame == 0)
+            {
+                texture_rect = {0, 0, frame_size.x, frame_size.y};
+            }
+        }
+        else
+        {
+            ++current_frame;
+        }
+    }
+
+    sprite.setTextureRect(texture_rect);
 }
 
 }

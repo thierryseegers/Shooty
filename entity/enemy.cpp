@@ -3,6 +3,7 @@
 #include "configuration.h"
 #include "entity/bullet.h"
 #include "entity/entity.h"
+#include "entity/explosion.h"
 #include "entity/flight.h"
 #include "entity/missile.h"
 #include "entity/pickup.h"
@@ -45,10 +46,10 @@ enemy::enemy(
     sf::IntRect const& texture_rect)
     : hostile<aircraft_t>{starting_life, texture, texture_rect}
     , speed{speed}
-    , attack_rate{attack_rate}
     , pattern{pattern}
     , current{this->pattern, this->pattern.begin()}
     , travelled{0}
+    , attack_rate{attack_rate}
 {}
 
 void enemy::update_self(
@@ -84,34 +85,45 @@ void enemy::update_self(
             attack_countdown -= dt;
         }
     }
-    else if(utility::random(2) == 0)
+    else
     {
-        spdlog::info("Loot dropped.");
-
-        commands.push(make_command<scene::projectiles>([=](scene::projectiles& layer, sf::Time const&)
+        // Show an explosion.
+        commands.push(make_command<scene::aircrafts>([=](scene::aircrafts& layer, sf::Time const&)
         {
-            std::unique_ptr<pickup::pickup> pickup;
-            switch(utility::random(3))
-            {
-                case 0:
-                    pickup = std::make_unique<pickup::health>();
-                    break;
-                case 1:
-                    pickup = std::make_unique<pickup::missile_refill>();
-                    break;
-                case 2:
-                    pickup = std::make_unique<pickup::increase_spread>();
-                    break;
-                case 3:
-                    pickup = std::make_unique<pickup::increase_fire_rate>();
-                    break;
-            }
-
-            pickup->setPosition(world_position());
-            pickup->velocity = {0.f, 1.f};
-            layer.attach(std::move(pickup));
+            layer.attach<explosion>(world_position());
         }));
+
+        // Possibly drop loot.
+        if(utility::random(2) == 0)
+        {
+            spdlog::info("Loot dropped.");
+
+            commands.push(make_command<scene::projectiles>([=](scene::projectiles& layer, sf::Time const&)
+            {
+                std::unique_ptr<pickup::pickup> pickup;
+                switch(utility::random(3))
+                {
+                    case 0:
+                        pickup = std::make_unique<pickup::health>();
+                        break;
+                    case 1:
+                        pickup = std::make_unique<pickup::missile_refill>();
+                        break;
+                    case 2:
+                        pickup = std::make_unique<pickup::increase_spread>();
+                        break;
+                    case 3:
+                        pickup = std::make_unique<pickup::increase_fire_rate>();
+                        break;
+                }
+
+                pickup->setPosition(world_position());
+                pickup->velocity = {0.f, 1.f};
+                layer.attach(std::move(pickup));
+            }));
+        }
     }
+
 
     aircraft_t::update_self(dt, commands);
 }

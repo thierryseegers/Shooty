@@ -4,6 +4,7 @@
 #include "resources.h"
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Time.hpp>
 
 #include <array>
 #include <deque>
@@ -153,6 +154,34 @@ private:
     virtual void draw_self(
         sf::RenderTarget& target,
         sf::RenderStates states) const override;
+};
+
+class animated_sprite_t : public sprite_t
+{
+public:
+    animated_sprite_t(
+        resources::texture const& texture,
+        sf::Vector2i const frame_size,
+        std::size_t const n_frames,
+        sf::Time const duration,
+        bool const repeat);
+
+    virtual ~animated_sprite_t() = default;
+
+protected:
+    virtual void update_self(
+        sf::Time const& dt,
+        commands_t& commands) override;
+
+    sf::Vector2i const frame_size;
+    
+    std::size_t const n_frames;
+    std::size_t current_frame;
+    
+    sf::Time const duration;
+    sf::Time elapsed;
+    
+    bool const repeat;
 };
 
 }

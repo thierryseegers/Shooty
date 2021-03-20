@@ -9,7 +9,7 @@
 namespace entity::pickup
 {
 
-class pickup : public entity
+class pickup : public entity<>
 {
 public:
     pickup(

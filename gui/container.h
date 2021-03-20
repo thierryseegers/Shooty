@@ -43,6 +43,8 @@ private:
 
     children_t children;
     int selected = -1;
+
+    using component::select;
 };
 
 }

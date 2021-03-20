@@ -43,8 +43,8 @@ void lifebar::draw_self(
 }
 
 void lifebar::update_self(
-    sf::Time const& dt,
-    commands_t& commands)
+    sf::Time const&,
+    commands_t&)
 {
     // Make current percent crawl toawrds target.
     if(percent > target_percent)

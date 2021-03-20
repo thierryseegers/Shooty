@@ -13,8 +13,8 @@ projectile::projectile(
     resources::texture const& texture,
     sf::IntRect const& texture_rect)
     : entity{texture, texture_rect}
-    , damage{damage}
     , speed{speed}
+    , damage{damage}
 {
     utility::center_origin(sprite);
 }

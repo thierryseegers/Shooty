@@ -53,8 +53,8 @@ void container::handle_event(
             select(direction::next);
         }
         else if(selected != -1 &&
-                event.key.code == sf::Keyboard::Return ||
-                event.key.code == sf::Keyboard::Space)
+                (event.key.code == sf::Keyboard::Return ||
+                 event.key.code == sf::Keyboard::Space))
         {
             children[selected]->activate();
         }

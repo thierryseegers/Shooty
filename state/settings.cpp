@@ -54,7 +54,7 @@ void settings::draw()
 }
 
 bool settings::update(
-    sf::Time const& dt)
+    sf::Time const&)
 {
     return true;
 }

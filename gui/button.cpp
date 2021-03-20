@@ -86,7 +86,7 @@ void button::deactivate()
 }
 
 void button::handle_event(
-    const sf::Event& event)
+    const sf::Event&)
 {}
 
 void button::draw(

@@ -28,7 +28,7 @@ public:
     }
 
     virtual void handle_event(
-        sf::Event const& event) override
+        sf::Event const&) override
     {}
 
     struct

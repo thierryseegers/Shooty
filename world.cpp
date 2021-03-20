@@ -131,7 +131,7 @@ void world_t::build_scene()
 
 void world_t::remove_unviewables()
 {
-    commands_.push(make_command<entity::entity>([battlefield = battlefield_bounds()](entity::entity& e, sf::Time const&)
+    commands_.push(make_command<entity::entity<>>([battlefield = battlefield_bounds()](entity::entity<>& e, sf::Time const&)
         {
             if(!battlefield.intersects(e.collision_bounds()))
             {
@@ -196,13 +196,14 @@ void world_t::handle_collisions()
         {
             spdlog::info("Leader got pickup!");
             pickup->apply(*leader);
-            pickup->remove = true;;
+            pickup->remove = true;
         }
         else if(auto [leader, enemy] = match<entity::leader_t, entity::enemy>(collision); leader && enemy)
         {
             spdlog::info("Leader crashed into enemy!");
+            auto const leader_health = leader->health();
             leader->damage(enemy->health());
-            enemy->remove = true;
+            enemy->damage(leader_health);
         }
     }
 }

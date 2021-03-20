@@ -14,7 +14,7 @@
 namespace entity
 {
 
-class aircraft_t : public entity
+class aircraft_t : public entity<>
 {
 public:
     explicit aircraft_t(

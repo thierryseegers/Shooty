@@ -70,7 +70,7 @@ void player_t::bind_key(
 sf::Keyboard::Key player_t::bound_key(
     action const what) const
 {
-    for(auto const [key, a] : key_bindings)
+    for(auto const& [key, a] : key_bindings)
     {
         if(a == what)
         {
@@ -97,7 +97,7 @@ void player_t::handle_event(
 void player_t::handle_realtime_input(
     commands_t& commands)
 {
-    for(auto const [key, what] : key_bindings)
+    for(auto const& [key, what] : key_bindings)
     {
         if(sf::Keyboard::isKeyPressed(key) &&
            is_realtime_action(what))

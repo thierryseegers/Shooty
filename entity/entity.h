@@ -24,20 +24,29 @@ public:
     using T::T;
 };
 
-class entity : public scene::sprite_t
+template<typename Sprite = scene::sprite_t>
+class entity : public Sprite
 {
 public:
     explicit entity(
         resources::texture const& texture,
         sf::IntRect const texture_rect)
-        : sprite_t{texture, texture_rect}
+        : Sprite{texture, texture_rect}
+    {}
+
+    entity(resources::texture const& texture,
+        sf::Vector2i const frame_size,
+        std::size_t const n_frames,
+        sf::Time const duration,
+        bool const repeat)
+        : Sprite(texture, frame_size, n_frames, duration, repeat)
     {}
 
     virtual ~entity() = default;
 
     virtual sf::FloatRect collision_bounds() const override
     {
-        return world_transform().transformRect(sprite.getGlobalBounds());
+        return Sprite::world_transform().transformRect(Sprite::sprite.getGlobalBounds());
     }
 
     sf::Vector2f velocity;
@@ -47,7 +56,9 @@ protected:
         sf::Time const& dt,
         commands_t& commands) override
     {
-        move(velocity * dt.asSeconds());
+        sf::Transformable::move(velocity * dt.asSeconds());
+
+        Sprite::update_self(dt, commands);
     }
 };
 
