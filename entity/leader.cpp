@@ -12,6 +12,7 @@
 #include "utility.h"
 
 #include <magic_enum.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Time.hpp>
 
 #include <algorithm>
@@ -24,6 +25,7 @@ leader_t::leader_t()
     : friendly<aircraft_t>{*configuration::values()["aircraft"]["leader"]["starting_health"].value<int>(),
                            *magic_enum::enum_cast<resources::texture>(*configuration::values()["aircraft"]["texture"].value<std::string>()),
                            utility::to_intrect(*configuration::values()["aircraft"]["leader"]["texture_rect"].as_array())}
+    , default_texture_rect{sprite.getTextureRect()}
     , fire_rate{1}
     , bullet_spread{1}
     , fire_countdown{sf::Time::Zero}
@@ -74,6 +76,20 @@ void leader_t::update_self(
         sf::Time const& dt,
         commands_t& commands)
 {
+    {
+        auto texture_rect = default_texture_rect;
+        if(velocity.x < 0.f)
+        {
+            texture_rect.left += default_texture_rect.width;
+        }
+        else if(velocity.x > 0.f)
+        {
+            texture_rect.left += 2 * default_texture_rect.width;
+        }
+
+        sprite.setTextureRect(texture_rect);
+    }
+
     if(firing && fire_countdown <= sf::Time::Zero)
     {
         commands.push(make_command<scene::projectiles>([=](scene::projectiles& layer, sf::Time const&)
