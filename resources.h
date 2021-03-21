@@ -1,6 +1,8 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Shader.hpp>
 
 #include <filesystem>
 #include <map>
@@ -25,6 +27,14 @@ enum class texture
     jungle,
     particle,
     title_screen,
+};
+
+enum class shader_pass
+{
+    brightness,
+    downsample,
+    gaussian_blur,
+    add,
 };
 
 template<typename Type, class Resource>
@@ -82,9 +92,10 @@ private:
 
 using fonts_t = holder<font, sf::Font>;
 using textures_t = holder<texture, sf::Texture>;
+using shaders_t = holder<shader_pass, sf::Shader>;
 
 fonts_t const& fonts();
-
 textures_t const& textures();
+shaders_t& shaders();
 
 }

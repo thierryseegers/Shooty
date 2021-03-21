@@ -2,6 +2,8 @@
 
 #include "command.h"
 #include "configuration.h"
+#include "effects/bloom.h"
+#include "effects/post_effect.h"
 #include "entity/aircraft.h"
 #include "entity/entity.h"
 #include "entity/missile.h"
@@ -23,14 +25,16 @@
 #include <vector>
 
 world_t::world_t(
-    sf::RenderWindow& window)
-    : window{window}
-    , view{window.getDefaultView()}
+    sf::RenderTarget& output_target)
+    : target{output_target}
+    , view{output_target.getDefaultView()}
     , bounds{0.f, 0.f, view.getSize().x, 5000.f}
     , player_spawn_point{view.getSize().x / 2.f, bounds.height - view.getSize().y / 2.f}
     , scroll_speed{-50.f}
     , player{nullptr}
 {
+    scene_texture.create(target.getSize().x, target.getSize().y);
+
     load_textures();
     build_scene();
 
@@ -299,8 +303,19 @@ void world_t::update(
     graph.update(dt, commands_);
 }
 
-void world_t::draw() const
+void world_t::draw()
 {
-    window.setView(view);
-    window.draw(graph);
+    if(effect::post_effect::supported())
+    {
+        scene_texture.clear();
+        scene_texture.setView(view);
+        scene_texture.draw(graph);
+        scene_texture.display();
+        bloom_effect.apply(scene_texture, target);
+    }
+    else
+    {
+        target.setView(view);
+        target.draw(graph);
+    }
 }

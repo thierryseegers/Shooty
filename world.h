@@ -1,6 +1,7 @@
 #pragma once
 
 #include "command.h"
+#include "effects/bloom.h"
 #include "entity/enemy.h"
 #include "entity/leader.h"
 #include "resources.h"
@@ -11,14 +12,15 @@
 #include <array>
 #include <set>
 #include <vector>
+
 class world_t
 {
 public:
     explicit world_t(
-        sf::RenderWindow& window);
+        sf::RenderTarget& output_target);
 
     void update(sf::Time const dt);
-    void draw() const;
+    void draw();
 
     commands_t& commands();
 
@@ -46,8 +48,11 @@ private:
         count
     };
 
-    sf::RenderWindow& window;
+    sf::RenderTarget& target;
+    sf::RenderTexture scene_texture;
     sf::View view;
+
+    effect::bloom bloom_effect;
 
     scene::node_t graph;
     scene::layers<layer::count> layers;

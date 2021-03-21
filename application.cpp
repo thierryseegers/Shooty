@@ -32,6 +32,12 @@ application::application()
     textures.load(resources::texture::title_screen, "Media/Textures/TitleScreen.png");
 	textures.load(resources::texture::buttons, "Media/Textures/Buttons.png");
 
+    auto& shaders = utility::single::mutable_instance<resources::shaders_t>();
+    shaders.load(resources::shader_pass::brightness, "Media/Shaders/Fullpass.vert", "Media/Shaders/Brightness.frag");
+    shaders.load(resources::shader_pass::downsample, "Media/Shaders/Fullpass.vert", "Media/Shaders/DownSample.frag");
+    shaders.load(resources::shader_pass::gaussian_blur, "Media/Shaders/Fullpass.vert", "Media/Shaders/GuassianBlur.frag");
+    shaders.load(resources::shader_pass::add, "Media/Shaders/Fullpass.vert", "Media/Shaders/Add.frag");
+
     statistics_text.setFont(fonts.get(resources::font::main));
     statistics_text.setPosition(5.f, 5.f);
     statistics_text.setCharacterSize(24);

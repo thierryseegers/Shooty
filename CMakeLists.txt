@@ -54,6 +54,9 @@ add_executable(Shooty
     command.h
     configuration.cpp
     configuration.h
+    effects/bloom.cpp
+    effects/bloom.h
+    effects/post_effect.h
     entity/aircraft.cpp
     entity/aircraft.h
     entity/animation.h
