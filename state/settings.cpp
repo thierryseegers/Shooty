@@ -30,12 +30,14 @@ settings::settings(
     add_button_label(player_t::action::move_right, 200.f, "Move Right");
     add_button_label(player_t::action::move_up,    250.f, "Move Up");
     add_button_label(player_t::action::move_down,  300.f, "Move Down");
+    add_button_label(player_t::action::fire,       350.f, "Fire");
+    add_button_label(player_t::action::launch_missile, 400.f, "Launch Missile");
 
     update_labels();
 
     // Add back button to go back to main menu.
-    auto back = std::make_shared<gui::button>();
-    back->setPosition(80.f, 375.f);
+    auto back = std::make_shared<gui::button>(states.context);
+    back->setPosition(80.f, 475.f);
     back->text = "Back";
     back->click = [this]()
     {
@@ -100,7 +102,7 @@ void settings::add_button_label(
     float const y,
     std::string const& text)
 {
-    buttons[action] = std::make_shared<gui::button>();
+    buttons[action] = std::make_shared<gui::button>(states.context);
     buttons[action]->setPosition(80.f, y);
     buttons[action]->text = text;
     buttons[action]->toggle = true;

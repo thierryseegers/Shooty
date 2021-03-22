@@ -25,9 +25,11 @@
 #include <vector>
 
 world_t::world_t(
-    sf::RenderTarget& output_target)
+    sf::RenderTarget& output_target,
+    sound::player& sound)
     : target{output_target}
     , view{output_target.getDefaultView()}
+    , sound{sound}
     , bounds{0.f, 0.f, view.getSize().x, 5000.f}
     , player_spawn_point{view.getSize().x / 2.f, bounds.height - view.getSize().y / 2.f}
     , scroll_speed{-50.f}
@@ -71,6 +73,9 @@ void world_t::load_textures()
 
 void world_t::build_scene()
 {
+    // Create a ound player.
+    graph.attach<scene::sound_t>(sound);
+
     // Create layers.
     layers[layer::background] = graph.attach<scene::background>();
     layers[layer::projectiles] = graph.attach<scene::projectiles>();
@@ -201,6 +206,7 @@ void world_t::handle_collisions()
             spdlog::info("Leader got pickup!");
             pickup->apply(*leader);
             pickup->remove = true;
+            leader->play_local_sound(commands_, resources::sound_effect::collect_pickup);
         }
         else if(auto [leader, enemy] = match<entity::leader_t, entity::enemy>(collision); leader && enemy)
         {
@@ -298,6 +304,10 @@ void world_t::update(
     // Remove all destroyed entities, spawn new enemies if need be.
     graph.sweep_removed();
     spawn_enemies();
+
+    // Remove played sounds and reposition player in sound space.
+    sound.remove_stopped();
+    sound.listener_position(player->world_position());
 
     // Update the entire graph.
     graph.update(dt, commands_);

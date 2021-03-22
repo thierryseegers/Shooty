@@ -2,6 +2,8 @@
 
 #include "component.h"
 
+#include "sound.h"
+#include "state/stack.h"
 #include "utility.h"
 
 #include <SFML/Graphics/RenderStates.hpp>
@@ -19,7 +21,8 @@ namespace gui
 class button : public component
 {
 public:
-    button();
+    button(
+        state::stack::context_t& context);
 
     virtual bool selectable() const override;
     virtual void select() override;
@@ -52,6 +55,7 @@ private:
         sf::RenderStates states) const override;
 
     sf::Sprite sprite;
+    sound::player& sound;
 
     enum class position
     {

@@ -20,7 +20,7 @@ menu::menu(
 {
     background.setTexture(resources::textures().get(resources::texture::title_screen));
 
-    auto play = std::make_shared<gui::button>();
+    auto play = std::make_shared<gui::button>(states.context);
     play->setPosition(100, 250);
     play->text = "Play";
     play->click = [this]()
@@ -30,7 +30,7 @@ menu::menu(
     };
     container.pack(play);
 
-    auto settings = std::make_shared<gui::button>();
+    auto settings = std::make_shared<gui::button>(states.context);
     settings->setPosition(100, 300);
     settings->text = "Settings";
     settings->click = [this]()
@@ -39,7 +39,7 @@ menu::menu(
     };
     container.pack(settings);
 
-    auto exit = std::make_shared<gui::button>();
+    auto exit = std::make_shared<gui::button>(states.context);
     exit->setPosition(100, 350);
     exit->text = "Exit";
     exit->click = [this]()

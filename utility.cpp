@@ -192,6 +192,8 @@ std::mt19937& random_engine()
     static bool initialized = false;
     if(!initialized)
     {
+        initialized = true;
+
         std::random_device rd;
         std::array<std::mt19937::result_type, std::mt19937::state_size> data;
         std::generate(std::begin(data), std::end(data), std::ref(rd));

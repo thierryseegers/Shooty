@@ -18,7 +18,7 @@
 
 application::application()
     : window{sf::VideoMode(1024, 768), "Shooty", sf::Style::Close}
-    , states{{music, player_1, window}}
+    , states{{music, player_1, sound, window}}
     , statistics_num_frames{0}
 {
     window.setKeyRepeatEnabled(false);
@@ -50,6 +50,8 @@ application::application()
     states.register_state<state::game_over>(state::id::game_over);
 
     states.request_push(state::id::title);
+
+    music.volume(25.f);
 }
 
 void application::run()

@@ -11,7 +11,7 @@ namespace state
 game::game(
     stack& states)
     : state{states}
-    , world{states.context.window}
+    , world{states.context.window, states.context.sound}
 {
     states.context.music.play(music::theme::mission);
 }

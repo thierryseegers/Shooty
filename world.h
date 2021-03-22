@@ -6,6 +6,7 @@
 #include "entity/leader.h"
 #include "resources.h"
 #include "scene.h"
+#include "sound.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -17,7 +18,8 @@ class world_t
 {
 public:
     explicit world_t(
-        sf::RenderTarget& output_target);
+        sf::RenderTarget& output_target,
+        sound::player& sound);
 
     void update(sf::Time const dt);
     void draw();
@@ -53,6 +55,7 @@ private:
     sf::View view;
 
     effect::bloom bloom_effect;
+    sound::player& sound;
 
     scene::node_t graph;
     scene::layers<layer::count> layers;

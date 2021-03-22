@@ -49,6 +49,16 @@ public:
         return Sprite::world_transform().transformRect(Sprite::sprite.getGlobalBounds());
     }
 
+    void play_local_sound(
+        commands_t& commands,
+        resources::sound_effect const se) const
+    {
+        commands.push(make_command<scene::sound_t>([=](scene::sound_t& s, sf::Time const&)
+        {
+            s.play(se, Sprite::node_t::world_position());
+        }));
+    }
+
     sf::Vector2f velocity;
 
 protected:

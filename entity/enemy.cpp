@@ -78,6 +78,8 @@ void enemy::update_self(
                 attack(layer);
             }));
 
+            play_local_sound(commands, resources::sound_effect::enemy_gunfire);
+
             attack_countdown += sf::seconds(1.f / attack_rate);
         }
         else
@@ -85,13 +87,16 @@ void enemy::update_self(
             attack_countdown -= dt;
         }
     }
-    else
+    else    // We dead.
     {
         // Show an explosion.
         commands.push(make_command<scene::aircrafts>([=](scene::aircrafts& layer, sf::Time const&)
         {
             layer.attach<explosion>(world_position());
         }));
+
+        // Sound an explosion.
+        play_local_sound(commands, utility::random(1) ? resources::sound_effect::explosion_1 : resources::sound_effect::explosion_2);
 
         // Possibly drop loot.
         if(utility::random(2) == 0)
@@ -123,7 +128,6 @@ void enemy::update_self(
             }));
         }
     }
-
 
     aircraft_t::update_self(dt, commands);
 }

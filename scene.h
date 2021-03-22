@@ -2,6 +2,7 @@
 
 #include "command.h"
 #include "resources.h"
+#include "sound.h"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Time.hpp>
@@ -182,6 +183,25 @@ protected:
     sf::Time elapsed;
     
     bool const repeat;
+};
+
+class sound_t : public node_t
+{
+public:
+    explicit sound_t(
+        sound::player& sound)
+        : sound{sound}
+    {}
+
+    void play(
+        resources::sound_effect const se,
+        sf::Vector2f const position)
+    {
+        sound.play(se, position);
+    }
+
+private:
+    sound::player& sound;
 };
 
 }

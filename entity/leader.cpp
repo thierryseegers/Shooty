@@ -97,6 +97,8 @@ void leader_t::update_self(
             shoot_bullet(layer);
         }));
 
+        play_local_sound(commands, resources::sound_effect::allied_gunfire);
+
         fire_countdown += sf::seconds(1.f / (fire_rate + 1));
         firing = false;
     }
@@ -112,6 +114,9 @@ void leader_t::update_self(
         {
             shoot_missile(layer);
         }));
+
+        play_local_sound(commands, resources::sound_effect::launch_missile);
+
         launching_missile = false;
     }
 

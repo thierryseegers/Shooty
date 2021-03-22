@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Shader.hpp>
@@ -35,6 +36,17 @@ enum class shader_pass
     downsample,
     gaussian_blur,
     add,
+};
+
+enum class sound_effect
+{
+    allied_gunfire,
+    enemy_gunfire,
+    explosion_1,
+    explosion_2,
+    launch_missile,
+    collect_pickup,
+    button
 };
 
 template<typename Type, class Resource>
@@ -91,11 +103,13 @@ private:
 };
 
 using fonts_t = holder<font, sf::Font>;
-using textures_t = holder<texture, sf::Texture>;
 using shaders_t = holder<shader_pass, sf::Shader>;
+using sound_buffers_t = holder<sound_effect, sf::SoundBuffer>;
+using textures_t = holder<texture, sf::Texture>;
 
 fonts_t const& fonts();
-textures_t const& textures();
 shaders_t& shaders();
+sound_buffers_t const& sound_buffers();
+textures_t const& textures();
 
 }

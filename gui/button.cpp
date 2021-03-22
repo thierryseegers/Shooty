@@ -1,6 +1,7 @@
 #include "button.h"
 
 #include "resources.h"
+#include "sound.h"
 
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -26,9 +27,11 @@ void button::state_t::operator=(button::position const p)
     }
 }
 
-button::button()
+button::button(
+    state::stack::context_t& context)
     : text{sf::Text{"", resources::fonts().get(resources::font::main), 16}}
     , toggle{false}
+    , sound{context.sound}
     , state{sprite}
 {
     sprite.setTexture(resources::textures().get(resources::texture::buttons));
@@ -73,6 +76,8 @@ void button::activate()
     {
         deactivate();
     }
+
+    sound.play(resources::sound_effect::button);
 }
 
 void button::deactivate()

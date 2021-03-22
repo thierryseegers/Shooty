@@ -95,6 +95,8 @@ add_executable(Shooty
     resources.h
     scene.cpp
     scene.h
+    sound.cpp
+    sound.h
     state/game_over.cpp
     state/game_over.h
     state/game.cpp
