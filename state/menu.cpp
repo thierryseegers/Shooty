@@ -1,6 +1,7 @@
 #include "state/menu.h"
 
 #include "gui/button.h"
+#include "music.h"
 #include "resources.h"
 #include "state/stack.h"
 #include "utility.h"
@@ -46,6 +47,8 @@ menu::menu(
         state::states.request_clear();
     };
     container.pack(exit);
+
+    states.context.music.play(music::theme::menu);
 }
 
 void menu::draw()

@@ -26,6 +26,13 @@ pause::pause(
     instructions.setString("(Press Backspace to return to the main menu)");	
     utility::center_origin(instructions);
     instructions.setPosition(0.5f * view_size.x, 0.6f * view_size.y);
+
+    states.context.music.pause(true);
+}
+
+pause::~pause()
+{
+    states.context.music.pause(false);
 }
 
 void pause::draw()

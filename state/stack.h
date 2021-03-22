@@ -1,5 +1,6 @@
 #pragma once
 
+#include "music.h"
 #include "player.h"
 #include "resources.h"
 #include "state/id.h"
@@ -22,8 +23,9 @@ class stack : private sf::NonCopyable
 public:
     struct context_t
     {
-        sf::RenderWindow& window;
+        music::player& music;
         player_t& player;
+        sf::RenderWindow& window;
     } context;
 
     explicit stack(

@@ -15,6 +15,8 @@ public:
     pause(
         stack& states);
 
+    ~pause();
+    
     virtual void draw() override;
     virtual bool update(
         sf::Time const& dt) override;

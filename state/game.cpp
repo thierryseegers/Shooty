@@ -1,5 +1,6 @@
 #include "state/game.h"
 
+#include "music.h"
 #include "state/stack.h"
 
 #include <SFML/System.hpp>
@@ -11,7 +12,9 @@ game::game(
     stack& states)
     : state{states}
     , world{states.context.window}
-{}
+{
+    states.context.music.play(music::theme::mission);
+}
 
 void game::draw()
 {

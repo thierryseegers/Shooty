@@ -18,7 +18,7 @@
 
 application::application()
     : window{sf::VideoMode(1024, 768), "Shooty", sf::Style::Close}
-    , states{{window, player_1}}
+    , states{{music, player_1, window}}
     , statistics_num_frames{0}
 {
     window.setKeyRepeatEnabled(false);

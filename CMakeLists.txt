@@ -85,6 +85,8 @@ add_executable(Shooty
     lifebar.cpp
     lifebar.h
     main.cpp
+    music.cpp
+    music.h
     particle.cpp
     particle.h
     player.cpp
@@ -143,7 +145,7 @@ set_property(
 
 # Copy media files from the book's chapters and the configuration file.
 add_custom_target(copy-runtime-files ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Book/08_Graphics/Media ${CMAKE_BINARY_DIR}/Media
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/Book/09_Audio/Media ${CMAKE_BINARY_DIR}/Media
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/config.toml ${CMAKE_BINARY_DIR}/config.toml
 )
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "music.h"
 #include "player.h"
 #include "resources.h"
 #include "state/state.h"
@@ -27,8 +28,9 @@ private:
 
     void render();
 
-    sf::RenderWindow window;
+    music::player music;
     player_t player_1;
+    sf::RenderWindow window;
 
     state::stack states;
 
