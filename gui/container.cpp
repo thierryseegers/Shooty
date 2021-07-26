@@ -59,6 +59,32 @@ void container::handle_event(
             children[selected]->activate();
         }
     }
+    else if(event.type == sf::Event::JoystickMoved)
+    {
+        if(event.joystickMove.axis  == sf::Joystick::Axis::Y)
+        {
+            if(event.joystickMove.position < -1)
+            {
+                select(direction::previous);
+            }
+            else if(event.joystickMove.position > 1)
+            {
+                select(direction::next);
+            }
+        }
+    }
+    else if(event.type == sf::Event::JoystickButtonReleased)
+    {
+        if(event.joystickButton.button == 4)
+        {
+            select(direction::next);
+        }
+        else if(event.joystickButton.button == 6 &&
+           selected != -1)
+        {
+            children[selected]->activate();
+        }
+    }
 }
 
 void container::draw(

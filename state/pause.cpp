@@ -23,7 +23,7 @@ pause::pause(
     word.setPosition(0.5f * view_size.x, 0.4f * view_size.y);
 
     instructions.setFont(resources::fonts().get(resources::font::main));
-    instructions.setString("(Press Backspace to return to the main menu)");	
+    instructions.setString("(Press Backspace or Left + Right to return to the main menu)");	
     utility::center_origin(instructions);
     instructions.setPosition(0.5f * view_size.x, 0.6f * view_size.y);
 
@@ -58,23 +58,35 @@ bool pause::update(
 bool pause::handle_event(
     sf::Event const& event)
 {
-    if(event.type != sf::Event::KeyPressed)
+    // Escape key or Start button pressed, remove itself to return to the game.
+    if(event.type == sf::Event::KeyReleased &&
+       event.key.code == sf::Keyboard::Escape)
     {
-        return false;
+        states.request_pop();
     }
-
-    if(event.key.code == sf::Keyboard::Escape)
+    else if(event.type == sf::Event::JoystickButtonReleased &&
+            event.joystickButton.button == 6)
     {
-        // Escape pressed, remove itself to return to the game.
         states.request_pop();
     }
 
-    if (event.key.code == sf::Keyboard::BackSpace)
+    // Backspace key pressed or Left and Right button pressed, clear stack and push main menu.
+    if(event.type == sf::Event::KeyReleased &&
+       event.key.code == sf::Keyboard::BackSpace)
     {
-        // Escape pressed, remove itself to return to the game.
         states.request_clear();
         states.request_push(id::menu);
     }
+    else if(event.type == sf::Event::JoystickButtonReleased)
+    {
+        if((event.joystickButton.button == 5 && sf::Joystick::isButtonPressed(0, 7)) ||
+           (event.joystickButton.button == 7 && sf::Joystick::isButtonPressed(0, 5)))
+        {
+            states.request_clear();
+            states.request_push(id::menu);
+        }
+    }
+
 
     return false;
 }

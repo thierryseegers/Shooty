@@ -41,7 +41,8 @@ private:
     sf::Sprite background;
     gui::container container;
     std::array<std::shared_ptr<gui::button>, player_t::action::count> buttons;
-    std::array<std::shared_ptr<gui::label>, player_t::action::count> labels;
+    std::array<std::shared_ptr<gui::label>, player_t::action::count> key_labels;
+    std::array<std::shared_ptr<gui::label>, player_t::action::count> joy_labels;
 };
 
 }

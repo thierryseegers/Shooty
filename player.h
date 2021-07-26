@@ -36,6 +36,13 @@ public:
         sf::Keyboard::Key const key,
         action const what);
 
+    unsigned int bound_joy(
+        action const what) const;
+
+    void bind_joy(
+        unsigned int const button,
+        action const what);
+
     void handle_event(
         sf::Event const& event,
         commands_t& commands);
@@ -57,6 +64,7 @@ private:
     [[nodiscard]] static bool is_realtime_action(action const a);
 
     std::map<sf::Keyboard::Key, action> key_bindings;
+    std::map<unsigned int, action> joy_bindings;
     std::map<action, command_t> action_bindings;
 
     mission status;

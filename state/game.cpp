@@ -48,9 +48,14 @@ bool game::handle_event(
     // Game input handling.
     states.context.player.handle_event(event, world.commands());
 
-    // Escape pressed, trigger the pause screen.
-    if(event.type == sf::Event::KeyPressed &&
+    // Escape key or Start button pressed, trigger the pause screen.
+    if(event.type == sf::Event::KeyReleased &&
        event.key.code == sf::Keyboard::Escape)
+    {
+        states.request_push(id::pause);
+    }
+    else if(event.type == sf::Event::JoystickButtonReleased &&
+            event.joystickButton.button == 6)
     {
         states.request_push(id::pause);
     }

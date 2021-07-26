@@ -52,7 +52,9 @@ bool title::update(
 bool title::handle_event(
     sf::Event const& event)
 {
-    if(event.type == sf::Event::KeyReleased)
+    if(event.type == sf::Event::KeyReleased ||
+       (event.type == sf::Event::JoystickButtonReleased && 
+        event.joystickButton.button == 6))
     {
         states.request_pop();
         states.request_push(id::menu);

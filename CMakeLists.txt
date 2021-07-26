@@ -26,8 +26,6 @@ conan_cmake_run(REQUIRES
                     cmake_find_package
                 INSTALL_FOLDER
                     ${CONAN_INSTALL_FOLDER}
-                OPTIONS
-                    tomlplusplus:multiple_headers=True
 )
 list(APPEND CMAKE_MODULE_PATH ${CONAN_INSTALL_FOLDER})
 
