@@ -37,6 +37,7 @@ find_package(sfml 2.5.1 MODULE
     COMPONENTS audio graphics network system window
     REQUIRED
 )
+add_library(sfml::sfml ALIAS SFML::SFML)
 
 find_package(spdlog 1.8.2 MODULE
     REQUIRED
@@ -47,8 +48,11 @@ find_package(tomlplusplus 2.3.0 MODULE
 )
 
 add_executable(Shooty
+    action.h
     application.cpp
     application.h
+    bindings.cpp
+    bindings.h
     command.h
     configuration.cpp
     configuration.h
@@ -127,15 +131,13 @@ target_compile_options(Shooty
 
 target_include_directories(Shooty
     PRIVATE ${CMAKE_SOURCE_DIR}
+)
+
+target_link_libraries(Shooty
     PRIVATE magic_enum::magic_enum
     PRIVATE sfml::sfml
     PRIVATE spdlog::spdlog
     PRIVATE tomlplusplus::tomlplusplus
-)
-
-target_link_libraries(Shooty
-    PRIVATE sfml::sfml
-    PRIVATE spdlog::spdlog
 )
 
 set_property(

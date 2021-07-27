@@ -1,5 +1,7 @@
 #include "state/settings.h"
 
+#include "action.h"
+#include "bindings.h"
 #include "gui/button.h"
 #include "gui/container.h"
 #include "gui/label.h"
@@ -7,8 +9,10 @@
 #include "resources.h"
 #include "state/stack.h"
 #include "state/state.h"
+#include "tomlpp.h"
 #include "utility.h"
 
+#include <magic_enum.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
@@ -26,12 +30,12 @@ settings::settings(
     background.setTexture(resources::textures().get(resources::texture::title_screen));
 
     // Build key binding buttons, key_labels and joy_labels.
-    add_button_label(player_t::action::move_left,  150.f, "Move Left");
-    add_button_label(player_t::action::move_right, 200.f, "Move Right");
-    add_button_label(player_t::action::move_up,    250.f, "Move Up");
-    add_button_label(player_t::action::move_down,  300.f, "Move Down");
-    add_button_label(player_t::action::fire,       350.f, "Fire");
-    add_button_label(player_t::action::launch_missile, 400.f, "Launch Missile");
+    add_button_label(action::move_left,  150.f, "Move Left");
+    add_button_label(action::move_right, 200.f, "Move Right");
+    add_button_label(action::move_up,    250.f, "Move Up");
+    add_button_label(action::move_down,  300.f, "Move Down");
+    add_button_label(action::fire,       350.f, "Fire");
+    add_button_label(action::launch_missile, 400.f, "Launch Missile");
 
     update_labels();
 
@@ -41,6 +45,7 @@ settings::settings(
     back->text = "Back";
     back->click = [this]()
     {
+        bindings::save();   // Save the bindings to file.
         state::states.request_pop();
     };
 
@@ -67,20 +72,20 @@ bool settings::handle_event(
     bool rebound_key = false;
     
     // Iterate through all key binding buttons to see if they are being pressed, waiting for the user to enter a key or a joystick button.
-    for(auto a = 0; a != player_t::action::count && !rebound_key; ++a)
+    for(auto i = 0; i != magic_enum::enum_count<action>() && !rebound_key; ++i)
     {
-        if(buttons[a]->active())
+        if(buttons[i]->active())
         {
             rebound_key = true;
             if(event.type == sf::Event::KeyReleased)
             {
-                states.context.player.bind_key(event.key.code, static_cast<player_t::action>(a));
-                buttons[a]->deactivate();
+                bindings::bind_key(event.key.code, magic_enum::enum_cast<action>(i).value());
+                buttons[i]->deactivate();
             }
             else if(event.type == sf::Event::JoystickButtonReleased)
             {
-                states.context.player.bind_joy(event.joystickButton.button, static_cast<player_t::action>(a));
-                buttons[a]->deactivate();
+                bindings::bind_button(event.joystickButton.button, magic_enum::enum_cast<action>(i).value());
+                buttons[i]->deactivate();
             }
         }
     }
@@ -96,39 +101,39 @@ bool settings::handle_event(
 
 void settings::update_labels()
 {
-    for(auto i = 0; i != player_t::action::count; ++i)
+    for(auto const a : magic_enum::enum_values<action>())
     {
-        key_labels[i]->text = utility::to_string(states.context.player.bound_key(static_cast<player_t::action>(i)));
+        key_labels[magic_enum::enum_integer(a)]->text = utility::to_string(bindings::bound_key(a));
     }
 
-    for(auto const action : {player_t::action::fire, player_t::action::launch_missile})
+    for(auto const a : {action::fire, action::launch_missile})
     {
-        auto const a = static_cast<std::underlying_type_t<player_t::action>>(action);
-
-        joy_labels[a]->text = "Button " + std::to_string(states.context.player.bound_joy(action));
-        joy_labels[a]->text = "Button " + std::to_string(states.context.player.bound_joy(action));
+        joy_labels[magic_enum::enum_integer(a)]->text = "Button " + std::to_string(bindings::bound_button(a));
+        joy_labels[magic_enum::enum_integer(a)]->text = "Button " + std::to_string(bindings::bound_button(a));
     }
 }
 
 void settings::add_button_label(
-    player_t::action const action,
+    action const a,
     float const y,
     std::string const& text)
 {
-    buttons[action] = std::make_shared<gui::button>(states.context);
-    buttons[action]->setPosition(80.f, y);
-    buttons[action]->text = text;
-    buttons[action]->toggle = true;
+    std::size_t const i = magic_enum::enum_integer(a);
 
-    key_labels[action] = std::make_shared<gui::label>("");
-    key_labels[action]->setPosition(300.f, y + 15.f);
+    buttons[i] = std::make_shared<gui::button>(states.context);
+    buttons[i]->setPosition(80.f, y);
+    buttons[i]->text = text;
+    buttons[i]->toggle = true;
 
-    joy_labels[action] = std::make_shared<gui::label>("");
-    joy_labels[action]->setPosition(400.f, y + 15.f);
+    key_labels[i] = std::make_shared<gui::label>("");
+    key_labels[i]->setPosition(300.f, y + 15.f);
 
-    container.pack(buttons[action]);
-    container.pack(key_labels[action]);
-    container.pack(joy_labels[action]);
+    joy_labels[i] = std::make_shared<gui::label>("");
+    joy_labels[i]->setPosition(400.f, y + 15.f);
+
+    container.pack(buttons[i]);
+    container.pack(key_labels[i]);
+    container.pack(joy_labels[i]);
 }
 
 }

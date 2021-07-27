@@ -1,5 +1,6 @@
 #pragma once
 
+#include "action.h"
 #include "gui/button.h"
 #include "gui/container.h"
 #include "gui/label.h"
@@ -7,6 +8,7 @@
 #include "state/stack.h"
 #include "state/state.h"
 
+#include <magic_enum.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
@@ -33,16 +35,16 @@ private:
     void update_labels();
 
     void add_button_label(
-        player_t::action const action,
+        action const action,
         float const y,
         std::string const& text);
 
 private:
     sf::Sprite background;
     gui::container container;
-    std::array<std::shared_ptr<gui::button>, player_t::action::count> buttons;
-    std::array<std::shared_ptr<gui::label>, player_t::action::count> key_labels;
-    std::array<std::shared_ptr<gui::label>, player_t::action::count> joy_labels;
+    std::array<std::shared_ptr<gui::button>, magic_enum::enum_count<action>()> buttons;
+    std::array<std::shared_ptr<gui::label>, magic_enum::enum_count<action>()> key_labels;
+    std::array<std::shared_ptr<gui::label>, magic_enum::enum_count<action>()> joy_labels;
 };
 
 }
