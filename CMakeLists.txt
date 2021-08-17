@@ -48,78 +48,78 @@ find_package(tomlplusplus 2.3.0 MODULE
 )
 
 add_executable(Shooty
-    action.h
-    application.cpp
-    application.h
-    bindings.cpp
-    bindings.h
-    command.h
-    configuration.cpp
-    configuration.h
-    effects/bloom.cpp
-    effects/bloom.h
-    effects/post_effect.h
-    entity/aircraft.cpp
-    entity/aircraft.h
-    entity/animation.h
-    entity/bullet.cpp
-    entity/bullet.h
-    entity/enemy.cpp
-    entity/enemy.h
-    entity/entity.h
-    entity/explosion.h
-    entity/leader.cpp
-    entity/leader.h
-    entity/missile.cpp
-    entity/missile.h
-    entity/pickup.cpp
-    entity/pickup.h
-    entity/projectile.cpp
-    entity/projectile.h
-    gui/button.cpp
-    gui/button.h
-    gui/component.cpp
-    gui/component.h
-    gui/container.cpp
-    gui/container.h
-    gui/label.cpp
-    gui/label.h
-    lifebar.cpp
-    lifebar.h
-    main.cpp
-    music.cpp
-    music.h
-    particle.cpp
-    particle.h
-    player.cpp
-    player.h
-    resources.cpp
-    resources.h
-    scene.cpp
-    scene.h
-    sound.cpp
-    sound.h
-    state/game_over.cpp
-    state/game_over.h
-    state/game.cpp
-    state/game.h
-    state/id.h
-    state/menu.cpp
-    state/menu.h
-    state/pause.cpp
-    state/pause.h
-    state/settings.cpp
-    state/settings.h
-    state/stack.cpp
-    state/stack.h
-    state/state.cpp
-    state/state.h
-    state/title.cpp
-    state/title.h
-    utility.cpp
-    utility.h
-    world.cpp
-    world.h
+    src/action.h
+    src/application.cpp
+    src/application.h
+    src/bindings.cpp
+    src/bindings.h
+    src/command.h
+    src/configuration.cpp
+    src/configuration.h
+    src/effects/bloom.cpp
+    src/effects/bloom.h
+    src/effects/post_effect.h
+    src/entity/aircraft.cpp
+    src/entity/aircraft.h
+    src/entity/animation.h
+    src/entity/bullet.cpp
+    src/entity/bullet.h
+    src/entity/enemy.cpp
+    src/entity/enemy.h
+    src/entity/entity.h
+    src/entity/explosion.h
+    src/entity/leader.cpp
+    src/entity/leader.h
+    src/entity/missile.cpp
+    src/entity/missile.h
+    src/entity/pickup.cpp
+    src/entity/pickup.h
+    src/entity/projectile.cpp
+    src/entity/projectile.h
+    src/gui/button.cpp
+    src/gui/button.h
+    src/gui/component.cpp
+    src/gui/component.h
+    src/gui/container.cpp
+    src/gui/container.h
+    src/gui/label.cpp
+    src/gui/label.h
+    src/lifebar.cpp
+    src/lifebar.h
+    src/main.cpp
+    src/music.cpp
+    src/music.h
+    src/particle.cpp
+    src/particle.h
+    src/player.cpp
+    src/player.h
+    src/resources.cpp
+    src/resources.h
+    src/scene.cpp
+    src/scene.h
+    src/sound.cpp
+    src/sound.h
+    src/state/game_over.cpp
+    src/state/game_over.h
+    src/state/game.cpp
+    src/state/game.h
+    src/state/id.h
+    src/state/menu.cpp
+    src/state/menu.h
+    src/state/pause.cpp
+    src/state/pause.h
+    src/state/settings.cpp
+    src/state/settings.h
+    src/state/stack.cpp
+    src/state/stack.h
+    src/state/state.cpp
+    src/state/state.h
+    src/state/title.cpp
+    src/state/title.h
+    src/utility.cpp
+    src/utility.h
+    src/world.cpp
+    src/world.h
 )
 
 target_compile_options(Shooty
@@ -130,7 +130,7 @@ target_compile_options(Shooty
 )
 
 target_include_directories(Shooty
-    PRIVATE ${CMAKE_SOURCE_DIR}
+    PRIVATE ${CMAKE_SOURCE_DIR}/src
 )
 
 target_link_libraries(Shooty
